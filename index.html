@@ -682,6 +682,15 @@ body.rain .bg-light{
     radial-gradient(circle at 30% 40%, rgba(120,140,255,0.10), transparent 60%),
     radial-gradient(circle at 70% 60%, rgba(100,120,180,0.10), transparent 60%);
 }
+#lightning{
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.08s ease;
+}
   </style>
 </head>
 <body class="loading">
@@ -689,6 +698,7 @@ body.rain .bg-light{
   <canvas id="bg-canvas"></canvas>
   <div class="bg-light"></div>
   <div class="cursor-glow" id="cursorGlow"></div>
+  <div id="lightning"></div>
 
   <div class="page">
     <div class="nav">
@@ -970,6 +980,7 @@ body.rain .bg-light{
   init();
   setRandomWeather();
   draw();
+  startLightning();
   updateTime();
   setInterval(updateTime, 1000);
 
@@ -1060,6 +1071,41 @@ body.rain .bg-light{
       heroBox.style.setProperty("--my", "50%");
     });
   }
+function lightningFlash(){
+  if (weather !== "rain") return;
+
+  const el = document.getElementById("lightning");
+
+  if (!el) return;
+
+  el.style.opacity = 0.8;
+
+  setTimeout(() => {
+    el.style.opacity = 0;
+  }, 80);
+
+  // 偶尔双闪（更真实）
+  if (Math.random() > 0.6) {
+    setTimeout(() => {
+      el.style.opacity = 0.6;
+      setTimeout(() => {
+        el.style.opacity = 0;
+      }, 60);
+    }, 120);
+  }
+}
+function startLightning(){
+  function loop(){
+    const delay = Math.random() * 5000 + 2000; // 2~7秒随机
+
+    setTimeout(() => {
+      lightningFlash();
+      loop();
+    }, delay);
+  }
+
+  loop();
+}
 </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
