@@ -1111,11 +1111,18 @@ function startLightning(){
 
   loop();
 }
-window.addEventListener("click", () => {
-  if (!audioUnlocked) {
+window.addEventListener("click", async () => {
+  if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    audioUnlocked = true;
   }
+
+  if (audioCtx.state === "suspended") {
+    await audioCtx.resume();
+  }
+
+  audioUnlocked = true;
+  console.log("audio unlocked", audioCtx.state);
+  playThunder();
 }, { once: true });
 function playThunder() {
   if (!audioUnlocked || !audioCtx) return;
@@ -1148,7 +1155,7 @@ function playThunder() {
   filter.frequency.value = 260;
 
   const gainNode = audioCtx.createGain();
-  gainNode.gain.value = 0.35;
+  gainNode.gain.value = 0.85;
 
   source.connect(filter);
   filter.connect(gainNode);
