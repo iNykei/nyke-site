@@ -777,13 +777,26 @@ document.querySelectorAll('.stat-box').forEach(box=>{
   });
 });
 const liveStatus = document.getElementById('liveStatus');
-const defaultStatus = liveStatus.innerText;
 
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('mouseenter', () => {
     const nextStatus = card.getAttribute('data-status');
+    const color = card.getAttribute('data-color');
+
     if (nextStatus) {
       liveStatus.innerText = nextStatus;
+    }
+
+    // 清掉旧颜色
+    liveStatus.classList.remove(
+      'status-green',
+      'status-yellow',
+      'status-purple'
+    );
+
+    // 加新颜色
+    if (color) {
+      liveStatus.classList.add(`status-${color}`);
     }
   });
 });
