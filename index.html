@@ -2085,7 +2085,7 @@ if (aiInput){
 <div class="ai-widget" id="aiWidget">
   <div class="ai-header">
     <span>Nyke AI</span>
-    <button id="aiToggle">×</button>
+    <button id="aiToggle" onclick="document.getElementById('aiWidget').classList.remove('show')">×</button>
   </div>
 
   <div class="ai-messages" id="aiMessages">
@@ -2098,6 +2098,6 @@ if (aiInput){
   </div>
 </div>
 
-<button class="ai-fab" id="aiFab">AI</button>
+<button class="ai-fab" id="aiFab" onclick="document.getElementById('aiWidget').classList.toggle('show')">AI</button>
 </body>
 </html>
