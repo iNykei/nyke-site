@@ -2080,11 +2080,24 @@ function addAiMessage(text, role = "bot"){
 }
 
 async function sendAiMessage(){
+  alert("function entered");
+
   const aiInput = document.getElementById("aiInput");
   const aiMessages = document.getElementById("aiMessages");
 
+  console.log("aiInput =", aiInput);
+  console.log("aiMessages =", aiMessages);
+
+  if (!aiInput || !aiMessages) {
+    alert("aiInput or aiMessages not found");
+    return;
+  }
+
   const text = aiInput.value.trim();
-  if (!text) return;
+  if (!text) {
+    alert("input is empty");
+    return;
+  }
 
   const divUser = document.createElement("div");
   divUser.className = "ai-bubble user";
@@ -2099,6 +2112,8 @@ async function sendAiMessage(){
   aiMessages.appendChild(thinking);
 
   try {
+    alert("about to fetch");
+
     const res = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {
@@ -2106,6 +2121,8 @@ async function sendAiMessage(){
       },
       body: JSON.stringify({ message: text })
     });
+
+    alert("fetch done: " + res.status);
 
     const data = await res.json();
 
@@ -2116,8 +2133,10 @@ async function sendAiMessage(){
     divBot.textContent = data.reply || "No reply.";
     aiMessages.appendChild(divBot);
 
+    aiMessages.scrollTop = aiMessages.scrollHeight;
   } catch (err) {
     console.error(err);
+    alert("fetch error");
     thinking.textContent = "AI server error.";
   }
 }
