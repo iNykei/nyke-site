@@ -131,6 +131,28 @@
       transition: 0.3s ease;
       text-align: left;
     }
+    .card{
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--x,50%) var(--y,50%),
+    rgba(120,140,255,0.15),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.card:hover::before{
+  opacity: 1;
+}
 
     .card:hover {
       transform: translateY(-8px);
@@ -450,6 +472,16 @@
   background: rgba(255,255,255,0.22);
   transform: scale(1.08);
 }
+.game-main,
+.game-side{
+  transition: all 0.3s ease;
+}
+
+.game-main:hover,
+.game-side:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
   </style>
 </head>
 <body>
@@ -659,6 +691,13 @@ window.addEventListener("click",(e)=>{
   if(e.target.id === "videoModal"){
     closeVideo();
   }
+});
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--x', (e.clientX - rect.left)+'px');
+    card.style.setProperty('--y', (e.clientY - rect.top)+'px');
+  });
 });
   </script>
 <div id="videoModal" class="video-modal">
