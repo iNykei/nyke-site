@@ -60,6 +60,7 @@
     }
 
     .hero-box {
+      position: relative;
       border: 1px solid rgba(255,255,255,0.1);
       padding: 40px;
       border-radius: 20px;
@@ -77,9 +78,31 @@
 
   will-change: transform;
 }
+.hero-box{
+  transform-style: preserve-3d;
+  transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0);
+}
 
+.hero-box::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(120,140,255,0.16),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.hero-box:hover::after{
+  opacity: 1;
+}
 .hero-box:hover{
-  transform: translateY(-6px) scale(1.01);
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-6px) scale(1.01);
   border-color: rgba(140,160,255,0.28);
   box-shadow:
     0 25px 60px rgba(0,0,0,0.45),
@@ -838,6 +861,33 @@ document.querySelectorAll('.card').forEach(card => {
     }
   });
 });
+const heroBox = document.querySelector('.hero-box');
+
+if (heroBox) {
+  heroBox.addEventListener('mousemove', (e) => {
+    const rect = heroBox.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateY = ((x - centerX) / centerX) * 4;
+    const rotateX = ((centerY - y) / centerY) * 4;
+
+    heroBox.style.setProperty('--rx', `${rotateX}deg`);
+    heroBox.style.setProperty('--ry', `${rotateY}deg`);
+    heroBox.style.setProperty('--mx', `${x}px`);
+    heroBox.style.setProperty('--my', `${y}px`);
+  });
+
+  heroBox.addEventListener('mouseleave', () => {
+    heroBox.style.setProperty('--rx', '0deg');
+    heroBox.style.setProperty('--ry', '0deg');
+    heroBox.style.setProperty('--mx', '50%');
+    heroBox.style.setProperty('--my', '50%');
+  });
+}
   </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
