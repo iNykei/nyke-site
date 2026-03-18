@@ -360,6 +360,54 @@
   background: #000;
   object-fit: cover;
 }
+.video-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.82);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.video-modal.show{
+  display: flex;
+  opacity: 1;
+}
+
+.video-box{
+  position: relative;
+  width: min(90vw, 900px);
+  transform: scale(0.92);
+  transition: transform 0.35s ease;
+}
+
+.video-modal.show .video-box{
+  transform: scale(1);
+}
+
+.close-btn{
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: 0.25s ease;
+}
+
+.close-btn:hover{
+  background: rgba(255,255,255,0.22);
+  transform: scale(1.08);
+}
   </style>
 </head>
 <body>
@@ -379,7 +427,7 @@
         <p>Personal site · AI · Gaming · Creativity</p >
         <p style="opacity:0.6;">Not just a site. A digital identity.</p >
 
-        <a class="btn" href=" " target="_blank">GitHub</a >
+        <a class="btn" href="https://github.com/iNykei" target="_blank">GitHub</a >
         <a class="btn" href="mailto:1626972119@qq.com">Contact</a >
         <p style="margin-top:20px;font-size:14px;opacity:0.6;">
   Based in Hangzhou · Building with code & ideas
@@ -455,7 +503,7 @@
   </div>
 </div>
       <div class="game-actions">
-        <a class="game-btn primary" onclick="openVideo()">Highlight Clips</a >
+        <a class="game-btn primary" href="javascript:void(0)" onclick="openVideo()">Highlight Clips</a >
         <a class="game-btn" href="#">Tracker Link</a >
       </div>
     </div>
