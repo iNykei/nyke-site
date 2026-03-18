@@ -599,19 +599,17 @@
 }
 .bg-light{
   position: fixed;
-  mix-blend-mode: screen;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 
   background:
-    radial-gradient(circle at 25% 35%, rgba(120,140,255,0.42), transparent 42%),
-    radial-gradient(circle at 75% 65%, rgba(170,120,255,0.24), transparent 40%),
-    radial-gradient(circle at 50% 20%, rgba(90,170,255,0.16), transparent 36%);
+    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.14), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(160,120,255,0.12), transparent 55%);
 
-  filter: blur(90px);
-  opacity: 0.95;
-  animation: bgMove 10s ease-in-out infinite alternate;
+  filter: blur(100px);
+  opacity: 0.55;
+  animation: bgMove 14s ease-in-out infinite alternate;
 }
 @keyframes bgMove{
   0%{
