@@ -714,6 +714,43 @@ body.shake .page{
 
   transition: all 0.08s ease;
 }
+.hero-box::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(180,200,255,0.0) 30%,
+    rgba(180,200,255,0.6) 50%,
+    rgba(180,200,255,0.0) 70%,
+    transparent 100%
+  );
+
+  opacity: 0;
+  transform: translateY(-120%);
+}
+.hero-box.sweep::before{
+  animation: lightningSweep 0.45s ease forwards;
+  opacity: 1;
+}
+
+@keyframes lightningSweep{
+  0%{
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  20%{
+    opacity: 1;
+  }
+  100%{
+    transform: translateY(120%);
+    opacity: 0;
+  }
+}
   </style>
 </head>
 <body class="loading">
@@ -1108,12 +1145,15 @@ function lightningFlash(){
   if (isClose) {
     el.style.opacity = 0.95;
     const hero = document.querySelector(".hero-box");
+
 if (hero){
   hero.classList.add("flash");
+  hero.classList.add("sweep");
 
   setTimeout(()=>{
     hero.classList.remove("flash");
-  }, 120);
+    hero.classList.remove("sweep");
+  }, 450);
 }
 
     // 强震
