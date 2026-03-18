@@ -350,6 +350,16 @@
 .game-btn.primary:hover{
   box-shadow:0 0 20px rgba(120,140,255,0.6);
 }
+.video-box video{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  background: #000;
+  object-fit: cover;
+}
   </style>
 </head>
 <body>
@@ -532,29 +542,43 @@
       glow.style.top = e.clientY + "px";
     });
 function openVideo(){
-  document.getElementById("videoModal").style.display="flex";
+  const modal = document.getElementById("videoModal");
+  const frame = document.getElementById("videoFrame");
+
+  modal.style.display = "flex";
+  setTimeout(() => {
+    modal.classList.add("show");
+  }, 10);
+
+  frame.currentTime = 0;
+  frame.play();
+}
+
+function closeVideo(){
+  const modal = document.getElementById("videoModal");
+  const frame = document.getElementById("videoFrame");
+
+  modal.classList.remove("show");
+  setTimeout(() => {
+    modal.style.display = "none";
+    frame.pause();
+    frame.currentTime = 0;
+  }, 350);
 }
 
 window.addEventListener("click",(e)=>{
-  if(e.target.id==="videoModal"){
-    e.target.style.display="none";
+  if(e.target.id === "videoModal"){
+    closeVideo();
   }
 });
   </script>
-<div id="videoModal" style="
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.8);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-">
-  <iframe width="800" height="450"
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
+<div id="videoModal" class="video-modal">
+  <div class="video-box">
+    <button class="close-btn" onclick="closeVideo()">×</button>
+    <video id="videoFrame" controls playsinline preload="metadata">
+      <source src="highlight.mp4" type="video/mp4">
+    </video>
+  </div>
 </div>
 </body>
 </html>
