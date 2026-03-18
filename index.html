@@ -917,6 +917,12 @@ body.shake .page{
     grid-template-columns: 1fr;
   }
 }
+.hero-box{
+  cursor: pointer;
+}
+.hero-box:active{
+  transform: scale(0.98);
+}
   </style>
 </head>
 <body class="loading">
@@ -1323,6 +1329,21 @@ body.shake .page{
       heroBox.style.setProperty("--mx", `${x}px`);
       heroBox.style.setProperty("--my", `${y}px`);
     });
+    let lastClick = 0;
+
+if (heroBox){
+  heroBox.addEventListener("click", () => {
+    const now = Date.now();
+
+    // 防止疯狂点（2秒冷却）
+    if (now - lastClick < 2000) return;
+
+    lastClick = now;
+
+    triggerFarLightning();
+  });
+}
+    
 
     heroBox.addEventListener("mouseleave", () => {
       heroBox.style.setProperty("--rx", "0deg");
@@ -1400,6 +1421,33 @@ if (hero){
       playThunder(0.4); // 小音量
     }, 400 + Math.random() * 400);
   }
+}
+function triggerFarLightning(){
+  if (weather !== "rain") return;
+
+  const el = document.getElementById("lightning");
+  if (!el) return;
+
+  const hero = document.querySelector(".hero-box");
+
+  // 远雷弱闪
+  el.style.opacity = 0.45;
+
+  if (hero){
+    hero.classList.add("flash");
+    setTimeout(()=>{
+      hero.classList.remove("flash");
+    }, 80);
+  }
+
+  setTimeout(()=>{
+    el.style.opacity = 0;
+  }, 70);
+
+  // 延迟雷声（远雷）
+  setTimeout(()=>{
+    playThunder(0.4);
+  }, 400 + Math.random() * 400);
 }
 function startLightning(){
   function loop(){
