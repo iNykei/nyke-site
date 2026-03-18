@@ -2079,25 +2079,13 @@ function addAiMessage(text, role = "bot"){
   aiMessages.scrollTop = aiMessages.scrollHeight;
 }
 
-async function sendAiMessage(){
-  alert("function entered");
-
-  const aiInput = document.getElementById("aiInput");
-  const aiMessages = document.getElementById("aiMessages");
-
-  console.log("aiInput =", aiInput);
-  console.log("aiMessages =", aiMessages);
-
-  if (!aiInput || !aiMessages) {
-    alert("aiInput or aiMessages not found");
-    return;
-  }
+async function sendAiMessage(btn){
+  const panel = btn.closest(".ai-panel");
+  const aiInput = panel.querySelector("input");
+  const aiMessages = panel.querySelector(".ai-messages");
 
   const text = aiInput.value.trim();
-  if (!text) {
-    alert("input is empty");
-    return;
-  }
+  if (!text) return;
 
   const divUser = document.createElement("div");
   divUser.className = "ai-bubble user";
@@ -2112,8 +2100,6 @@ async function sendAiMessage(){
   aiMessages.appendChild(thinking);
 
   try {
-    alert("about to fetch");
-
     const res = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {
@@ -2121,8 +2107,6 @@ async function sendAiMessage(){
       },
       body: JSON.stringify({ message: text })
     });
-
-    alert("fetch done: " + res.status);
 
     const data = await res.json();
 
@@ -2136,7 +2120,6 @@ async function sendAiMessage(){
     aiMessages.scrollTop = aiMessages.scrollHeight;
   } catch (err) {
     console.error(err);
-    alert("fetch error");
     thinking.textContent = "AI server error.";
   }
 }
@@ -2206,7 +2189,7 @@ if (aiInput){
 
         <div class="ai-input-row">
           <input id="aiInput" type="text" placeholder="Ask something..." />
-          <button id="aiSend" onclick="sendAiMessage()">Send</button>
+          <button onclick="sendAiMessage(this)">Send</button>
         </div>
       </div>
     </div>
