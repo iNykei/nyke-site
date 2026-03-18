@@ -536,6 +536,26 @@
 .status-purple{
   color: #a78bfa;
 }
+.stat-box{
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.stat-box:hover{
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(140,160,255,0.26);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,0.28),
+    0 0 20px rgba(120,140,255,0.14);
+}
+.btn,
+.game-btn{
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.btn:hover,
+.game-btn:hover{
+  transform: translateY(-2px);
+}
   </style>
 </head>
 <body>
