@@ -1315,37 +1315,46 @@ let lightningMaxDelay = 10 * 60 * 1000;
     });
   });
 
-  const heroBox = document.querySelector(".hero-box");
-  if (heroBox) {
-    heroBox.addEventListener("mousemove", (e) => {
-      const rect = heroBox.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+ const heroBox = document.querySelector(".hero-box");
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+if (heroBox) {
+  heroBox.addEventListener("mousemove", (e) => {
+    const rect = heroBox.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-      const rotateY = ((x - centerX) / centerX) * 4;
-      const rotateX = ((centerY - y) / centerY) * 4;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
-      heroBox.style.setProperty("--rx", `${rotateX}deg`);
-      heroBox.style.setProperty("--ry", `${rotateY}deg`);
-      heroBox.style.setProperty("--mx", `${x}px`);
-      heroBox.style.setProperty("--my", `${y}px`);
-    });
-    let lastClick = 0;
+    const rotateY = ((x - centerX) / centerX) * 4;
+    const rotateX = ((centerY - y) / centerY) * 4;
 
-heroBox.addEventListener("click", () => {
-  const now = Date.now();
+    heroBox.style.setProperty("--rx", `${rotateX}deg`);
+    heroBox.style.setProperty("--ry", `${rotateY}deg`);
+    heroBox.style.setProperty("--mx", `${x}px`);
+    heroBox.style.setProperty("--my", `${y}px`);
+  });
 
-  if (now - lastClick < 2000) return;
+  heroBox.addEventListener("mouseleave", () => {
+    heroBox.style.setProperty("--rx", "0deg");
+    heroBox.style.setProperty("--ry", "0deg");
+    heroBox.style.setProperty("--mx", "50%");
+    heroBox.style.setProperty("--my", "50%");
+  });
 
-  lastClick = now;
-  clickCount++;
+  let lastClick = 0;
 
-  triggerFarLightning();
-  updateStormMode();
-});
+  heroBox.addEventListener("click", () => {
+    const now = Date.now();
+
+    if (now - lastClick < 2000) return;
+
+    lastClick = now;
+    clickCount++;
+
+    triggerFarLightning();
+    updateStormMode();
+  });
 }
     
 
