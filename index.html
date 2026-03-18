@@ -1632,11 +1632,30 @@ if (backToTopBtn){
     window.scrollTo(0, 0);
   });
 }
-.nav-links a.active{
-  color: white;
-  opacity: 1;
-  text-shadow: 0 0 12px rgba(140,160,255,0.4);
-}
+const sections = document.querySelectorAll("section");
+const navLinks = document.querySelectorAll(".nav-links a");
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 120;
+    const sectionHeight = section.offsetHeight;
+
+    if (window.scrollY >= sectionTop &&
+        window.scrollY < sectionTop + sectionHeight) {
+      current = section.getAttribute("id");
+    }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove("active");
+
+    if (link.getAttribute("href") === "#" + current) {
+      link.classList.add("active");
+    }
+  });
+});
 </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
