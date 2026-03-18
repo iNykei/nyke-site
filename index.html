@@ -2244,7 +2244,9 @@ async function sendAiMessage(btn){
 
     const divBot = document.createElement("div");
     divBot.className = "ai-bubble bot";
-    divBot.textContent = data.reply || "No reply.";
+    aiMessages.appendChild(divBot);
+
+typeText(divBot, data.reply || "No reply.");
     aiMessages.appendChild(divBot);
 
     aiMessages.scrollTop = aiMessages.scrollHeight;
@@ -2274,6 +2276,22 @@ if (aiInput){
   aiInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendAiMessage();
   });
+}
+function typeText(el, text){
+  let i = 0;
+  el.textContent = "";
+
+  const speed = 18; // 越小越快（推荐 15~25）
+
+  function typing(){
+    if(i < text.length){
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
+    }
+  }
+
+  typing();
 }
 </script>
 <div id="videoModal" class="video-modal">
