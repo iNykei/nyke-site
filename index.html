@@ -561,8 +561,9 @@
   color: #9fb3ff;
   font-weight: 500;
 }
-.status-bar{
-  transition: all 0.25s ease;
+.status-bar.flash-msg{
+  transform: translateY(-2px);
+  text-shadow: 0 0 16px rgba(160,180,255,0.35);
 }
 
 /* 不同状态颜色 */
@@ -1273,6 +1274,27 @@ body.shake .page{
   startLightning();
   updateTime();
   setInterval(updateTime, 1000);
+  let statusTimeout;
+
+function showStatusMessage(text, colorClass = ""){
+  const status = document.getElementById("liveStatus");
+  if (!status) return;
+
+  clearTimeout(statusTimeout);
+
+  status.innerText = text;
+  status.classList.remove("status-green", "status-yellow", "status-purple");
+  status.classList.add("flash-msg");
+
+  if (colorClass) {
+    status.classList.add(colorClass);
+  }
+
+  statusTimeout = setTimeout(() => {
+    status.classList.remove("flash-msg");
+    updateTime();
+  }, 2000);
+}
 
   window.addEventListener("resize", () => {
     resize();
@@ -1357,15 +1379,17 @@ body.shake .page{
 
 if (heroBox){
   heroBox.addEventListener("click", () => {
-    const now = Date.now();
+  const now = Date.now();
 
-    // 防止疯狂点（2秒冷却）
-    if (now - lastClick < 2000) return;
+  if (now - lastClick < 2000) return;
 
-    lastClick = now;
+  lastClick = now;
+  clickCount++;
 
-    triggerFarLightning();
-  });
+  triggerFarLightning();
+  updateStormMode();
+  showStatusMessage("⚡ You woke the storm", "status-purple");
+});
 }
     
 
