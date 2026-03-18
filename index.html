@@ -1023,6 +1023,26 @@ body.shake .page{
 html{
   scroll-behavior: smooth;
 }
+.weather-switch{
+  display:flex;
+  gap:6px;
+}
+
+.weather-switch button{
+  background: rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  color:white;
+  font-size:14px;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.weather-switch button:hover{
+  background: rgba(255,255,255,0.15);
+}
   </style>
 </head>
 <body class="loading">
@@ -1036,10 +1056,25 @@ html{
     <div class="nav">
   <a href=" " class="nav-logo">Nyke</a >
 
-  <div class="nav-links">
-    <a href="#projects">Projects</a >
-    <a href="#about">About</a >
-    <a href="#gaming">Gaming</a >
+  <div style="display:flex;align-items:center;gap:18px;">
+    
+    <div class="nav-links">
+      <a href="#projects">Projects</a >
+      <a href="#about">About</a >
+      <a href="#gaming">Gaming</a >
+    </div>
+
+    <!-- 声音按钮 -->
+    <button id="soundToggle" class="sound-btn off">🔇 OFF</button>
+
+    <!-- 天气切换 -->
+    <div class="weather-switch">
+      <button data-weather="clear">☀</button>
+      <button data-weather="rain">🌧</button>
+      <button data-weather="night">🌙</button>
+      <button data-weather="fog">🌫</button>
+    </div>
+
   </div>
 </div>
 
@@ -1204,6 +1239,15 @@ html{
 
 <script>
   let weather = "clear";
+  let manualWeather = false;
+
+function setWeather(type){
+  weather = type;
+  manualWeather = true;
+
+  document.body.classList.remove("clear","rain","night","fog");
+  document.body.classList.add(type);
+}
 
   const canvas = document.getElementById("bg-canvas");
   const ctx = canvas.getContext("2d");
@@ -1243,12 +1287,14 @@ html{
   }
 
   function setRandomWeather() {
-    const types = ["clear", "rain", "night", "fog"];
-    weather = types[Math.floor(Math.random() * types.length)];
+  if (manualWeather) return;
 
-    document.body.classList.remove("clear", "rain", "night", "fog");
-    document.body.classList.add(weather);
-  }
+  const types = ["clear", "rain", "night", "fog"];
+  weather = types[Math.floor(Math.random() * types.length)];
+
+  document.body.classList.remove("clear", "rain", "night", "fog");
+  document.body.classList.add(weather);
+}
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1615,6 +1661,12 @@ function playThunder(volume = 0.5) {
   source.start();
 }
 const soundBtn = document.getElementById("soundToggle");
+document.querySelectorAll(".weather-switch button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.getAttribute("data-weather");
+    setWeather(type);
+  });
+});
 
 if (soundBtn){
   soundBtn.addEventListener("click", () => {
