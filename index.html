@@ -2226,7 +2226,7 @@ async function sendAiMessage(btn){
 
   const thinking = document.createElement("div");
   thinking.className = "ai-bubble bot";
-  thinking.textContent = "Thinking...";
+  thinking.textContent = "Let me cook...";
   aiMessages.appendChild(thinking);
 
   try {
@@ -2252,7 +2252,7 @@ typeText(divBot, data.reply || "No reply.");
     aiMessages.scrollTop = aiMessages.scrollHeight;
   } catch (err) {
     console.error(err);
-    thinking.textContent = "AI server error.";
+    thinking.textContent = "Server woke up a bit slow. Try again.";
   }
 }
 
