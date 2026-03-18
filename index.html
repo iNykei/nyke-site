@@ -1585,7 +1585,7 @@ const backToTopBtn = document.getElementById("backToTop");
 window.addEventListener("scroll", () => {
   if (!backToTopBtn) return;
 
-  if (window.scrollY > 300) {
+  if (window.scrollY > 50) {
     backToTopBtn.classList.add("show");
   } else {
     backToTopBtn.classList.remove("show");
