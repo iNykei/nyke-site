@@ -2230,7 +2230,7 @@ async function sendAiMessage(btn){
   aiMessages.appendChild(thinking);
 
   try {
-    const res = await fetch("http://localhost:3000/api/chat", {
+    const res = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
