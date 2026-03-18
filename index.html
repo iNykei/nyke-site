@@ -318,6 +318,29 @@
     grid-template-columns: 1fr;
   }
 }
+.game-btn{
+  display:inline-block;
+  padding:12px 20px;
+  border-radius:12px;
+  color:white;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,0.2);
+  transition:0.3s;
+}
+
+.game-btn:hover{
+  background:rgba(255,255,255,0.1);
+}
+
+/* 主按钮（高亮） */
+.game-btn.primary{
+  background:linear-gradient(135deg,#6a7cff,#9fb3ff);
+  border:none;
+}
+
+.game-btn.primary:hover{
+  box-shadow:0 0 20px rgba(120,140,255,0.6);
+}
   </style>
 </head>
 <body>
@@ -396,7 +419,22 @@
           <strong>Live</strong>
         </div>
       </div>
+<div class="card-grid" style="margin-top:20px;">
+  <div class="card">
+    <h3>Rank</h3>
+    <p>Immortal 2 (102 RR)</p >
+  </div>
 
+  <div class="card">
+    <h3>KDA</h3>
+    <p>1.42</p >
+  </div>
+
+  <div class="card">
+    <h3>Headshot %</h3>
+    <p>28%</p >
+  </div>
+</div>
       <div class="game-actions">
         <a class="game-btn primary" href=" ">Highlight Clips</a >
         <a class="game-btn" href="#">Tracker Link</a >
