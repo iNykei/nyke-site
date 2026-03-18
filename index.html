@@ -717,37 +717,37 @@ body.shake .page{
 .hero-box::before{
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: -10%;
+  width: 120%;
+  height: 26%;
+  top: 0;
+  border-radius: 999px;
   pointer-events: none;
-
   background: linear-gradient(
     180deg,
-    transparent 0%,
-    rgba(180,200,255,0.0) 30%,
-    rgba(180,200,255,0.6) 50%,
-    rgba(180,200,255,0.0) 70%,
-    transparent 100%
+    rgba(255,255,255,0),
+    rgba(180,220,255,0.55),
+    rgba(255,255,255,0)
   );
-
+  filter: blur(18px);
   opacity: 0;
-  transform: translateY(-120%);
+  transform: translateY(-180%);
 }
 .hero-box.sweep::before{
-  animation: lightningSweep 0.45s ease forwards;
+  animation: lightningSweep 0.38s ease-out forwards;
   opacity: 1;
 }
 
 @keyframes lightningSweep{
   0%{
-    transform: translateY(-120%);
+    transform: translateY(-180%);
     opacity: 0;
   }
   20%{
-    opacity: 1;
+    opacity: 0.9;
   }
   100%{
-    transform: translateY(120%);
+    transform: translateY(420%);
     opacity: 0;
   }
 }
