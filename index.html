@@ -942,6 +942,39 @@ body.shake .page{
   color: #aaa;
   background: rgba(255,255,255,0.06);
 }
+.back-to-top{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(120,140,255,0.16);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(120,140,255,0.22);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: all 0.25s ease;
+  z-index: 20;
+}
+
+.back-to-top.show{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top:hover{
+  transform: translateY(-3px);
+  background: rgba(120,140,255,0.24);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.3);
+}
   </style>
 </head>
 <body class="loading">
@@ -1547,6 +1580,26 @@ if (soundBtn){
     }
   });
 }
+const backToTopBtn = document.getElementById("backToTop");
+
+window.addEventListener("scroll", () => {
+  if (!backToTopBtn) return;
+
+  if (window.scrollY > 300) {
+    backToTopBtn.classList.add("show");
+  } else {
+    backToTopBtn.classList.remove("show");
+  }
+});
+
+if (backToTopBtn){
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+}
 </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
@@ -1556,5 +1609,6 @@ if (soundBtn){
     </video>
   </div>
 </div>
+<button id="backToTop" class="back-to-top">↑</button>
 </body>
 </html>
