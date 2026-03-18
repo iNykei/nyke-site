@@ -1195,8 +1195,16 @@ body.fog .game-btn{
   background: rgba(200,210,230,0.06);
 }
 body.lightning-active .page{
-  transform: scale(0.995);
   filter: brightness(1.1);
+}
+
+body.lightning-active .hero-box,
+body.lightning-active .card,
+body.lightning-active .game-main,
+body.lightning-active .game-side,
+body.lightning-active .about-left,
+body.lightning-active .about-right{
+  transform: scale(0.992);
   transition: transform 0.08s ease, filter 0.08s ease;
 }
   </style>
