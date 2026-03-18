@@ -520,6 +520,22 @@
   color: #9fb3ff;
   font-weight: 500;
 }
+.status-bar{
+  transition: all 0.25s ease;
+}
+
+/* 不同状态颜色 */
+.status-green{
+  color: #4ade80;
+}
+
+.status-yellow{
+  color: #facc15;
+}
+
+.status-purple{
+  color: #a78bfa;
+}
   </style>
 </head>
 <body>
@@ -561,19 +577,25 @@
       <div class="card-title">Projects</div>
 
       <div class="card-grid">
-        <div class="card" data-status="🎬 Creating content · Posting soon">
+        <div class="card"
+     data-status="🎬 Creating content · Posting soon"
+     data-color="yellow">
           <h3>🐱 TikTok</h3>
           <p>My clips / edits / real moments</p >
           <a href="https://v.douyin.com/kiCMs2Dmzyc/ 0@7.com" target="_blank">View →</a >
         </div>
 
-        <div class="card" data-status="🟢 In game · Aggro mode active">
+        <div class="card"
+     data-status="🟢 In game · Aggro mode active"
+     data-color="green">
           <h3>🎮 Gaming</h3>
           <p>Valorant / 剪辑 / 高光</p >
           <a href="#gaming">View →</a >
         </div>
 
-        <div class="card" data-status="✨ Building ideas · Designing stuff">
+        <div class="card"
+     data-status="✨ Building ideas · Designing stuff"
+     data-color="purple">
           <h3>✨ Creative</h3>
           <p>网站 / 设计 / 想法</p >
           <a href="#">Explore →</a >
