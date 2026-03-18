@@ -1099,10 +1099,6 @@ body.shake .page{
 
 <script>
   let weather = "clear";
-  let clickCount = 0;
-let stormMode = false;
-let lightningMinDelay = 5 * 60 * 1000;
-let lightningMaxDelay = 10 * 60 * 1000;
 
   const canvas = document.getElementById("bg-canvas");
   const ctx = canvas.getContext("2d");
@@ -1315,45 +1311,36 @@ let lightningMaxDelay = 10 * 60 * 1000;
     });
   });
 
- const heroBox = document.querySelector(".hero-box");
+  const heroBox = document.querySelector(".hero-box");
+  if (heroBox) {
+    heroBox.addEventListener("mousemove", (e) => {
+      const rect = heroBox.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-if (heroBox) {
-  heroBox.addEventListener("mousemove", (e) => {
-    const rect = heroBox.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+      const rotateY = ((x - centerX) / centerX) * 4;
+      const rotateX = ((centerY - y) / centerY) * 4;
 
-    const rotateY = ((x - centerX) / centerX) * 4;
-    const rotateX = ((centerY - y) / centerY) * 4;
+      heroBox.style.setProperty("--rx", `${rotateX}deg`);
+      heroBox.style.setProperty("--ry", `${rotateY}deg`);
+      heroBox.style.setProperty("--mx", `${x}px`);
+      heroBox.style.setProperty("--my", `${y}px`);
+    });
+    let lastClick = 0;
 
-    heroBox.style.setProperty("--rx", `${rotateX}deg`);
-    heroBox.style.setProperty("--ry", `${rotateY}deg`);
-    heroBox.style.setProperty("--mx", `${x}px`);
-    heroBox.style.setProperty("--my", `${y}px`);
-  });
-
-  heroBox.addEventListener("mouseleave", () => {
-    heroBox.style.setProperty("--rx", "0deg");
-    heroBox.style.setProperty("--ry", "0deg");
-    heroBox.style.setProperty("--mx", "50%");
-    heroBox.style.setProperty("--my", "50%");
-  });
-
-  let lastClick = 0;
-
+if (heroBox){
   heroBox.addEventListener("click", () => {
     const now = Date.now();
 
+    // 防止疯狂点（2秒冷却）
     if (now - lastClick < 2000) return;
 
     lastClick = now;
-    clickCount++;
 
     triggerFarLightning();
-    updateStormMode();
   });
 }
     
@@ -1464,7 +1451,7 @@ function triggerFarLightning(){
 }
 function startLightning(){
   function loop(){
-    const delay = Math.random() * (lightningMaxDelay - lightningMinDelay) + lightningMinDelay;
+    const delay = Math.random() * 30000 + 270000; // 0.5-10分钟随机
 
     setTimeout(() => {
       lightningFlash();
@@ -1525,47 +1512,6 @@ function playThunder(volume = 0.5) {
   gainNode.connect(audioCtx.destination);
 
   source.start();
-}
-function updateStormMode(){
-  if (clickCount >= 8) {
-    stormMode = true;
-    weather = "rain";
-    document.body.classList.remove("clear", "rain", "night", "fog");
-    document.body.classList.add("rain");
-
-    lightningMinDelay = 20 * 1000;
-    lightningMaxDelay = 45 * 1000;
-
-    const status = document.getElementById("liveStatus");
-    if (status) {
-      status.innerText = "⛈️ Storm mode · Fully awakened";
-      status.classList.remove("status-green", "status-yellow", "status-purple");
-      status.classList.add("status-purple");
-    }
-
-    setTimeout(() => {
-      stormMode = false;
-      clickCount = 0;
-      lightningMinDelay = 5 * 60 * 1000;
-      lightningMaxDelay = 10 * 60 * 1000;
-      setRandomWeather();
-      updateTime();
-    }, 60000);
-  } else if (clickCount >= 5) {
-    weather = "rain";
-    document.body.classList.remove("clear", "rain", "night", "fog");
-    document.body.classList.add("rain");
-
-    lightningMinDelay = 60 * 1000;
-    lightningMaxDelay = 2 * 60 * 1000;
-  } else if (clickCount >= 3) {
-    weather = "rain";
-    document.body.classList.remove("clear", "rain", "night", "fog");
-    document.body.classList.add("rain");
-
-    lightningMinDelay = 2 * 60 * 1000;
-    lightningMaxDelay = 4 * 60 * 1000;
-  }
 }
 </script>
 <div id="videoModal" class="video-modal">
