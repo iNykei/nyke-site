@@ -957,7 +957,7 @@ body.shake .page{
 
   <div style="display:flex;align-items:center;gap:12px;">
     <div>AI · Gaming · Creator</div>
-    <button id="soundToggle" class="sound-btn">🔊 ON</button>
+    <button id="soundToggle" class="sound-btn off">🔇 OFF</button>
   </div>
 </div>
 
@@ -1127,7 +1127,7 @@ body.shake .page{
   const ctx = canvas.getContext("2d");
   let audioUnlocked = false;
   let audioCtx;
-  let soundEnabled = true;
+  let soundEnabled = false;
 
   let particles = [];
   let raindrops = [];
