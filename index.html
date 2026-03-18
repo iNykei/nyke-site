@@ -289,7 +289,30 @@
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
 }
+.stat-box{
+  position: relative;
+  overflow: hidden;
+}
 
+.stat-box::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    180px circle at var(--x,50%) var(--y,50%),
+    rgba(120,140,255,0.32),
+    rgba(120,140,255,0.12) 35%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.stat-box:hover::before{
+  opacity: 1;
+}
 .stat-box span{
   display: block;
   font-size: 13px;
@@ -697,6 +720,13 @@ document.querySelectorAll('.card').forEach(card=>{
     const rect = card.getBoundingClientRect();
     card.style.setProperty('--x', (e.clientX - rect.left)+'px');
     card.style.setProperty('--y', (e.clientY - rect.top)+'px');
+  });
+});
+document.querySelectorAll('.stat-box').forEach(box=>{
+  box.addEventListener('mousemove',e=>{
+    const rect = box.getBoundingClientRect();
+    box.style.setProperty('--x', (e.clientX - rect.left)+'px');
+    box.style.setProperty('--y', (e.clientY - rect.top)+'px');
   });
 });
   </script>
