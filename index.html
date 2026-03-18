@@ -2013,7 +2013,6 @@ const aiFab = document.getElementById("aiFab");
 const aiWidget = document.getElementById("aiWidget");
 const aiToggle = document.getElementById("aiToggle");
 const aiSend = document.getElementById("aiSend");
-const aiInput = document.getElementById("aiInput");
 const aiMessages = document.getElementById("aiMessages");
 
 function addAiMessage(text, role = "bot"){
@@ -2025,16 +2024,25 @@ function addAiMessage(text, role = "bot"){
 }
 
 async function sendAiMessage(){
+  const aiInput = document.getElementById("aiInput");
+  const aiMessages = document.getElementById("aiMessages");
+
   const text = aiInput.value.trim();
   if (!text) return;
 
-  addAiMessage(text, "user");
+  const divUser = document.createElement("div");
+  divUser.className = "ai-bubble user";
+  divUser.textContent = text;
+  aiMessages.appendChild(divUser);
+
   aiInput.value = "";
-  addAiMessage("Thinking...", "bot");
+
+  const thinking = document.createElement("div");
+  thinking.className = "ai-bubble bot";
+  thinking.textContent = "Thinking...";
+  aiMessages.appendChild(thinking);
 
   try {
-    console.log("sending request...");
-
     const res = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {
@@ -2043,17 +2051,18 @@ async function sendAiMessage(){
       body: JSON.stringify({ message: text })
     });
 
-    console.log("response status:", res.status);
-
     const data = await res.json();
-    console.log("response data:", data);
 
-    aiMessages.lastChild.remove();
-    addAiMessage(data.reply || "No reply.", "bot");
+    thinking.remove();
+
+    const divBot = document.createElement("div");
+    divBot.className = "ai-bubble bot";
+    divBot.textContent = data.reply || "No reply.";
+    aiMessages.appendChild(divBot);
+
   } catch (err) {
-    console.error("fetch error:", err);
-    aiMessages.lastChild.remove();
-    addAiMessage("AI server is not connected.", "bot");
+    console.error(err);
+    thinking.textContent = "AI server error.";
   }
 }
 
