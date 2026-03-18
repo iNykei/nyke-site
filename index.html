@@ -1195,17 +1195,20 @@ body.fog .game-btn{
   background: rgba(200,210,230,0.06);
 }
 body.lightning-active .page{
-  filter: brightness(1.1);
+  animation: lightningImpact 0.14s ease;
+  filter: brightness(1.12);
 }
 
-body.lightning-active .hero-box,
-body.lightning-active .card,
-body.lightning-active .game-main,
-body.lightning-active .game-side,
-body.lightning-active .about-left,
-body.lightning-active .about-right{
-  transform: scale(0.992);
-  transition: transform 0.08s ease, filter 0.08s ease;
+@keyframes lightningImpact{
+  0%{
+    transform: scale(1);
+  }
+  35%{
+    transform: scale(0.985);
+  }
+  100%{
+    transform: scale(1);
+  }
 }
   </style>
 </head>
