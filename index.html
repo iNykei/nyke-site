@@ -660,10 +660,8 @@ body.loading .game-section{
     transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: 0.15s;
 }
-body.day .bg-light{
-  background:
-    radial-gradient(circle at 30% 40%, rgba(120,180,255,0.12), transparent 60%),
-    radial-gradient(circle at 70% 60%, rgba(180,220,255,0.08), transparent 60%);
+body.clear .bg-light{
+  opacity: 0.5;
 }
 
 body.night .bg-light{
@@ -672,10 +670,17 @@ body.night .bg-light{
     radial-gradient(circle at 70% 60%, rgba(160,120,255,0.12), transparent 60%);
 }
 
-body.late .bg-light{
+body.fog .bg-light{
   background:
-    radial-gradient(circle at 30% 40%, rgba(80,90,140,0.12), transparent 60%),
-    radial-gradient(circle at 70% 60%, rgba(100,80,140,0.10), transparent 60%);
+    radial-gradient(circle at 50% 50%, rgba(200,200,220,0.12), transparent 70%);
+  filter: blur(120px);
+  opacity: 0.7;
+}
+
+body.rain .bg-light{
+  background:
+    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.10), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(100,120,180,0.10), transparent 60%);
 }
   </style>
 </head>
@@ -818,288 +823,244 @@ body.late .bg-light{
 </section>
   </div>
 
-  <script>
-    let weather = "clear";
-    const canvas = document.getElementById("bg-canvas");
-    const ctx = canvas.getContext("2d");
+<script>
+  let weather = "clear";
 
-    let particles = [];
-    let raindrops = [];
+  const canvas = document.getElementById("bg-canvas");
+  const ctx = canvas.getContext("2d");
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  let particles = [];
+  let raindrops = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function init() {
+    particles = [];
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5
+      });
     }
 
-    function init() {
-  particles = [];
-  for (let i = 0; i < 60; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      dx: (Math.random() - 0.5) * 0.5,
-      dy: (Math.random() - 0.5) * 0.5
-    });
-  }
-
-  raindrops = [];
-  for (let i = 0; i < 120; i++) {
-    raindrops.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      length: Math.random() * 20 + 10,
-      speed: Math.random() * 4 + 4,
-      opacity: Math.random() * 0.3 + 0.2
-    });
-  }
-}
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "white";
-        ctx.fill();
-
-        p.x += p.dx;
-        p.y += p.dy;
-
-        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    raindrops = [];
+    for (let i = 0; i < 120; i++) {
+      raindrops.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 4 + 4,
+        opacity: Math.random() * 0.3 + 0.2
       });
+    }
+  }
+
+  function setRandomWeather() {
+    const types = ["clear", "rain", "night", "fog"];
+    weather = types[Math.floor(Math.random() * types.length)];
+
+    document.body.classList.remove("clear", "rain", "night", "fog");
+    document.body.classList.add(weather);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
+
+      p.x += p.dx;
+      p.y += p.dy;
+
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+
+    if (weather === "rain") {
       const angle = 0.4;
 
-raindrops.forEach(r => {
-  ctx.beginPath();
-  ctx.moveTo(r.x, r.y);
-  ctx.lineTo(r.x + r.length * angle, r.y + r.length);
-  ctx.strokeStyle = `rgba(180,200,255,${r.opacity})`;
-  ctx.lineWidth = 1;
-  ctx.stroke();
+      raindrops.forEach(r => {
+        ctx.beginPath();
+        ctx.moveTo(r.x, r.y);
+        ctx.lineTo(r.x + r.length * angle, r.y + r.length);
+        ctx.strokeStyle = `rgba(180,200,255,${r.opacity})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
-  r.x += angle * r.speed;
-  r.y += r.speed;
+        r.x += angle * r.speed;
+        r.y += r.speed;
 
-  if (r.y > canvas.height) {
-    r.y = -20;
-    r.x = Math.random() * canvas.width;
-  }
-});
-
-      requestAnimationFrame(draw);
+        if (r.y > canvas.height) {
+          r.y = -20;
+          r.x = Math.random() * canvas.width;
+        }
+      });
     }
 
+    requestAnimationFrame(draw);
+  }
+
+  function openVideo() {
+    const modal = document.getElementById("videoModal");
+    const frame = document.getElementById("videoFrame");
+
+    modal.style.display = "flex";
+    setTimeout(() => {
+      modal.classList.add("show");
+    }, 10);
+
+    frame.currentTime = 0;
+    frame.play();
+  }
+
+  function closeVideo() {
+    const modal = document.getElementById("videoModal");
+    const frame = document.getElementById("videoFrame");
+
+    modal.classList.remove("show");
+    setTimeout(() => {
+      modal.style.display = "none";
+      frame.pause();
+      frame.currentTime = 0;
+    }, 350);
+  }
+
+  function updateTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    const timeText = document.getElementById("timeText");
+    const status = document.getElementById("liveStatus");
+
+    if (timeText) {
+      timeText.innerText = `🕒 ${hours}:${minutes} · Local time`;
+    }
+
+    if (!status) return;
+
+    let text = "";
+    let color = "";
+
+    if (hours >= 6 && hours < 18) {
+      text = "🟢 Online · Building & working";
+      color = "status-green";
+    } else if (hours >= 18 && hours < 24) {
+      text = "🌙 Night mode · Chill / creative";
+      color = "status-purple";
+    } else {
+      text = "😴 Offline vibe · Probably sleeping";
+      color = "status-yellow";
+    }
+
+    status.innerText = text;
+    status.classList.remove("status-green", "status-yellow", "status-purple");
+    status.classList.add(color);
+  }
+
+  resize();
+  init();
+  setRandomWeather();
+  draw();
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  window.addEventListener("resize", () => {
     resize();
     init();
-    setRandomWeather();
-    draw();
+  });
 
-    window.addEventListener("resize", () => {
-      resize();
-      init();
-    });
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.body.classList.remove("loading");
+    }, 120);
+  });
 
-    const glow = document.getElementById("cursorGlow");
-
-    window.addEventListener("mousemove", (e) => {
+  const glow = document.getElementById("cursorGlow");
+  window.addEventListener("mousemove", (e) => {
+    if (glow) {
       glow.style.left = e.clientX + "px";
       glow.style.top = e.clientY + "px";
+    }
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target.id === "videoModal") {
+      closeVideo();
+    }
+  });
+
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("mousemove", e => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--x", (e.clientX - rect.left) + "px");
+      card.style.setProperty("--y", (e.clientY - rect.top) + "px");
     });
-function openVideo(){
-  const modal = document.getElementById("videoModal");
-  const frame = document.getElementById("videoFrame");
+  });
 
-  modal.style.display = "flex";
-  setTimeout(() => {
-    modal.classList.add("show");
-  }, 10);
+  document.querySelectorAll(".stat-box").forEach(box => {
+    box.addEventListener("mousemove", e => {
+      const rect = box.getBoundingClientRect();
+      box.style.setProperty("--x", (e.clientX - rect.left) + "px");
+      box.style.setProperty("--y", (e.clientY - rect.top) + "px");
+    });
+  });
 
-  frame.currentTime = 0;
-  frame.play();
-}
+  const liveStatus = document.getElementById("liveStatus");
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("mouseenter", () => {
+      if (!liveStatus) return;
 
-function closeVideo(){
-  const modal = document.getElementById("videoModal");
-  const frame = document.getElementById("videoFrame");
+      const nextStatus = card.getAttribute("data-status");
+      const color = card.getAttribute("data-color");
 
-  modal.classList.remove("show");
-  setTimeout(() => {
-    modal.style.display = "none";
-    frame.pause();
-    frame.currentTime = 0;
-  }, 350);
-}
+      if (nextStatus) {
+        liveStatus.innerText = nextStatus;
+      }
 
-window.addEventListener("click",(e)=>{
-  if(e.target.id === "videoModal"){
-    closeVideo();
+      liveStatus.classList.remove("status-green", "status-yellow", "status-purple");
+
+      if (color) {
+        liveStatus.classList.add(`status-${color}`);
+      }
+    });
+  });
+
+  const heroBox = document.querySelector(".hero-box");
+  if (heroBox) {
+    heroBox.addEventListener("mousemove", (e) => {
+      const rect = heroBox.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateY = ((x - centerX) / centerX) * 4;
+      const rotateX = ((centerY - y) / centerY) * 4;
+
+      heroBox.style.setProperty("--rx", `${rotateX}deg`);
+      heroBox.style.setProperty("--ry", `${rotateY}deg`);
+      heroBox.style.setProperty("--mx", `${x}px`);
+      heroBox.style.setProperty("--my", `${y}px`);
+    });
+
+    heroBox.addEventListener("mouseleave", () => {
+      heroBox.style.setProperty("--rx", "0deg");
+      heroBox.style.setProperty("--ry", "0deg");
+      heroBox.style.setProperty("--mx", "50%");
+      heroBox.style.setProperty("--my", "50%");
+    });
   }
-});
-document.querySelectorAll('.card').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty('--x', (e.clientX - rect.left)+'px');
-    card.style.setProperty('--y', (e.clientY - rect.top)+'px');
-  });
-});
-document.querySelectorAll('.stat-box').forEach(box=>{
-  box.addEventListener('mousemove',e=>{
-    const rect = box.getBoundingClientRect();
-    box.style.setProperty('--x', (e.clientX - rect.left)+'px');
-    box.style.setProperty('--y', (e.clientY - rect.top)+'px');
-  });
-});
-const liveStatus = document.getElementById('liveStatus');
-
-document.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('mouseenter', () => {
-    const nextStatus = card.getAttribute('data-status');
-    const color = card.getAttribute('data-color');
-
-    if (nextStatus) {
-      liveStatus.innerText = nextStatus;
-    }
-
-    // 清掉旧颜色
-    liveStatus.classList.remove(
-      'status-green',
-      'status-yellow',
-      'status-purple'
-    );
-
-    // 加新颜色
-    if (color) {
-      liveStatus.classList.add(`status-${color}`);
-    }
-  });
-});
-const heroBox = document.querySelector('.hero-box');
-
-if (heroBox) {
-  heroBox.addEventListener('mousemove', (e) => {
-    const rect = heroBox.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateY = ((x - centerX) / centerX) * 4;
-    const rotateX = ((centerY - y) / centerY) * 4;
-
-    heroBox.style.setProperty('--rx', `${rotateX}deg`);
-    heroBox.style.setProperty('--ry', `${rotateY}deg`);
-    heroBox.style.setProperty('--mx', `${x}px`);
-    heroBox.style.setProperty('--my', `${y}px`);
-  });
-
-  heroBox.addEventListener('mouseleave', () => {
-    heroBox.style.setProperty('--rx', '0deg');
-    heroBox.style.setProperty('--ry', '0deg');
-    heroBox.style.setProperty('--mx', '50%');
-    heroBox.style.setProperty('--my', '50%');
-  });
-}
-function updateTime(){
-  const now = new Date();
-
-  const hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-
-  const timeText = document.getElementById("timeText");
-  const status = document.getElementById("liveStatus");
-
-  timeText.innerText = `🕒 ${hours}:${minutes} · Local time`;
-
-  let text = "";
-  let color = "";
-
-  if (hours >= 6 && hours < 18) {
-    text = "🟢 Online · Building & working";
-    color = "status-green";
-    document.body.classList.remove('day','night','late');
-    document.body.classList.add('day');
-  } else if (hours >= 18 && hours < 24) {
-    text = "🌙 Night mode · Chill / creative";
-    color = "status-purple";
-    document.body.classList.remove('day','night','late');
-    document.body.classList.add('night');
-  } else {
-    text = "😴 Offline vibe · Probably sleeping";
-    color = "status-yellow";
-    document.body.classList.remove('day','night','late');
-    document.body.classList.add('late');
-  }
-
-  status.innerText = text;
-
-  status.classList.remove(
-    "status-green",
-    "status-yellow",
-    "status-purple"
-  );
-  status.classList.add(color);
-}
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.body.classList.remove('loading');
-  }, 120);
-});
-
-updateTime();
-setInterval(updateTime, 1000);
-function setRandomWeather(){
-  const types = ["clear", "rain", "night", "fog"];
-  weather = types[Math.floor(Math.random() * types.length)];
-
-  document.body.classList.remove("clear","rain","night","fog");
-  document.body.classList.add(weather);
-}
-body.clear .bg-light{
-  opacity: 0.5;
-}
-
-body.night .bg-light{
-  background:
-    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.14), transparent 60%),
-    radial-gradient(circle at 70% 60%, rgba(160,120,255,0.12), transparent 60%);
-}
-
-body.fog .bg-light{
-  background:
-    radial-gradient(circle at 50% 50%, rgba(200,200,220,0.12), transparent 70%);
-  filter: blur(120px);
-  opacity: 0.7;
-}
-
-body.rain .bg-light{
-  background:
-    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.10), transparent 60%),
-    radial-gradient(circle at 70% 60%, rgba(100,120,180,0.10), transparent 60%);
-}
-if (weather === "rain") {
-  const angle = 0.4;
-
-  raindrops.forEach(r => {
-    ctx.beginPath();
-    ctx.moveTo(r.x, r.y);
-    ctx.lineTo(r.x + r.length * angle, r.y + r.length);
-    ctx.strokeStyle = `rgba(180,200,255,${r.opacity})`;
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    r.x += angle * r.speed;
-    r.y += r.speed;
-
-    if (r.y > canvas.height) {
-      r.y = -20;
-      r.x = Math.random() * canvas.width;
-    }
-  });
-}
-  </script>
+</script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
     <button class="close-btn" onclick="closeVideo()">×</button>
