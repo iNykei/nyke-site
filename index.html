@@ -838,6 +838,8 @@ body.rain .bg-light{
 
   const canvas = document.getElementById("bg-canvas");
   const ctx = canvas.getContext("2d");
+  let audioUnlocked = false;
+  let audioCtx;
 
   let particles = [];
   let raindrops = [];
@@ -1075,7 +1077,6 @@ function lightningFlash(){
   if (weather !== "rain") return;
 
   const el = document.getElementById("lightning");
-
   if (!el) return;
 
   el.style.opacity = 0.8;
@@ -1084,7 +1085,11 @@ function lightningFlash(){
     el.style.opacity = 0;
   }, 80);
 
-  // 偶尔双闪（更真实）
+  // 雷声稍微延迟一点，更像真的
+  setTimeout(() => {
+    playThunder();
+  }, 180);
+
   if (Math.random() > 0.6) {
     setTimeout(() => {
       el.style.opacity = 0.6;
@@ -1105,6 +1110,51 @@ function startLightning(){
   }
 
   loop();
+}
+window.addEventListener("click", () => {
+  if (!audioUnlocked) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioUnlocked = true;
+  }
+}, { once: true });
+function playThunder() {
+  if (!audioUnlocked || !audioCtx) return;
+
+  const duration = 2.5;
+  const bufferSize = audioCtx.sampleRate * duration;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let i = 0; i < bufferSize; i++) {
+    const t = i / bufferSize;
+
+    // 白噪声主体
+    let noise = (Math.random() * 2 - 1);
+
+    // 包络，让声音前强后弱
+    let envelope = Math.exp(-t * 4);
+
+    // 低频滚动感
+    let rumble = Math.sin(i / 180) * 0.25 + Math.sin(i / 420) * 0.2;
+
+    data[i] = (noise * 0.55 + rumble) * envelope;
+  }
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 260;
+
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = 0.35;
+
+  source.connect(filter);
+  filter.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  source.start();
 }
 </script>
 <div id="videoModal" class="video-modal">
