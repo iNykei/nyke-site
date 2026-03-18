@@ -1210,6 +1210,115 @@ body.lightning-active .page{
     transform: scale(1);
   }
 }
+.ai-fab{
+  position: fixed;
+  right: 24px;
+  bottom: 84px;
+  z-index: 99999;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  background: rgba(120,140,255,0.18);
+  border: 1px solid rgba(120,140,255,0.28);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.ai-widget{
+  position: fixed;
+  right: 24px;
+  bottom: 148px;
+  width: 320px;
+  max-height: 460px;
+  display: none;
+  flex-direction: column;
+  z-index: 99999;
+  background: rgba(15,18,30,0.82);
+  border: 1px solid rgba(120,140,255,0.18);
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.ai-widget.show{
+  display: flex;
+}
+
+.ai-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.ai-header button{
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.ai-messages{
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 220px;
+  max-height: 320px;
+}
+
+.ai-bubble{
+  padding: 10px 12px;
+  border-radius: 12px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.ai-bubble.bot{
+  background: rgba(255,255,255,0.06);
+  color: #dbe3ff;
+  align-self: flex-start;
+}
+
+.ai-bubble.user{
+  background: rgba(120,140,255,0.18);
+  color: white;
+  align-self: flex-end;
+}
+
+.ai-input-row{
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.ai-input-row input{
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.ai-input-row button{
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: white;
+  background: rgba(120,140,255,0.18);
+  border: 1px solid rgba(120,140,255,0.22);
+}
   </style>
 </head>
 <body class="loading">
@@ -1900,6 +2009,69 @@ window.addEventListener("scroll", () => {
     nav.classList.remove("nav-active");
   }
 });
+const aiFab = document.getElementById("aiFab");
+const aiWidget = document.getElementById("aiWidget");
+const aiToggle = document.getElementById("aiToggle");
+const aiSend = document.getElementById("aiSend");
+const aiInput = document.getElementById("aiInput");
+const aiMessages = document.getElementById("aiMessages");
+
+function addAiMessage(text, role = "bot"){
+  const div = document.createElement("div");
+  div.className = `ai-bubble ${role}`;
+  div.textContent = text;
+  aiMessages.appendChild(div);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+async function sendAiMessage(){
+  const text = aiInput.value.trim();
+  if (!text) return;
+
+  addAiMessage(text, "user");
+  aiInput.value = "";
+  addAiMessage("Thinking...", "bot");
+
+  try {
+    const res = await fetch("http://localhost:3000/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: text })
+    });
+
+    const data = await res.json();
+
+    aiMessages.lastChild.remove();
+    addAiMessage(data.reply || "No reply.", "bot");
+  } catch (err) {
+    aiMessages.lastChild.remove();
+    addAiMessage("AI server is not connected.", "bot");
+  }
+}
+
+if (aiFab){
+  aiFab.addEventListener("click", () => {
+    aiWidget.classList.toggle("show");
+  });
+}
+
+if (aiToggle){
+  aiToggle.addEventListener("click", () => {
+    aiWidget.classList.remove("show");
+  });
+}
+
+if (aiSend){
+  aiSend.addEventListener("click", sendAiMessage);
+}
+
+if (aiInput){
+  aiInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendAiMessage();
+  });
+}
 </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
@@ -1910,5 +2082,22 @@ window.addEventListener("scroll", () => {
   </div>
 </div>
 <button id="backToTop" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+<div class="ai-widget" id="aiWidget">
+  <div class="ai-header">
+    <span>Nyke AI</span>
+    <button id="aiToggle">×</button>
+  </div>
+
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-bubble bot">Ask me about Nyke, gaming, setup, or this site.</div>
+  </div>
+
+  <div class="ai-input-row">
+    <input id="aiInput" type="text" placeholder="Ask something..." />
+    <button id="aiSend">Send</button>
+  </div>
+</div>
+
+<button class="ai-fab" id="aiFab">AI</button>
 </body>
 </html>
