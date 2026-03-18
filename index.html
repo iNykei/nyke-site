@@ -2025,6 +2025,8 @@ function addAiMessage(text, role = "bot"){
 }
 
 async function sendAiMessage(){
+  alert("sendAiMessage triggered");
+  
   const text = aiInput.value.trim();
   if (!text) return;
 
@@ -2094,7 +2096,7 @@ if (aiInput){
 
   <div class="ai-input-row">
     <input id="aiInput" type="text" placeholder="Ask something..." />
-    <button id="aiSend">Send</button>
+    <button id="aiSend" onclick="sendAiMessage()">Send</button>
   </div>
 </div>
 
