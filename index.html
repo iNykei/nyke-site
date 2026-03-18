@@ -975,6 +975,34 @@ body.shake .page{
   background: rgba(120,140,255,0.24);
   box-shadow: 0 14px 34px rgba(0,0,0,0.3);
 }
+.nav-logo{
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.nav-links{
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.nav-links a{
+  color: #cfd7ff;
+  text-decoration: none;
+  font-size: 14px;
+  opacity: 0.85;
+  transition: 0.2s ease;
+}
+
+.nav-links a:hover{
+  color: white;
+  opacity: 1;
+}
+html{
+  scroll-behavior: smooth;
+}
   </style>
 </head>
 <body class="loading">
@@ -986,15 +1014,16 @@ body.shake .page{
 
   <div class="page">
     <div class="nav">
-  <div>Nyke</div>
+  <a href=" " class="nav-logo">Nyke</a >
 
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div>AI · Gaming · Creator</div>
-    <button id="soundToggle" class="sound-btn off">🔇 OFF</button>
+  <div class="nav-links">
+    <a href="#projects">Projects</a >
+    <a href="#about">About</a >
+    <a href="#gaming">Gaming</a >
   </div>
 </div>
 
-    <section class="hero">
+    <section class="hero" id="home">
       <div class="hero-box">
         <div class="hero-electric"></div>
         
@@ -1021,7 +1050,7 @@ body.shake .page{
       </div>
     </section>
 
-    <section class="card-section">
+    <section class="card-section" id="projects">
       <div class="card-title">Projects</div>
 
       <div class="card-grid">
