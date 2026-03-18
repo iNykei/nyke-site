@@ -69,7 +69,17 @@
       text-align: center;
       background: rgba(255,255,255,0.04);
     }
+.hero-box{
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
 
+.hero-box:hover{
+  transform: translateY(-6px);
+  border-color: rgba(140,160,255,0.25);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.35),
+    0 0 40px rgba(120,140,255,0.15);
+}
     h1 {
       font-size: 70px;
       margin-bottom: 20px;
