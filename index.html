@@ -831,26 +831,27 @@ body.late .bg-light{
     }
 
     function init() {
-      particles = [];
-      for (let i = 0; i < 60; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          dx: (Math.random() - 0.5) * 0.5,
-          dy: (Math.random() - 0.5) * 0.5
-        });
-        raindrops = [];
-for (let i = 0; i < 120; i++) {
-  raindrops.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    length: Math.random() * 20 + 10,
-    speed: Math.random() * 4 + 4,
-    opacity: Math.random() * 0.3 + 0.2
-  });
+  particles = [];
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5
+    });
+  }
+
+  raindrops = [];
+  for (let i = 0; i < 120; i++) {
+    raindrops.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      length: Math.random() * 20 + 10,
+      speed: Math.random() * 4 + 4,
+      opacity: Math.random() * 0.3 + 0.2
+    });
+  }
 }
-      }
-    }
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1008,22 +1009,26 @@ function updateTime(){
   const timeText = document.getElementById("timeText");
   const status = document.getElementById("liveStatus");
 
-  // 时间显示
   timeText.innerText = `🕒 ${hours}:${minutes} · Local time`;
 
-  // 自动状态
   let text = "";
   let color = "";
 
   if (hours >= 6 && hours < 18) {
     text = "🟢 Online · Building & working";
     color = "status-green";
+    document.body.classList.remove('day','night','late');
+    document.body.classList.add('day');
   } else if (hours >= 18 && hours < 24) {
     text = "🌙 Night mode · Chill / creative";
     color = "status-purple";
+    document.body.classList.remove('day','night','late');
+    document.body.classList.add('night');
   } else {
     text = "😴 Offline vibe · Probably sleeping";
     color = "status-yellow";
+    document.body.classList.remove('day','night','late');
+    document.body.classList.add('late');
   }
 
   status.innerText = text;
@@ -1040,15 +1045,9 @@ window.addEventListener('load', () => {
     document.body.classList.remove('loading');
   }, 120);
 });
-document.body.classList.remove('day','night','late');
 
-if (hours >= 6 && hours < 18) {
-  document.body.classList.add('day');
-} else if (hours >= 18 && hours < 24) {
-  document.body.classList.add('night');
-} else {
-  document.body.classList.add('late');
-}
+updateTime();
+setInterval(updateTime, 1000);
   </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
