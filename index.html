@@ -2025,8 +2025,6 @@ function addAiMessage(text, role = "bot"){
 }
 
 async function sendAiMessage(){
-  alert("sendAiMessage triggered");
-  
   const text = aiInput.value.trim();
   if (!text) return;
 
@@ -2035,6 +2033,8 @@ async function sendAiMessage(){
   addAiMessage("Thinking...", "bot");
 
   try {
+    console.log("sending request...");
+
     const res = await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {
@@ -2043,11 +2043,15 @@ async function sendAiMessage(){
       body: JSON.stringify({ message: text })
     });
 
+    console.log("response status:", res.status);
+
     const data = await res.json();
+    console.log("response data:", data);
 
     aiMessages.lastChild.remove();
     addAiMessage(data.reply || "No reply.", "bot");
   } catch (err) {
+    console.error("fetch error:", err);
     aiMessages.lastChild.remove();
     addAiMessage("AI server is not connected.", "bot");
   }
