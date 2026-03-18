@@ -1194,6 +1194,11 @@ body.fog .game-btn{
   border-color: rgba(220,230,255,0.14);
   background: rgba(200,210,230,0.06);
 }
+body.lightning-active .page{
+  transform: scale(0.995);
+  filter: brightness(1.1);
+  transition: transform 0.08s ease, filter 0.08s ease;
+}
   </style>
 </head>
 <body class="loading">
@@ -1681,9 +1686,10 @@ if (hero){
 }
     // 强震
     document.body.classList.add("shake");
+    document.body.classList.add("lightning-active");
     setTimeout(() => {
       document.body.classList.remove("shake");
-    }, 120);
+document.body.classList.remove("lightning-active");
 
     setTimeout(() => {
       el.style.opacity = 0;
