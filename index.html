@@ -60,27 +60,27 @@
     }
 
     .hero-box {
-      position: relative;
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 40px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      max-width: 800px;
-      width: 100%;
-      text-align: center;
-      background: rgba(255,255,255,0.04);
-    }
-.hero-box{
-  transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.45s ease;
-
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  background: rgba(255,255,255,0.04);
+  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.45s cubic-bezier(0.22,1,0.36,1),
+              border-color 0.45s ease;
   will-change: transform;
-}
-.hero-box{
   transform-style: preserve-3d;
   transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0);
+}
+.time-text{
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.7;
+  letter-spacing: 0.5px;
 }
 
 .hero-box::after{
@@ -614,13 +614,14 @@
       <div class="hero-box">
         <h1>NY<span class="glow">KE</span></h1>
          <p class="status-bar" id="liveStatus">🟡 Editing clips · Highlight mode</p >
+        <p class="time-text" id="timeText"></p >
         <p> Speed· Pressure · Creation</p >
         <p style="opacity:0.7; letter-spacing:0.5px;">
   Not here to blend in.
 </p >
 <div class="bio-box">
   <p class="bio-line">
-    E-commerce student · Builder · FPS player
+    student · Builder · FPS player
   </p >
   <p class="bio-line highlight">
     Focused on speed, execution, and real output
@@ -887,6 +888,15 @@ if (heroBox) {
     heroBox.style.setProperty('--mx', '50%');
     heroBox.style.setProperty('--my', '50%');
   });
+}
+function updateTime(){
+  const now = new Date();
+
+  const hours = now.getHours();
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+
+  document.getElementById("timeText").innerText =
+    `🕒 ${hours}:${minutes} · Local time`;
 }
   </script>
 <div id="videoModal" class="video-modal">
