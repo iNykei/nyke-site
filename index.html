@@ -829,6 +829,94 @@ body.shake .page{
     transform: rotate(6deg) scaleX(0.95) translateX(12%);
   }
 }
+.about-section{
+  padding: 90px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.about-wrap{
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.about-left,
+.about-right{
+  border-radius: 24px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+}
+
+.about-left{
+  padding: 32px;
+}
+
+.about-tag{
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: rgba(120,140,255,0.14);
+  color: #cfd7ff;
+  border: 1px solid rgba(120,140,255,0.22);
+  margin-bottom: 18px;
+}
+
+.about-left h2{
+  font-size: 34px;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.about-desc{
+  color: #c9d0ea;
+  line-height: 1.9;
+  font-size: 16px;
+}
+
+.about-right{
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.about-card{
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.about-card:hover{
+  transform: translateY(-4px);
+  border-color: rgba(140,160,255,0.22);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+}
+
+.about-card h3{
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.about-card p{
+  color: #b8c1e0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px){
+  .about-wrap{
+    grid-template-columns: 1fr;
+  }
+}
   </style>
 </head>
 <body class="loading">
@@ -900,6 +988,36 @@ body.shake .page{
         </div>
       </div>
     </section>
+<section class="about-section" id="about">
+  <div class="about-wrap">
+    <div class="about-left">
+      <div class="about-tag">ABOUT ME</div>
+      <h2>More than just visuals.</h2>
+      <p class="about-desc">
+        I’m building around gaming, digital creativity, and execution.
+        This site is where I collect the things I make, the way I think,
+        and the identity I’m shaping online.
+      </p >
+    </div>
+
+    <div class="about-right">
+      <div class="about-card">
+        <h3>What I do</h3>
+        <p>Gaming, editing, creative builds, and internet-first projects.</p >
+      </div>
+
+      <div class="about-card">
+        <h3>How I work</h3>
+        <p>Fast, direct, visual, and focused on output over noise.</p >
+      </div>
+
+      <div class="about-card">
+        <h3>What matters</h3>
+        <p>Execution, style, pressure handling, and building something real.</p >
+      </div>
+    </div>
+  </div>
+</section>
 <section class="game-section" id="gaming">
   <div class="game-title">Gaming Mode</div>
   <div class="game-subtitle">Competitive energy, highlights, and my personal game space.</div>
