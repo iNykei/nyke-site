@@ -923,6 +923,25 @@ body.shake .page{
 .hero-box:active{
   transform: scale(0.98);
 }
+.sound-btn{
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #cfd7ff;
+  background: rgba(120,140,255,0.12);
+  border: 1px solid rgba(120,140,255,0.2);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sound-btn:hover{
+  background: rgba(120,140,255,0.2);
+}
+
+.sound-btn.off{
+  color: #aaa;
+  background: rgba(255,255,255,0.06);
+}
   </style>
 </head>
 <body class="loading">
@@ -934,9 +953,13 @@ body.shake .page{
 
   <div class="page">
     <div class="nav">
-      <div>Nyke</div>
-      <div>AI · Gaming · Creator</div>
-    </div>
+  <div>Nyke</div>
+
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div>AI · Gaming · Creator</div>
+    <button id="soundToggle" class="sound-btn">🔊 ON</button>
+  </div>
+</div>
 
     <section class="hero">
       <div class="hero-box">
@@ -1104,6 +1127,7 @@ body.shake .page{
   const ctx = canvas.getContext("2d");
   let audioUnlocked = false;
   let audioCtx;
+  let soundEnabled = true;
 
   let particles = [];
   let raindrops = [];
@@ -1475,7 +1499,7 @@ window.addEventListener("click", async () => {
   playThunder();
 }, { once: true });
 function playThunder(volume = 0.5) {
-  if (!audioUnlocked || !audioCtx) return;
+  if (!audioUnlocked || !audioCtx || !soundEnabled) return;
 
   const duration = 2.5;
   const bufferSize = audioCtx.sampleRate * duration;
@@ -1485,13 +1509,8 @@ function playThunder(volume = 0.5) {
   for (let i = 0; i < bufferSize; i++) {
     const t = i / bufferSize;
 
-    // 白噪声主体
     let noise = (Math.random() * 2 - 1);
-
-    // 包络，让声音前强后弱
     let envelope = Math.exp(-t * 4);
-
-    // 低频滚动感
     let rumble = Math.sin(i / 180) * 0.25 + Math.sin(i / 420) * 0.2;
 
     data[i] = (noise * 0.55 + rumble) * envelope;
@@ -1512,6 +1531,21 @@ function playThunder(volume = 0.5) {
   gainNode.connect(audioCtx.destination);
 
   source.start();
+}
+const soundBtn = document.getElementById("soundToggle");
+
+if (soundBtn){
+  soundBtn.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+
+    if (soundEnabled){
+      soundBtn.innerText = "🔊 ON";
+      soundBtn.classList.remove("off");
+    } else {
+      soundBtn.innerText = "🔇 OFF";
+      soundBtn.classList.add("off");
+    }
+  });
 }
 </script>
 <div id="videoModal" class="video-modal">
