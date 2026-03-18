@@ -445,7 +445,9 @@
   </div>
 </div>
       <div class="game-actions">
-        <a class="game-btn primary" href=" ">Highlight Clips</a >
+        <a class="game-btn primary" href=" " target="_blank">
+  Highlight Clips
+</a >
         <a class="game-btn" href="#">Tracker Link</a >
       </div>
     </div>
@@ -531,7 +533,30 @@
       glow.style.left = e.clientX + "px";
       glow.style.top = e.clientY + "px";
     });
-  </script>
+function openVideo(){
+  document.getElementById("videoModal").style.display="flex";
+}
 
+window.addEventListener("click",(e)=>{
+  if(e.target.id==="videoModal"){
+    e.target.style.display="none";
+  }
+});
+  </script>
+<div id="videoModal" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+">
+  <iframe width="800" height="450"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+    frameborder="0"
+    allowfullscreen>
+  </iframe>
+</div>
 </body>
 </html>
