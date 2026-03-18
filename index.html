@@ -819,6 +819,7 @@ body.late .bg-light{
   </div>
 
   <script>
+    let weather = "clear";
     const canvas = document.getElementById("bg-canvas");
     const ctx = canvas.getContext("2d");
 
@@ -892,6 +893,7 @@ raindrops.forEach(r => {
 
     resize();
     init();
+    setRandomWeather();
     draw();
 
     window.addEventListener("resize", () => {
@@ -1048,6 +1050,55 @@ window.addEventListener('load', () => {
 
 updateTime();
 setInterval(updateTime, 1000);
+function setRandomWeather(){
+  const types = ["clear", "rain", "night", "fog"];
+  weather = types[Math.floor(Math.random() * types.length)];
+
+  document.body.classList.remove("clear","rain","night","fog");
+  document.body.classList.add(weather);
+}
+body.clear .bg-light{
+  opacity: 0.5;
+}
+
+body.night .bg-light{
+  background:
+    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.14), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(160,120,255,0.12), transparent 60%);
+}
+
+body.fog .bg-light{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(200,200,220,0.12), transparent 70%);
+  filter: blur(120px);
+  opacity: 0.7;
+}
+
+body.rain .bg-light{
+  background:
+    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.10), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(100,120,180,0.10), transparent 60%);
+}
+if (weather === "rain") {
+  const angle = 0.4;
+
+  raindrops.forEach(r => {
+    ctx.beginPath();
+    ctx.moveTo(r.x, r.y);
+    ctx.lineTo(r.x + r.length * angle, r.y + r.length);
+    ctx.strokeStyle = `rgba(180,200,255,${r.opacity})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    r.x += angle * r.speed;
+    r.y += r.speed;
+
+    if (r.y > canvas.height) {
+      r.y = -20;
+      r.x = Math.random() * canvas.width;
+    }
+  });
+}
   </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
