@@ -751,6 +751,84 @@ body.shake .page{
     opacity: 0;
   }
 }
+.hero-electric{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0;
+}
+
+.hero-electric::before,
+.hero-electric::after{
+  content: "";
+  position: absolute;
+  width: 160%;
+  height: 2px;
+  left: -30%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180,220,255,0.0) 20%,
+    rgba(180,220,255,0.9) 50%,
+    rgba(120,160,255,0.35) 65%,
+    transparent 100%
+  );
+  filter: blur(0.5px);
+  opacity: 0;
+}
+
+.hero-electric::before{
+  top: 32%;
+  transform: rotate(-8deg) scaleX(0.4);
+}
+
+.hero-electric::after{
+  top: 58%;
+  transform: rotate(6deg) scaleX(0.35);
+}
+
+.hero-box.electric .hero-electric{
+  opacity: 1;
+}
+
+.hero-box.electric .hero-electric::before{
+  animation: electricLine1 0.22s ease-out forwards;
+}
+
+.hero-box.electric .hero-electric::after{
+  animation: electricLine2 0.18s ease-out 0.04s forwards;
+}
+
+@keyframes electricLine1{
+  0%{
+    opacity: 0;
+    transform: rotate(-8deg) scaleX(0.25) translateX(-8%);
+  }
+  20%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+    transform: rotate(-8deg) scaleX(1) translateX(10%);
+  }
+}
+
+@keyframes electricLine2{
+  0%{
+    opacity: 0;
+    transform: rotate(6deg) scaleX(0.2) translateX(-10%);
+  }
+  25%{
+    opacity: 0.9;
+  }
+  100%{
+    opacity: 0;
+    transform: rotate(6deg) scaleX(0.95) translateX(12%);
+  }
+}
   </style>
 </head>
 <body class="loading">
@@ -768,6 +846,8 @@ body.shake .page{
 
     <section class="hero">
       <div class="hero-box">
+        <div class="hero-electric"></div>
+        
         <h1>NY<span class="glow">KE</span></h1>
          <p class="status-bar" id="liveStatus">🟡 Editing clips · Highlight mode</p >
         <p class="time-text" id="timeText"></p >
@@ -1149,13 +1229,14 @@ function lightningFlash(){
 if (hero){
   hero.classList.add("flash");
   hero.classList.add("sweep");
+  hero.classList.add("electric");
 
   setTimeout(()=>{
     hero.classList.remove("flash");
     hero.classList.remove("sweep");
+    hero.classList.remove("electric");
   }, 450);
 }
-
     // 强震
     document.body.classList.add("shake");
     setTimeout(() => {
