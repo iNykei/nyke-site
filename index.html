@@ -597,11 +597,33 @@
 .game-btn:hover{
   transform: translateY(-2px);
 }
+.bg-light{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+
+  background:
+    radial-gradient(circle at 30% 40%, rgba(120,140,255,0.18), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(160,120,255,0.14), transparent 60%);
+
+  filter: blur(80px);
+  opacity: 0.6;
+  animation: bgMove 12s ease-in-out infinite alternate;
+}
+@keyframes bgMove{
+  0%{
+    transform: translate(0,0) scale(1);
+  }
+  100%{
+    transform: translate(-40px, -30px) scale(1.1);
+  }
+}
   </style>
 </head>
 <body>
 
   <canvas id="bg-canvas"></canvas>
+  <div class="bg-light"></div>
   <div class="cursor-glow" id="cursorGlow"></div>
 
   <div class="page">
@@ -895,12 +917,36 @@ function updateTime(){
   const hours = now.getHours();
   const minutes = now.getMinutes().toString().padStart(2, "0");
 
-  document.getElementById("timeText").innerText =
-    `🕒 ${hours}:${minutes} · Local time`;
-}
+  const timeText = document.getElementById("timeText");
+  const status = document.getElementById("liveStatus");
 
-updateTime();
-setInterval(updateTime, 1000);
+  // 时间显示
+  timeText.innerText = `🕒 ${hours}:${minutes} · Local time`;
+
+  // 自动状态
+  let text = "";
+  let color = "";
+
+  if (hours >= 6 && hours < 18) {
+    text = "🟢 Online · Building & working";
+    color = "status-green";
+  } else if (hours >= 18 && hours < 24) {
+    text = "🌙 Night mode · Chill / creative";
+    color = "status-purple";
+  } else {
+    text = "😴 Offline vibe · Probably sleeping";
+    color = "status-yellow";
+  }
+
+  status.innerText = text;
+
+  status.classList.remove(
+    "status-green",
+    "status-yellow",
+    "status-purple"
+  );
+  status.classList.add(color);
+}
   </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
