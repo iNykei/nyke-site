@@ -1505,6 +1505,215 @@ body.lightning-active .page{
     radial-gradient(circle at 20% 0%, rgba(140,160,255,0.10), transparent 28%),
     radial-gradient(circle at 100% 100%, rgba(120,140,255,0.06), transparent 24%);
 }
+@media (max-width: 768px){
+
+  .nav{
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-logo{
+    font-size: 18px;
+  }
+
+  .nav-links{
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a{
+    font-size: 13px;
+  }
+
+  .sound-btn,
+  .weather-switch button{
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .hero{
+    padding: 24px 14px;
+    min-height: auto;
+  }
+
+  .hero-box{
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  h1{
+    font-size: 42px;
+    line-height: 1.05;
+  }
+
+  .hero-box p{
+    font-size: 14px;
+  }
+
+  .card-section,
+  .about-section,
+  .ai-section,
+  .game-section{
+    padding: 60px 14px;
+  }
+
+  .card-title,
+  .game-title,
+  .about-left h2,
+  .ai-section-left h2{
+    font-size: 28px;
+  }
+
+  .card-grid{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card{
+    width: 100%;
+  }
+
+  .about-wrap,
+  .game-wrap,
+  .ai-section-wrap{
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .about-left,
+  .about-right,
+  .game-main,
+  .game-side,
+  .ai-panel,
+  .ai-side{
+    width: 100%;
+  }
+
+  .game-main{
+    padding: 20px;
+  }
+
+  .game-main h3{
+    font-size: 26px;
+  }
+
+  .game-stats{
+    grid-template-columns: 1fr;
+  }
+
+  .game-main .card-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .game-main .card{
+    width: 100%;
+  }
+
+  .game-actions{
+    flex-direction: column;
+  }
+
+  .game-actions .game-btn{
+    width: 100%;
+  }
+
+  .ai-section{
+    min-height: auto;
+    align-items: stretch;
+  }
+
+  .ai-section-left{
+    gap: 12px;
+  }
+
+  .ai-panel{
+    height: 520px;
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .ai-panel-header{
+    font-size: 15px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+
+  .ai-bubble{
+    max-width: 88%;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .ai-input-row{
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+
+  .ai-input-row input{
+    min-width: 0;
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+
+  .ai-input-row button{
+    min-width: 78px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+  .video-box{
+    width: 94vw;
+  }
+
+  .close-btn{
+    top: -10px;
+    right: -10px;
+  }
+
+  .ai-fab,
+  #backToTop{
+    right: 16px;
+  }
+}
+@media (max-width: 480px){
+
+  h1{
+    font-size: 36px;
+  }
+
+  .nav{
+    align-items: flex-start;
+  }
+
+  .nav-links{
+    width: 100%;
+  }
+
+  .hero-box{
+    padding: 20px 14px;
+  }
+
+  .card-title,
+  .game-title,
+  .about-left h2,
+  .ai-section-left h2{
+    font-size: 24px;
+  }
+
+  .ai-panel{
+    height: 480px;
+  }
+
+  .ai-bubble{
+    max-width: 92%;
+    font-size: 13px;
+  }
+
+  .ai-input-row button{
+    min-width: 70px;
+  }
+}
   </style>
 </head>
 <body class="loading">
