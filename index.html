@@ -898,6 +898,9 @@ function updateTime(){
   document.getElementById("timeText").innerText =
     `🕒 ${hours}:${minutes} · Local time`;
 }
+
+updateTime();
+setInterval(updateTime, 1000);
   </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
