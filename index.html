@@ -597,20 +597,10 @@
 .game-btn:hover{
   transform: translateY(-2px);
 }
-.progress-bar{
-  position: fixed;
-  top:0;
-  left:0;
-  height:3px;
-  width:0%;
-  background: linear-gradient(90deg,#6a7cff,#9fb3ff);
-  z-index:9999;
-}
   </style>
 </head>
 <body>
 
-<div class="progress-bar" id="progressBar"></div>
   <canvas id="bg-canvas"></canvas>
   <div class="cursor-glow" id="cursorGlow"></div>
 
@@ -623,16 +613,11 @@
     <section class="hero">
       <div class="hero-box">
         <h1>NY<span class="glow">KE</span></h1>
-        <div class="copy-box">
-  <span id="valID">Nyke#CN</span>
-  <button onclick="copyText()">Copy</button>
-</div>
          <p class="status-bar" id="liveStatus">🟡 Editing clips · Highlight mode</p >
         <p> Speed· Pressure · Creation</p >
         <p style="opacity:0.7; letter-spacing:0.5px;">
   Not here to blend in.
 </p >
-< img src="https://api.visitorbadge.io/api/visitors?path=nyke.life&label=visits&countColor=%237b8cff" />
 <div class="bio-box">
   <p class="bio-line">
     E-commerce student · Builder · FPS player
@@ -903,27 +888,6 @@ if (heroBox) {
     heroBox.style.setProperty('--my', '50%');
   });
 }
-<div class="copy-box">
-  <span id="valID">Nyke#CN</span>
-  <button onclick="copyText()">Copy</button>
-</div>
-function updateTime(){
-  const now = new Date();
-  const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-  const status = document.getElementById("liveStatus");
-  status.innerText = `🟢 Online · ${time}`;
-}
-
-setInterval(updateTime, 1000);
-updateTime();
-window.addEventListener("scroll",()=>{
-  const scrollTop = document.documentElement.scrollTop;
-  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  const percent = (scrollTop / height) * 100;
-
-  document.getElementById("progressBar").style.width = percent + "%";
-});
   </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
