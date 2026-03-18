@@ -536,6 +536,19 @@
     <section class="hero">
       <div class="hero-box">
         <h1>NY<span class="glow">KE</span></h1>
+        <p class="status-bar" id="statusText"></p >
+
+<script>
+const statuses = [
+  "🟢 Live · Valorant · Aggro mode active",
+  "🟢 In game · Clutch focus",
+  "🟡 Editing clips · Highlight mode",
+  "⚫ Offline · Probably thinking"
+];
+
+document.getElementById("statusText").innerText =
+  statuses[Math.floor(Math.random() * statuses.length)];
+</script>
         <p> Speed· Pressure · Creation</p >
         <p style="opacity:0.7; letter-spacing:0.5px;">
   Not here to blend in.
