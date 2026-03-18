@@ -536,19 +536,7 @@
     <section class="hero">
       <div class="hero-box">
         <h1>NY<span class="glow">KE</span></h1>
-        <p class="status-bar" id="statusText"></p >
-
-<script>
-const statuses = [
-  "🟢 Live · Valorant · Aggro mode active",
-  "🟢 In game · Clutch focus",
-  "🟡 Editing clips · Highlight mode",
-  "⚫ Offline · Probably thinking"
-];
-
-document.getElementById("statusText").innerText =
-  statuses[Math.floor(Math.random() * statuses.length)];
-</script>
+         <p class="status-bar" id="liveStatus">🟡 Editing clips · Highlight mode</p >
         <p> Speed· Pressure · Creation</p >
         <p style="opacity:0.7; letter-spacing:0.5px;">
   Not here to blend in.
@@ -573,19 +561,19 @@ document.getElementById("statusText").innerText =
       <div class="card-title">Projects</div>
 
       <div class="card-grid">
-        <div class="card">
+        <div class="card" data-status="🎬 Creating content · Posting soon">
           <h3>🐱 TikTok</h3>
           <p>My clips / edits / real moments</p >
           <a href="https://v.douyin.com/kiCMs2Dmzyc/ 0@7.com" target="_blank">View →</a >
         </div>
 
-        <div class="card">
+        <div class="card" data-status="🟢 In game · Aggro mode active">
           <h3>🎮 Gaming</h3>
           <p>Valorant / 剪辑 / 高光</p >
           <a href="#gaming">View →</a >
         </div>
 
-        <div class="card">
+        <div class="card" data-status="✨ Building ideas · Designing stuff">
           <h3>✨ Creative</h3>
           <p>网站 / 设计 / 想法</p >
           <a href="#">Explore →</a >
@@ -764,6 +752,21 @@ document.querySelectorAll('.stat-box').forEach(box=>{
     const rect = box.getBoundingClientRect();
     box.style.setProperty('--x', (e.clientX - rect.left)+'px');
     box.style.setProperty('--y', (e.clientY - rect.top)+'px');
+  });
+});
+const liveStatus = document.getElementById('liveStatus');
+const defaultStatus = liveStatus.innerText;
+
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    const nextStatus = card.getAttribute('data-status');
+    if (nextStatus) {
+      liveStatus.innerText = nextStatus;
+    }
+  });
+
+  card.addEventListener('mouseleave', () => {
+    liveStatus.innerText = defaultStatus;
   });
 });
   </script>
