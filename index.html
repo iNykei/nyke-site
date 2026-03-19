@@ -2437,17 +2437,6 @@ async function sendAiMessage() {
   botDiv.innerText = "Let me cook...";
   box.appendChild(botDiv);
 
-  try {
-    const res = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: chatHistory
-      })
-    });
-
     const data = await res.json();
     const replyText = data.reply ?? "No reply.";
 
