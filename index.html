@@ -2409,6 +2409,7 @@ const aiWidget = document.getElementById("aiWidget");
 const aiToggle = document.getElementById("aiToggle");
 const aiSend = document.getElementById("aiSend");
 const aiMessages = document.getElementById("aiMessages");
+let chatHistory = JSON.parse(localStorage.getItem("nyke_chat_history")) || [];
 
 function addAiMessage(text, role = "bot"){
   const div = document.createElement("div");
@@ -2433,6 +2434,14 @@ async function sendAiMessage(btn){
 
   aiInput.value = "";
 
+  chatHistory.push({
+    role: "user",
+    content: text
+  });
+
+  chatHistory = chatHistory.slice(-10);
+  localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
+
   const thinking = document.createElement("div");
   thinking.className = "ai-bubble bot";
   thinking.textContent = "Let me cook...";
@@ -2444,19 +2453,28 @@ async function sendAiMessage(btn){
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ message: text })
+      body: JSON.stringify({ messages: chatHistory })
     });
 
     const data = await res.json();
 
     thinking.remove();
 
+    const replyText = data.reply || "No reply.";
+
+    chatHistory.push({
+      role: "assistant",
+      content: replyText
+    });
+
+    chatHistory = chatHistory.slice(-10);
+    localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
+
     const divBot = document.createElement("div");
     divBot.className = "ai-bubble bot";
     aiMessages.appendChild(divBot);
 
-typeText(divBot, data.reply || "No reply.");
-    aiMessages.appendChild(divBot);
+    typeText(divBot, replyText);
 
     aiMessages.scrollTop = aiMessages.scrollHeight;
   } catch (err) {
@@ -2502,6 +2520,34 @@ function typeText(el, text){
 
   typing();
 }
+function renderSavedChat(){
+  const panel = document.querySelector(".ai-panel");
+  if (!panel) return;
+
+  const aiMessages = panel.querySelector(".ai-messages");
+  if (!aiMessages) return;
+
+  aiMessages.innerHTML = "";
+
+  if (chatHistory.length === 0){
+    const welcome = document.createElement("div");
+    welcome.className = "ai-bubble bot";
+    welcome.textContent = "Ask me about Nyke, gaming, setup, or this site.";
+    aiMessages.appendChild(welcome);
+    return;
+  }
+
+  chatHistory.forEach(msg => {
+    const div = document.createElement("div");
+    div.className = `ai-bubble ${msg.role === "user" ? "user" : "bot"}`;
+    div.textContent = msg.content;
+    aiMessages.appendChild(div);
+  });
+
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+renderSavedChat();
 </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
