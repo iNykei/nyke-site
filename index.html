@@ -2416,60 +2416,68 @@ let chatHistory = JSON.parse(localStorage.getItem("nyke_chat_history")) || [];
 
 // --- 2. 发送消息的核心函数 (必须带 async) ---
 async function sendAiMessage() {
-    const text = aiInput.value.trim();
+    // 1. 动态获取输入框和消息容器（这样即便有多个 AI 区域也不会报错）
+    const inputEl = document.getElementById("aiInput");
+    const messagesContainer = document.getElementById("aiMessages");
+
+    // 检查元素是否存在，防止报错
+    if (!inputEl) {
+        console.error("找不到 ID 为 aiInput 的输入框！请检查 HTML。");
+        return;
+    }
+
+    const text = inputEl.value.trim();
     if (!text) return;
 
-    // A. 在界面显示用户消息
+    // 2. 显示用户消息
     const userDiv = document.createElement("div");
     userDiv.className = "ai-bubble user";
     userDiv.innerText = text;
-    aiMessages.appendChild(userDiv);
-    aiInput.value = ""; // 清空输入
+    messagesContainer.appendChild(userDiv);
+    
+    // 清空输入框
+    inputEl.value = ""; 
 
-    // B. 更新并保存历史记录
+    // 3. 更新历史记录
     chatHistory.push({ role: "user", content: text });
-    chatHistory = chatHistory.slice(-10); // 只留最近10条防止爆掉
+    chatHistory = chatHistory.slice(-10);
     localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
 
-    // C. 显示“思考中”状态
+    // 4. 显示“思考中”
     const thinkingDiv = document.createElement("div");
     thinkingDiv.className = "ai-bubble bot";
     thinkingDiv.innerText = "Let me cook...";
-    aiMessages.appendChild(thinkingDiv);
-    aiMessages.scrollTop = aiMessages.scrollHeight;
+    messagesContainer.appendChild(thinkingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     try {
-        // D. 请求后端接口 (请确保 URL 正确)
         const response = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ messages: chatHistory })
         });
 
-        if (!response.ok) throw new Error("Server error");
-
         const data = await response.json();
         const replyText = data.reply || "No reply from AI.";
 
-        // E. 移除“思考中”，显示 AI 回复并触发打字机效果
+        // 5. 移除“思考中”，显示 AI 回复
         thinkingDiv.remove();
         const botDiv = document.createElement("div");
         botDiv.className = "ai-bubble bot";
-        aiMessages.appendChild(botDiv);
+        messagesContainer.appendChild(botDiv);
         
-        typeText(botDiv, replyText); // 调用打字机效果
+        typeText(botDiv, replyText); // 确保你有 typeText 函数
 
-        // F. 记录 AI 的回复到历史
         chatHistory.push({ role: "assistant", content: replyText });
         chatHistory = chatHistory.slice(-10);
         localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
 
     } catch (err) {
         console.error("AI Error:", err);
-        thinkingDiv.innerText = "Server is a bit slow. Try again!";
+        thinkingDiv.innerText = "Server error. Please check if backend is running.";
     }
 
-    aiMessages.scrollTop = aiMessages.scrollHeight;
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 // --- 3. 辅助函数：打字机效果 ---
