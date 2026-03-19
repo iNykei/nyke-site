@@ -2460,7 +2460,8 @@ async function sendAiMessage(btn){
 
     thinking.remove();
 
-    const replyText = data.reply || "No reply.";
+    console.log("frontend data:", data);
+const replyText = data.reply ?? "No reply.";
 
     chatHistory.push({
       role: "assistant",
