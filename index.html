@@ -2404,193 +2404,118 @@ window.addEventListener("scroll", () => {
     nav.classList.remove("nav-active");
   }
 });
-const aiFab = document.getElementById("aiFab");
-const aiWidget = document.getElementById("aiWidget");
-const aiToggle = document.getElementById("aiToggle");
+// --- 1. 初始化变量 ---
 const aiMessages = document.getElementById("aiMessages");
+const aiInput = document.getElementById("aiInput");
+const aiWidget = document.getElementById("aiWidget");
+const aiFab = document.getElementById("aiFab");
+const aiToggle = document.getElementById("aiToggle");
+
+// 从本地存储加载历史记录，如果没有则为空数组
 let chatHistory = JSON.parse(localStorage.getItem("nyke_chat_history")) || [];
 
+// --- 2. 发送消息的核心函数 (必须带 async) ---
 async function sendAiMessage() {
-  const input = document.getElementById("aiInput");
-  const box = document.getElementById("aiMessages");
-  const text = input.value.trim();
+    const text = aiInput.value.trim();
+    if (!text) return;
 
-  if (!text) return;
+    // A. 在界面显示用户消息
+    const userDiv = document.createElement("div");
+    userDiv.className = "ai-bubble user";
+    userDiv.innerText = text;
+    aiMessages.appendChild(userDiv);
+    aiInput.value = ""; // 清空输入
 
-  const userDiv = document.createElement("div");
-  userDiv.className = "ai-bubble user";
-  userDiv.innerText = text;
-  box.appendChild(userDiv);
-
-  input.value = "";
-
-  chatHistory.push({
-    role: "user",
-    content: text
-  });
-
-  chatHistory = chatHistory.slice(-10);
-  localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
-
-  const botDiv = document.createElement("div");
-  botDiv.className = "ai-bubble bot";
-  botDiv.innerText = "Let me cook...";
-  box.appendChild(botDiv);
-
-  try {
-    const res = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: chatHistory
-      })
-    });
-
-    const data = await res.json();
-    const replyText = data.reply ?? "No reply.";
-
-    botDiv.innerText = replyText;
-
-    chatHistory.push({
-      role: "assistant",
-      content: replyText
-    });
-
-    chatHistory = chatHistory.slice(-10);
+    // B. 更新并保存历史记录
+    chatHistory.push({ role: "user", content: text });
+    chatHistory = chatHistory.slice(-10); // 只留最近10条防止爆掉
     localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
 
-  } catch (e) {
-    console.error(e);
-    botDiv.innerText = "error...";
-  }
+    // C. 显示“思考中”状态
+    const thinkingDiv = document.createElement("div");
+    thinkingDiv.className = "ai-bubble bot";
+    thinkingDiv.innerText = "Let me cook...";
+    aiMessages.appendChild(thinkingDiv);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
 
-  box.scrollTop = box.scrollHeight;
-}
+    try {
+        // D. 请求后端接口 (请确保 URL 正确)
+        const response = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: chatHistory })
+        });
 
-    const data = await res.json();
+        if (!response.ok) throw new Error("Server error");
 
-    botDiv.innerText = data.reply || "No reply.";
+        const data = await response.json();
+        const replyText = data.reply || "No reply from AI.";
 
-    // 记录AI回复
-    chatHistory.push({
-      role: "assistant",
-      content: data.reply
-    });
+        // E. 移除“思考中”，显示 AI 回复并触发打字机效果
+        thinkingDiv.remove();
+        const botDiv = document.createElement("div");
+        botDiv.className = "ai-bubble bot";
+        aiMessages.appendChild(botDiv);
+        
+        typeText(botDiv, replyText); // 调用打字机效果
 
-  } catch (e) {
-    botDiv.innerText = "error...";
-  }
+        // F. 记录 AI 的回复到历史
+        chatHistory.push({ role: "assistant", content: replyText });
+        chatHistory = chatHistory.slice(-10);
+        localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
 
-  box.scrollTop = box.scrollHeight;
-}
-
-  chatHistory = chatHistory.slice(-10);
-  localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
-
-  const thinking = document.createElement("div");
-  thinking.className = "ai-bubble bot";
-  thinking.textContent = "Let me cook...";
-  aiMessages.appendChild(thinking);
-
-  try {
-    const res = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ messages: chatHistory })
-    });
-
-    const data = await res.json();
-
-    thinking.remove();
-
-    console.log("frontend data:", data);
-const replyText = data.reply ?? "No reply.";
-
-    chatHistory.push({
-      role: "assistant",
-      content: replyText
-    });
-
-    chatHistory = chatHistory.slice(-10);
-    localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
-
-    const divBot = document.createElement("div");
-    divBot.className = "ai-bubble bot";
-    aiMessages.appendChild(divBot);
-
-    typeText(divBot, replyText);
+    } catch (err) {
+        console.error("AI Error:", err);
+        thinkingDiv.innerText = "Server is a bit slow. Try again!";
+    }
 
     aiMessages.scrollTop = aiMessages.scrollHeight;
-  } catch (err) {
-    console.error(err);
-    thinking.textContent = "Server woke up a bit slow. Try again.";
-  }
 }
 
-if (aiFab){
-  aiFab.addEventListener("click", () => {
-    aiWidget.classList.toggle("show");
-  });
-}
-
-if (aiToggle){
-  aiToggle.addEventListener("click", () => {
-    aiWidget.classList.remove("show");
-  });
-}
-
-if (aiInput){
-  aiInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") sendAiMessage();
-  });
-}
-function typeText(el, text){
-  let i = 0;
-  el.textContent = "";
-
-  const speed = 18; // 越小越快（推荐 15~25）
-
-  function typing(){
-    if(i < text.length){
-      el.textContent += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
+// --- 3. 辅助函数：打字机效果 ---
+function typeText(el, text) {
+    let i = 0;
+    el.textContent = "";
+    const speed = 25; 
+    function typing() {
+        if (i < text.length) {
+            el.textContent += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
     }
-  }
-
-  typing();
-}
-function renderSavedChat(){
-  const panel = document.querySelector(".ai-panel");
-  if (!panel) return;
-
-  const aiMessages = panel.querySelector(".ai-messages");
-  if (!aiMessages) return;
-
-  aiMessages.innerHTML = "";
-
-  if (chatHistory.length === 0){
-    const welcome = document.createElement("div");
-    welcome.className = "ai-bubble bot";
-    welcome.textContent = "Ask me about Nyke, gaming, setup, or this site.";
-    aiMessages.appendChild(welcome);
-    return;
-  }
-
-  chatHistory.forEach(msg => {
-    const div = document.createElement("div");
-    div.className = `ai-bubble ${msg.role === "user" ? "user" : "bot"}`;
-    div.textContent = msg.content;
-    aiMessages.appendChild(div);
-  });
-
-  aiMessages.scrollTop = aiMessages.scrollHeight;
+    typing();
 }
 
+// --- 4. 界面交互逻辑 ---
+if (aiFab) {
+    aiFab.addEventListener("click", () => aiWidget.classList.toggle("show"));
+}
+
+if (aiToggle) {
+    aiToggle.addEventListener("click", () => aiWidget.classList.remove("show"));
+}
+
+if (aiInput) {
+    aiInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendAiMessage();
+    });
+}
+
+// 页面加载时渲染之前的聊天记录
+function renderSavedChat() {
+    if (!aiMessages) return;
+    if (chatHistory.length > 0) {
+        aiMessages.innerHTML = "";
+        chatHistory.forEach(msg => {
+            const div = document.createElement("div");
+            div.className = `ai-bubble ${msg.role === "user" ? "user" : "bot"}`;
+            div.textContent = msg.content;
+            aiMessages.appendChild(div);
+        });
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+}
 renderSavedChat();
 </script>
 <div id="videoModal" class="video-modal">
