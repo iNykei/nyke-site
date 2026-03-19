@@ -2407,36 +2407,34 @@ window.addEventListener("scroll", () => {
 const aiFab = document.getElementById("aiFab");
 const aiWidget = document.getElementById("aiWidget");
 const aiToggle = document.getElementById("aiToggle");
-const aiSend = document.getElementById("aiSend");
 const aiMessages = document.getElementById("aiMessages");
-let chatHistory = [];
+let chatHistory = JSON.parse(localStorage.getItem("nyke_chat_history")) || [];
 
 async function sendAiMessage() {
   const input = document.getElementById("aiInput");
+  const box = document.getElementById("aiMessages");
   const text = input.value.trim();
 
   if (!text) return;
 
-  const box = document.getElementById("aiMessages");
-
-  // 用户消息
   const userDiv = document.createElement("div");
-  userDiv.className = "msg user";
+  userDiv.className = "ai-bubble user";
   userDiv.innerText = text;
   box.appendChild(userDiv);
 
   input.value = "";
 
-  // 记录历史
   chatHistory.push({
     role: "user",
     content: text
   });
 
-  // loading
+  chatHistory = chatHistory.slice(-10);
+  localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
+
   const botDiv = document.createElement("div");
-  botDiv.className = "msg bot";
-  botDiv.innerText = "typing...";
+  botDiv.className = "ai-bubble bot";
+  botDiv.innerText = "Let me cook...";
   box.appendChild(botDiv);
 
   try {
@@ -2449,6 +2447,27 @@ async function sendAiMessage() {
         messages: chatHistory
       })
     });
+
+    const data = await res.json();
+    const replyText = data.reply ?? "No reply.";
+
+    botDiv.innerText = replyText;
+
+    chatHistory.push({
+      role: "assistant",
+      content: replyText
+    });
+
+    chatHistory = chatHistory.slice(-10);
+    localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
+
+  } catch (e) {
+    console.error(e);
+    botDiv.innerText = "error...";
+  }
+
+  box.scrollTop = box.scrollHeight;
+}
 
     const data = await res.json();
 
@@ -2522,10 +2541,6 @@ if (aiToggle){
   aiToggle.addEventListener("click", () => {
     aiWidget.classList.remove("show");
   });
-}
-
-if (aiSend){
-  aiSend.addEventListener("click", sendAiMessage);
 }
 
 if (aiInput){
@@ -2611,7 +2626,7 @@ renderSavedChat();
 
         <div class="ai-input-row">
           <input id="aiInput" type="text" placeholder="Ask something..." />
-          <button onclick="sendAiMessage(this)">Send</button>
+          <button onclick="sendAiMessage()">Send</button>
         </div>
       </div>
     </div>
