@@ -691,15 +691,21 @@
       target.style.left = x + "px";
       target.style.top = y + "px";
 
-      target.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if(!gameRunning) return;
+     target.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if(!gameRunning) return;
 
-        score += 10;
-        hits += 1;
-        updatePanel();
-        spawnTarget();
-      });
+  // 💥 爆炸效果
+  target.style.transform = "translate(-50%, -50%) scale(1.4)";
+  target.style.opacity = "0";
+
+  setTimeout(()=>{
+    score += 10;
+    hits += 1;
+    updatePanel();
+    spawnTarget();
+  },100);
+});
 
       gameArea.appendChild(target);
     }
