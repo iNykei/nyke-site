@@ -131,6 +131,9 @@
       position: relative;
       overflow: hidden;
       animation: heroGlow 3s ease-in-out infinite alternate;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.18s ease, box-shadow 0.25s ease;
     }
 
     .hero-box::after{
