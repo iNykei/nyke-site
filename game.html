@@ -1,29 +1,747 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Nyke Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nyke Game Mode</title>
+
   <style>
-    body{
+    *{
       margin:0;
-      background:#05070d;
-      color:white;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family: Arial, sans-serif;
+      background: #05070d;
+      color: white;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    canvas#bg{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .bg-glow{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(120,140,255,0.12), transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(140,90,255,0.10), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(120,180,255,0.08), transparent 35%);
+      filter: blur(90px);
+      animation: floatGlow 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatGlow{
+      from{
+        transform: translateY(0) scale(1);
+      }
+      to{
+        transform: translateY(-20px) scale(1.08);
+      }
+    }
+
+    .page{
+      position: relative;
+      z-index: 2;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding-bottom: 40px;
+    }
+
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 0;
+      backdrop-filter: blur(14px);
+      background: rgba(8,10,18,0.45);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-left{
       display:flex;
-      justify-content:center;
       align-items:center;
-      height:100vh;
-      font-family:Arial;
+      gap:14px;
+    }
+
+    .logo{
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .back-btn{
+      text-decoration:none;
+      color:white;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      padding:10px 14px;
+      border-radius: 12px;
+      transition: .25s ease;
+    }
+
+    .back-btn:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    }
+
+    .nav-right{
+      color:#aeb8de;
+      font-size:14px;
+    }
+
+    .hero{
+      min-height: 58vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding: 90px 0 50px;
+    }
+
+    .hero-box{
+      width: min(900px, 100%);
+      padding: 42px 28px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(14px);
+      box-shadow:
+        0 20px 70px rgba(0,0,0,0.40),
+        0 0 45px rgba(120,140,255,0.10);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-box::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background: radial-gradient(circle at 50% 0%, rgba(140,160,255,0.12), transparent 40%);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      color:#d7deff;
+      background: rgba(120,140,255,0.14);
+      border:1px solid rgba(120,140,255,0.22);
+      margin-bottom: 18px;
     }
 
     h1{
-      font-size:50px;
+      font-size: 64px;
+      line-height: 1.02;
+      margin-bottom: 14px;
+      letter-spacing: -1.5px;
+    }
+
+    .glow{
       color:#9fb3ff;
+      text-shadow:
+        0 0 14px rgba(140,160,255,0.25),
+        0 0 30px rgba(140,160,255,0.16);
+    }
+
+    .hero p{
+      color:#c8d1ef;
+      font-size:16px;
+      line-height:1.8;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .hero-actions{
+      margin-top: 26px;
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      text-decoration:none;
+      color:white;
+      padding: 13px 18px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      transition: .25s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.09);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+    }
+
+    .btn.primary{
+      border: none;
+      background: linear-gradient(135deg, rgba(93,120,255,0.95), rgba(155,104,255,0.88));
+      box-shadow: 0 14px 30px rgba(90,110,220,0.24);
+    }
+
+    .section{
+      padding: 30px 0;
+    }
+
+    .section-title{
+      font-size: 30px;
+      margin-bottom: 18px;
+    }
+
+    .muted{
+      color:#aab4d7;
+      line-height:1.8;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card{
+      position: relative;
+      overflow:hidden;
+      border-radius: 22px;
+      padding: 24px;
+      background: rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+      transition: .28s ease;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(
+        220px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(120,140,255,0.16),
+        transparent 60%
+      );
+      opacity:0;
+      transition: opacity .2s ease;
+      pointer-events:none;
+    }
+
+    .card:hover::before{
+      opacity:1;
+    }
+
+    .card:hover{
+      transform: translateY(-8px);
+      border-color: rgba(140,160,255,0.24);
+      box-shadow:
+        0 22px 50px rgba(0,0,0,0.30),
+        0 0 26px rgba(120,140,255,0.10);
+    }
+
+    .card-label{
+      font-size: 13px;
+      color:#9ea8cc;
+      margin-bottom: 10px;
+      display:block;
+    }
+
+    .card-value{
+      font-size: 34px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card-desc{
+      color:#c9d0ea;
+      line-height:1.7;
+      font-size: 14px;
+    }
+
+    .loadout-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .trainer-wrap{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .trainer-side,
+    .trainer-main{
+      border-radius: 24px;
+      background: rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+    }
+
+    .trainer-side{
+      padding: 22px;
+    }
+
+    .trainer-side h3{
+      margin-bottom: 14px;
+      font-size: 22px;
+    }
+
+    .trainer-side p{
+      color:#c8d1ef;
+      line-height:1.8;
+      font-size:14px;
+      margin-bottom: 14px;
+    }
+
+    .mini-stat{
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      margin-bottom: 12px;
+    }
+
+    .mini-stat span{
+      display:block;
+      font-size:13px;
+      color:#9ea8cc;
+      margin-bottom: 6px;
+    }
+
+    .mini-stat strong{
+      font-size: 24px;
+    }
+
+    .trainer-main{
+      padding: 20px;
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+    }
+
+    .trainer-topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+
+    .game-area{
+      position: relative;
+      width: 100%;
+      min-height: 460px;
+      border-radius: 20px;
+      overflow: hidden;
+      border:1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        radial-gradient(circle at center, rgba(14,18,32,0.98), rgba(8,10,18,0.96));
+      background-size: 24px 24px, 24px 24px, auto;
+      cursor: crosshair;
+    }
+
+    .target{
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(circle, #ffffff 0 16%, #ff5f7a 16% 34%, #ffffff 34% 52%, #5d78ff 52% 70%, #ffffff 70% 100%);
+      box-shadow:
+        0 0 24px rgba(120,140,255,0.25),
+        0 0 40px rgba(255,100,140,0.18);
+      animation: targetPop .18s ease;
+    }
+
+    @keyframes targetPop{
+      from{
+        transform: translate(-50%, -50%) scale(0.75);
+        opacity: 0;
+      }
+      to{
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .footer-note{
+      text-align:center;
+      color:#8f99bd;
+      font-size:13px;
+      padding: 22px 0 6px;
+    }
+
+    @media (max-width: 980px){
+      h1{
+        font-size: 48px;
+      }
+
+      .stats-grid,
+      .loadout-grid{
+        grid-template-columns: 1fr;
+      }
+
+      .trainer-wrap{
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        width: min(100% - 20px, 1180px);
+      }
+
+      .nav{
+        padding: 14px 0;
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .hero{
+        padding: 54px 0 24px;
+      }
+
+      .hero-box{
+        padding: 28px 18px;
+        border-radius: 22px;
+      }
+
+      h1{
+        font-size: 38px;
+      }
+
+      .game-area{
+        min-height: 380px;
+      }
+
+      .target{
+        width: 64px;
+        height: 64px;
+      }
     }
   </style>
 </head>
 <body>
+  <canvas id="bg"></canvas>
+  <div class="bg-glow"></div>
 
-<h1>🎮 Game Loading...</h1>
+  <div class="page">
+    <nav class="nav">
+      <div class="nav-left">
+        <a href="index.html" class="back-btn">← Back</a>
+        <a href="#" class="logo">NYKE / GAME MODE</a>
+      </div>
+      <div class="nav-right">Fast entry · Sharp aim · Real pressure</div>
+    </nav>
 
+    <section class="hero">
+      <div class="hero-box">
+        <div class="badge">ENTER GAMING MODE</div>
+        <h1>Built for <span class="glow">pressure</span>.</h1>
+        <p>
+          This page is my game-side identity space — style, setup, performance,
+          and a quick aim trainer to turn the page into something interactive
+          instead of just another static portfolio screen.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="#trainer">Start Training</a>
+          <a class="btn" href="#loadout">View Loadout</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Core Stats</h2>
+      <div class="stats-grid">
+        <div class="card">
+          <span class="card-label">Current Rank</span>
+          <div class="card-value">Immortal II</div>
+          <div class="card-desc">Aggressive entries, confidence peeks, and pressure-heavy fights.</div>
+        </div>
+
+        <div class="card">
+          <span class="card-label">KDA</span>
+          <div class="card-value">1.42</div>
+          <div class="card-desc">Built around momentum, opening pressure, and converting fights fast.</div>
+        </div>
+
+        <div class="card">
+          <span class="card-label">Headshot %</span>
+          <div class="card-value">28%</div>
+          <div class="card-desc">Clean crosshair discipline with a focus on first-contact accuracy.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="loadout">
+      <h2 class="section-title">Loadout</h2>
+      <div class="loadout-grid">
+        <div class="card">
+          <span class="card-label">Keyboard</span>
+          <div class="card-value" style="font-size:24px;">Wooting 60HE</div>
+          <div class="card-desc">Rapid trigger feel, fast movement control, cleaner stop-start timing.</div>
+        </div>
+
+        <div class="card">
+          <span class="card-label">Mouse</span>
+          <div class="card-value" style="font-size:24px;">Beast X Mini</div>
+          <div class="card-desc">Lightweight tracking, fast resets, snappy micro-adjustment feel.</div>
+        </div>
+
+        <div class="card">
+          <span class="card-label">Identity</span>
+          <div class="card-value" style="font-size:24px;">Aggro / Clutch</div>
+          <div class="card-desc">I like clean entries, risky tempo shifts, and moments with real pressure.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="trainer">
+      <h2 class="section-title">Aim Trainer</h2>
+      <p class="muted" style="margin-bottom:18px;">
+        Click start, then hit as many targets as possible before time runs out.
+      </p>
+
+      <div class="trainer-wrap">
+        <div class="trainer-side">
+          <h3>Session Panel</h3>
+          <p>
+            This is the first interactive block for your game page. Later you can
+            replace or expand this into a full mini-game, tracker page, or AI coach panel.
+          </p>
+
+          <div class="mini-stat">
+            <span>Score</span>
+            <strong id="score">0</strong>
+          </div>
+
+          <div class="mini-stat">
+            <span>Time Left</span>
+            <strong id="timeLeft">30</strong>
+          </div>
+
+          <div class="mini-stat">
+            <span>Hits</span>
+            <strong id="hits">0</strong>
+          </div>
+
+          <div class="mini-stat">
+            <span>Misses</span>
+            <strong id="misses">0</strong>
+          </div>
+
+          <button class="btn primary" id="startBtn" style="width:100%; margin-top:6px;">Start Game</button>
+        </div>
+
+        <div class="trainer-main">
+          <div class="trainer-topbar">
+            <div class="muted">Mode: Reaction / Aim / Click Timing</div>
+            <div class="muted" id="gameStatus">Waiting to start...</div>
+          </div>
+
+          <div class="game-area" id="gameArea"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">Nyke Game Mode · first playable version</div>
+  </div>
+
+  <script>
+    // 背景粒子
+    const bg = document.getElementById("bg");
+    const ctx = bg.getContext("2d");
+    let particles = [];
+
+    function resizeBg(){
+      bg.width = window.innerWidth;
+      bg.height = window.innerHeight;
+    }
+
+    function initParticles(){
+      particles = [];
+      const total = 75;
+      for(let i = 0; i < total; i++){
+        particles.push({
+          x: Math.random() * bg.width,
+          y: Math.random() * bg.height,
+          r: Math.random() * 1.8 + 0.6,
+          dx: (Math.random() - 0.5) * 0.35,
+          dy: (Math.random() - 0.5) * 0.35
+        });
+      }
+    }
+
+    function drawBg(){
+      ctx.clearRect(0, 0, bg.width, bg.height);
+
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.fill();
+
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if(p.x < 0 || p.x > bg.width) p.dx *= -1;
+        if(p.y < 0 || p.y > bg.height) p.dy *= -1;
+      });
+
+      requestAnimationFrame(drawBg);
+    }
+
+    resizeBg();
+    initParticles();
+    drawBg();
+
+    window.addEventListener("resize", () => {
+      resizeBg();
+      initParticles();
+    });
+
+    // 卡片跟随光效
+    document.querySelectorAll(".card").forEach(card => {
+      card.addEventListener("mousemove", e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", (e.clientX - rect.left) + "px");
+        card.style.setProperty("--my", (e.clientY - rect.top) + "px");
+      });
+    });
+
+    // Aim Trainer
+    const gameArea = document.getElementById("gameArea");
+    const scoreEl = document.getElementById("score");
+    const timeLeftEl = document.getElementById("timeLeft");
+    const hitsEl = document.getElementById("hits");
+    const missesEl = document.getElementById("misses");
+    const startBtn = document.getElementById("startBtn");
+    const gameStatus = document.getElementById("gameStatus");
+
+    let score = 0;
+    let hits = 0;
+    let misses = 0;
+    let timeLeft = 30;
+    let timer = null;
+    let target = null;
+    let gameRunning = false;
+
+    function clearTarget(){
+      if(target){
+        target.remove();
+        target = null;
+      }
+    }
+
+    function spawnTarget(){
+      clearTarget();
+
+      const rect = gameArea.getBoundingClientRect();
+      const padding = 50;
+
+      const x = Math.random() * (rect.width - padding * 2) + padding;
+      const y = Math.random() * (rect.height - padding * 2) + padding;
+
+      target = document.createElement("div");
+      target.className = "target";
+      target.style.left = x + "px";
+      target.style.top = y + "px";
+
+      target.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if(!gameRunning) return;
+
+        score += 10;
+        hits += 1;
+        updatePanel();
+        spawnTarget();
+      });
+
+      gameArea.appendChild(target);
+    }
+
+    function updatePanel(){
+      scoreEl.textContent = score;
+      hitsEl.textContent = hits;
+      missesEl.textContent = misses;
+      timeLeftEl.textContent = timeLeft;
+    }
+
+    function endGame(){
+      gameRunning = false;
+      clearInterval(timer);
+      clearTarget();
+      gameStatus.textContent = `Finished · Score ${score}`;
+      startBtn.textContent = "Restart Game";
+    }
+
+    function startGame(){
+      score = 0;
+      hits = 0;
+      misses = 0;
+      timeLeft = 30;
+      gameRunning = true;
+
+      updatePanel();
+      gameStatus.textContent = "Live now...";
+      startBtn.textContent = "Running...";
+
+      spawnTarget();
+
+      clearInterval(timer);
+      timer = setInterval(() => {
+        timeLeft -= 1;
+        updatePanel();
+
+        if(timeLeft <= 0){
+          endGame();
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener("click", () => {
+      if(gameRunning) return;
+      startGame();
+    });
+
+    gameArea.addEventListener("click", (e) => {
+      if(!gameRunning) return;
+      if(e.target === gameArea){
+        misses += 1;
+        updatePanel();
+      }
+    });
+  </script>
 </body>
 </html>
