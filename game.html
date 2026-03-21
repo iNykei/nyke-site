@@ -130,6 +130,7 @@
         0 0 45px rgba(120,140,255,0.10);
       position: relative;
       overflow: hidden;
+      animation: heroGlow 3s ease-in-out infinite alternate;
     }
 
     .hero-box::after{
@@ -394,6 +395,18 @@
       }
     }
 
+    @keyframes heroGlow{
+  from{
+    box-shadow:
+      0 20px 70px rgba(0,0,0,0.40),
+      0 0 30px rgba(120,140,255,0.08);
+  }
+  to{
+    box-shadow:
+      0 30px 90px rgba(0,0,0,0.55),
+      0 0 60px rgba(120,140,255,0.18);
+  }
+}
     .footer-note{
       text-align:center;
       color:#8f99bd;
