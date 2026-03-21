@@ -764,6 +764,37 @@
         updatePanel();
       }
     });
+    const heroBox = document.querySelector(".hero-box");
+
+if(heroBox){
+  heroBox.addEventListener("mousemove", (e) => {
+    const rect = heroBox.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateY = ((x - centerX) / centerX) * 10;
+    const rotateX = ((centerY - y) / centerY) * 10;
+
+    heroBox.style.transform = `
+      perspective(1200px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
+      translateY(-20px)
+    `;
+  });
+
+  heroBox.addEventListener("mouseleave", () => {
+    heroBox.style.transform = `
+      perspective(1200px)
+      rotateX(0deg)
+      rotateY(0deg)
+      translateY(-20px)
+    `;
+  });
+}
   </script>
 </body>
 </html>
