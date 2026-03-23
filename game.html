@@ -1202,10 +1202,21 @@ function startReactionTest(){
   }, delay);
 }
 
+    reactionStartBtn.addEventListener("click", () => {
+  startReactionTest();
+});
+reactionBox.addEventListener("click", () => {
+  // 1. 空闲 / 出结果 / 提前点过 -> 点击后直接开始新一轮
+  if (
+    reactionState === "idle" ||
+    reactionState === "result" ||
+    reactionState === "too-early"
+  ) {
+    startReactionTest();
+    return;
+  }
 
-    reactionBox.addEventListener("click", () => {
-
-  // ❌ 等待中提前点击
+  // 2. 等待中点击 -> 提前了
   if (reactionState === "waiting") {
     if (reactionTimer) {
       clearTimeout(reactionTimer);
@@ -1218,7 +1229,7 @@ function startReactionTest(){
     return;
   }
 
-  // ✅ 正确点击（记录成绩）
+  // 3. 变绿后点击 -> 记录成绩
   if (reactionState === "ready") {
     const time = Math.round(performance.now() - reactionStartTime);
 
@@ -1233,15 +1244,6 @@ function startReactionTest(){
 
     updateReactionStats();
     return;
-  }
-
-  // ⭐ 重点：任何“空闲状态”都可以直接点击开始
-  if (
-    reactionState === "idle" ||
-    reactionState === "result" ||
-    reactionState === "too-early"
-  ) {
-    startReactionTest();
   }
 });
 
