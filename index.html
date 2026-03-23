@@ -1716,29 +1716,25 @@ body.lightning-active .page{
     min-width: 70px;
   }
 }
-.title-glow{
-  background: linear-gradient(90deg, #cfd7ff, #9fb3ff, #cfd7ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  text-shadow:
-    0 0 10px rgba(120,140,255,0.4),
-    0 0 30px rgba(120,140,255,0.25);
-
-  animation: glowPulse 2.5s ease-in-out infinite alternate;
+.title{
+  font-size: 64px;
+  letter-spacing: 2px;
 }
 
-@keyframes glowPulse{
-  from{
-    text-shadow:
-      0 0 8px rgba(120,140,255,0.3),
-      0 0 20px rgba(120,140,255,0.2);
-  }
-  to{
-    text-shadow:
-      0 0 18px rgba(120,140,255,0.6),
-      0 0 40px rgba(120,140,255,0.35);
-  }
+/* NY：偏白蓝（主色） */
+.ny{
+  color: #e6ebff;
+  text-shadow:
+    0 0 8px rgba(200,210,255,0.4),
+    0 0 20px rgba(120,140,255,0.25);
+}
+
+/* KE：偏蓝紫（强调色） */
+.ke{
+  color: #9fb3ff;
+  text-shadow:
+    0 0 10px rgba(120,140,255,0.6),
+    0 0 25px rgba(120,140,255,0.35);
 }
   </style>
 </head>
@@ -1780,7 +1776,9 @@ body.lightning-active .page{
       <div class="hero-box">
         <div class="hero-electric"></div>
         
-        <h1 class="title-glow">NY<span>KE</span></h1>
+        <h1 class="title">
+  <span class="ny">NY</span><span class="ke">KE</span>
+</h1>
          <p class="status-bar" id="liveStatus">🟡 Editing clips · Highlight mode</p >
         <p class="time-text" id="timeText"></p >
         <p> Speed· Pressure · Creation</p >
