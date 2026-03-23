@@ -639,50 +639,6 @@
 .rating-fast{ color:#c9d3ff; }
 .rating-decent{ color:#ffd36f; }
 .rating-slow{ color:#ff8f8f; }
-    .rating-godlike{
-  color:#7CFFB2;
-  text-shadow:0 0 10px rgba(124,255,178,0.6);
-}
-
-.rating-elite{
-  color:#9fb3ff;
-  text-shadow:0 0 10px rgba(120,140,255,0.5);
-}
-
-.rating-fast{
-  color:#c9d3ff;
-}
-
-.rating-decent{
-  color:#ffd36f;
-}
-
-.rating-slow{
-  color:#ff8f8f;
-}
-
-    .rating-godlike{
-  animation: pulseGod 1.2s infinite alternate;
-}
-
-@keyframes pulseGod{
-  from{
-    text-shadow:0 0 6px rgba(124,255,178,0.4);
-  }
-  to{
-    text-shadow:0 0 18px rgba(124,255,178,0.9);
-  }
-}
-
-    .reaction-box::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  border-radius:inherit;
-  background:
-    radial-gradient(circle at center, rgba(120,140,255,0.08), transparent 60%);
-}
   </style>
 </head>
 <body>
@@ -1202,47 +1158,8 @@ function startReactionTest(){
   }, delay);
 }
 
-
-reactionBox.addEventListener("click", () => {
-  // 1. 空闲 / 出结果 / 提前点过 -> 点击后直接开始新一轮
-  if (
-    reactionState === "idle" ||
-    reactionState === "result" ||
-    reactionState === "too-early"
-  ) {
-    startReactionTest();
-    return;
-  }
-
-  // 2. 等待中点击 -> 提前了
-  if (reactionState === "waiting") {
-    if (reactionTimer) {
-      clearTimeout(reactionTimer);
-      reactionTimer = null;
-    }
-
-    setReactionUI("too-early", "Too Early", "You clicked before the signal");
-    reactionStartBtn.textContent = "Try Again";
-    lastReaction.textContent = "-- ms";
-    return;
-  }
-
-  // 3. 变绿后点击 -> 记录成绩
-  if (reactionState === "ready") {
-    const time = Math.round(performance.now() - reactionStartTime);
-
-    reactionRecords.push(time);
-
-    if (reactionBest === null || time < reactionBest) {
-      reactionBest = time;
-    }
-
-    setReactionUI("result", `${time} ms`, "Click to try again");
-    reactionStartBtn.textContent = "Test Again";
-
-    updateReactionStats();
-    return;
-  }
+reactionStartBtn.addEventListener("click", () => {
+  startReactionTest();
 });
 
 reactionBox.addEventListener("click", () => {
@@ -1263,12 +1180,9 @@ reactionBox.addEventListener("click", () => {
 
     reactionRecords.push(time);
 
-    let isNewBest = false;
-
-  if (reactionBest === null || time < reactionBest) {
-    reactionBest = time;
-    isNewBest = true;
-  }
+    if (reactionBest === null || time < reactionBest) {
+      reactionBest = time;
+    }
 
     setReactionUI("result", `${time} ms`, "Click start to test again");
     reactionStartBtn.textContent = "Test Again";
@@ -1276,16 +1190,7 @@ reactionBox.addEventListener("click", () => {
     updateReactionStats();
     return;
   }
-  if (isNewBest){
-    reactionLabel.textContent = "NEW BEST ⚡";
-    reactionTip.textContent = `${time} ms · insane reaction`;
 
-    reactionBox.style.boxShadow = "0 0 60px rgba(120,255,180,0.25)";
-
-    setTimeout(()=>{
-      reactionBox.style.boxShadow = "";
-    },400);
-  }
   if (reactionState === "idle" || reactionState === "result" || reactionState === "too-early") {
     startReactionTest();
   }
