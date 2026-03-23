@@ -1205,6 +1205,47 @@ function startReactionTest(){
 reactionStartBtn.addEventListener("click", () => {
   startReactionTest();
 });
+    reactionBox.addEventListener("click", () => {
+
+  // ❌ 等待中提前点击
+  if (reactionState === "waiting") {
+    if (reactionTimer) {
+      clearTimeout(reactionTimer);
+      reactionTimer = null;
+    }
+
+    setReactionUI("too-early", "Too Early", "You clicked before the signal");
+    reactionStartBtn.textContent = "Try Again";
+    lastReaction.textContent = "-- ms";
+    return;
+  }
+
+  // ✅ 正确点击（记录成绩）
+  if (reactionState === "ready") {
+    const time = Math.round(performance.now() - reactionStartTime);
+
+    reactionRecords.push(time);
+
+    if (reactionBest === null || time < reactionBest) {
+      reactionBest = time;
+    }
+
+    setReactionUI("result", `${time} ms`, "Click to try again");
+    reactionStartBtn.textContent = "Test Again";
+
+    updateReactionStats();
+    return;
+  }
+
+  // ⭐ 重点：任何“空闲状态”都可以直接点击开始
+  if (
+    reactionState === "idle" ||
+    reactionState === "result" ||
+    reactionState === "too-early"
+  ) {
+    startReactionTest();
+  }
+});
 
 reactionBox.addEventListener("click", () => {
   if (reactionState === "waiting") {
