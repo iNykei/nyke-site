@@ -1180,9 +1180,12 @@ reactionBox.addEventListener("click", () => {
 
     reactionRecords.push(time);
 
-    if (reactionBest === null || time < reactionBest) {
-      reactionBest = time;
-    }
+    let isNewBest = false;
+
+  if (reactionBest === null || time < reactionBest) {
+    reactionBest = time;
+    isNewBest = true;
+  }
 
     setReactionUI("result", `${time} ms`, "Click start to test again");
     reactionStartBtn.textContent = "Test Again";
@@ -1190,7 +1193,16 @@ reactionBox.addEventListener("click", () => {
     updateReactionStats();
     return;
   }
+  if (isNewBest){
+    reactionLabel.textContent = "NEW BEST ⚡";
+    reactionTip.textContent = `${time} ms · insane reaction`;
 
+    reactionBox.style.boxShadow = "0 0 60px rgba(120,255,180,0.25)";
+
+    setTimeout(()=>{
+      reactionBox.style.boxShadow = "";
+    },400);
+  }
   if (reactionState === "idle" || reactionState === "result" || reactionState === "too-early") {
     startReactionTest();
   }
