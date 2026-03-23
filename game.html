@@ -639,6 +639,50 @@
 .rating-fast{ color:#c9d3ff; }
 .rating-decent{ color:#ffd36f; }
 .rating-slow{ color:#ff8f8f; }
+    .rating-godlike{
+  color:#7CFFB2;
+  text-shadow:0 0 10px rgba(124,255,178,0.6);
+}
+
+.rating-elite{
+  color:#9fb3ff;
+  text-shadow:0 0 10px rgba(120,140,255,0.5);
+}
+
+.rating-fast{
+  color:#c9d3ff;
+}
+
+.rating-decent{
+  color:#ffd36f;
+}
+
+.rating-slow{
+  color:#ff8f8f;
+}
+
+    .rating-godlike{
+  animation: pulseGod 1.2s infinite alternate;
+}
+
+@keyframes pulseGod{
+  from{
+    text-shadow:0 0 6px rgba(124,255,178,0.4);
+  }
+  to{
+    text-shadow:0 0 18px rgba(124,255,178,0.9);
+  }
+}
+
+    .reaction-box::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius:inherit;
+  background:
+    radial-gradient(circle at center, rgba(120,140,255,0.08), transparent 60%);
+}
   </style>
 </head>
 <body>
