@@ -603,6 +603,42 @@
     font-size: 14px;
   }
 }
+.record-box{
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.record-title{
+  font-size: 14px;
+  color:#aeb8de;
+  margin-bottom: 10px;
+}
+
+.record-list{
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 0;
+}
+
+.record-list li{
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  color:#dbe3ff;
+  font-size: 14px;
+}
+
+.rating-godlike{ color:#7CFFB2; }
+.rating-elite{ color:#9fb3ff; }
+.rating-fast{ color:#c9d3ff; }
+.rating-decent{ color:#ffd36f; }
+.rating-slow{ color:#ff8f8f; }
   </style>
 </head>
 <body>
@@ -742,20 +778,42 @@
         Don’t click too early.
       </p>
 
-      <div class="mini-stat">
-        <span>Best Time</span>
-        <strong id="bestReaction">-- ms</strong>
-      </div>
+<div class="mini-stat">
+  <span>Best Time</span>
+  <strong id="bestReaction">-- ms</strong>
+</div>
 
-      <div class="mini-stat">
-        <span>Last Time</span>
-        <strong id="lastReaction">-- ms</strong>
-      </div>
+<div class="mini-stat">
+  <span>Last Time</span>
+  <strong id="lastReaction">-- ms</strong>
+</div>
 
-      <div class="mini-stat">
-        <span>Status</span>
-        <strong id="reactionStateText">Idle</strong>
-      </div>
+<div class="mini-stat">
+  <span>Average Time</span>
+  <strong id="avgReaction">-- ms</strong>
+</div>
+
+<div class="mini-stat">
+  <span>Attempts</span>
+  <strong id="reactionAttempts">0</strong>
+</div>
+
+<div class="mini-stat">
+  <span>Rating</span>
+  <strong id="reactionRating">Unrated</strong>
+</div>
+
+<div class="mini-stat">
+  <span>Status</span>
+  <strong id="reactionStateText">Idle</strong>
+</div>
+
+<div class="record-box">
+  <div class="record-title">Recent Records</div>
+  <ul id="reactionHistory" class="record-list">
+    <li>No records yet</li>
+  </ul>
+</div>
 
       <button class="btn primary" id="reactionStartBtn" style="width:100%; margin-top:6px;">
         Start Reaction Test
@@ -1007,12 +1065,33 @@ const reactionTip = document.getElementById("reactionTip");
 const reactionStartBtn = document.getElementById("reactionStartBtn");
 const bestReaction = document.getElementById("bestReaction");
 const lastReaction = document.getElementById("lastReaction");
+const avgReaction = document.getElementById("avgReaction");
+const reactionAttempts = document.getElementById("reactionAttempts");
+const reactionRating = document.getElementById("reactionRating");
 const reactionStateText = document.getElementById("reactionStateText");
+const reactionHistory = document.getElementById("reactionHistory");
 
 let reactionState = "idle"; // idle / waiting / ready / result / too-early
 let reactionTimer = null;
 let reactionStartTime = 0;
 let reactionBest = null;
+let reactionRecords = [];
+
+function getReactionRating(time){
+  if (time <= 180) {
+    return { text: "Godlike", className: "rating-godlike" };
+  }
+  if (time <= 220) {
+    return { text: "Elite", className: "rating-elite" };
+  }
+  if (time <= 260) {
+    return { text: "Fast", className: "rating-fast" };
+  }
+  if (time <= 320) {
+    return { text: "Decent", className: "rating-decent" };
+  }
+  return { text: "Slow", className: "rating-slow" };
+}
 
 function setReactionUI(state, label, tip){
   reactionState = state;
@@ -1023,6 +1102,42 @@ function setReactionUI(state, label, tip){
   reactionLabel.textContent = label;
   reactionTip.textContent = tip;
   reactionStateText.textContent = state;
+}
+
+function updateReactionStats(){
+  if (reactionRecords.length === 0){
+    bestReaction.textContent = "-- ms";
+    lastReaction.textContent = "-- ms";
+    avgReaction.textContent = "-- ms";
+    reactionAttempts.textContent = "0";
+    reactionRating.textContent = "Unrated";
+    reactionRating.className = "";
+    reactionHistory.innerHTML = "<li>No records yet</li>";
+    return;
+  }
+
+  const last = reactionRecords[reactionRecords.length - 1];
+  const best = Math.min(...reactionRecords);
+  const avg = Math.round(
+    reactionRecords.reduce((sum, value) => sum + value, 0) / reactionRecords.length
+  );
+
+  bestReaction.textContent = `${best} ms`;
+  lastReaction.textContent = `${last} ms`;
+  avgReaction.textContent = `${avg} ms`;
+  reactionAttempts.textContent = reactionRecords.length;
+
+  const rating = getReactionRating(last);
+  reactionRating.textContent = rating.text;
+  reactionRating.className = rating.className;
+
+  const recent = [...reactionRecords].slice(-5).reverse();
+  reactionHistory.innerHTML = recent
+    .map((time, index) => {
+      const itemRating = getReactionRating(time);
+      return `<li>#${reactionRecords.length - index} · ${time} ms · ${itemRating.text}</li>`;
+    })
+    .join("");
 }
 
 function startReactionTest(){
@@ -1063,15 +1178,16 @@ reactionBox.addEventListener("click", () => {
   if (reactionState === "ready") {
     const time = Math.round(performance.now() - reactionStartTime);
 
-    setReactionUI("result", `${time} ms`, "Click start to test again");
-    reactionStartBtn.textContent = "Test Again";
-    lastReaction.textContent = `${time} ms`;
+    reactionRecords.push(time);
 
     if (reactionBest === null || time < reactionBest) {
       reactionBest = time;
-      bestReaction.textContent = `${reactionBest} ms`;
     }
 
+    setReactionUI("result", `${time} ms`, "Click start to test again");
+    reactionStartBtn.textContent = "Test Again";
+
+    updateReactionStats();
     return;
   }
 
@@ -1079,6 +1195,8 @@ reactionBox.addEventListener("click", () => {
     startReactionTest();
   }
 });
+
+updateReactionStats();
   </script>
 </body>
 </html>
