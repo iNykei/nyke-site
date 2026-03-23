@@ -481,6 +481,128 @@
         height: 64px;
       }
     }
+.reaction-wrap{
+  display:grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.reaction-side,
+.reaction-main{
+  border-radius: 24px;
+  background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+}
+
+.reaction-side{
+  padding: 22px;
+}
+
+.reaction-side h3{
+  margin-bottom: 14px;
+  font-size: 22px;
+}
+
+.reaction-side p{
+  color:#c8d1ef;
+  line-height:1.8;
+  font-size:14px;
+  margin-bottom: 14px;
+}
+
+.reaction-main{
+  padding: 20px;
+}
+
+.reaction-box{
+  min-height: 460px;
+  border-radius: 20px;
+  border:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  cursor:pointer;
+  user-select:none;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  background:
+    radial-gradient(circle at center, rgba(16,22,40,0.96), rgba(8,10,18,0.98));
+}
+
+.reaction-box:hover{
+  transform: translateY(-2px);
+}
+
+.reaction-box.idle{
+  background:
+    radial-gradient(circle at center, rgba(18,24,44,0.96), rgba(8,10,18,0.98));
+}
+
+.reaction-box.waiting{
+  background:
+    radial-gradient(circle at center, rgba(68,48,12,0.95), rgba(30,20,8,0.98));
+  box-shadow: inset 0 0 40px rgba(255,180,60,0.08);
+}
+
+.reaction-box.ready{
+  background:
+    radial-gradient(circle at center, rgba(20,90,52,0.92), rgba(8,32,18,0.98));
+  box-shadow:
+    inset 0 0 50px rgba(80,255,150,0.12),
+    0 0 30px rgba(80,255,150,0.10);
+}
+
+.reaction-box.result{
+  background:
+    radial-gradient(circle at center, rgba(36,42,78,0.94), rgba(10,12,24,0.98));
+  box-shadow: inset 0 0 40px rgba(120,140,255,0.10);
+}
+
+.reaction-box.too-early{
+  background:
+    radial-gradient(circle at center, rgba(90,26,38,0.94), rgba(26,8,12,0.98));
+  box-shadow: inset 0 0 40px rgba(255,90,120,0.12);
+}
+
+.reaction-inner{
+  padding: 20px;
+}
+
+.reaction-label{
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  letter-spacing: -1px;
+}
+
+.reaction-tip{
+  color:#d7def8;
+  font-size:16px;
+  line-height:1.8;
+}
+
+@media (max-width: 980px){
+  .reaction-wrap{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px){
+  .reaction-box{
+    min-height: 360px;
+  }
+
+  .reaction-label{
+    font-size: 32px;
+  }
+
+  .reaction-tip{
+    font-size: 14px;
+  }
+}
   </style>
 </head>
 <body>
@@ -606,7 +728,50 @@
         </div>
       </div>
     </section>
+<section class="section" id="reaction">
+  <h2 class="section-title">Reaction Test</h2>
+  <p class="muted" style="margin-bottom:18px;">
+    Wait for the panel to turn live, then click as fast as possible.
+  </p>
 
+  <div class="reaction-wrap">
+    <div class="reaction-side">
+      <h3>Reaction Panel</h3>
+      <p>
+        A simple reaction test block for speed, timing, and focus.
+        Don’t click too early.
+      </p>
+
+      <div class="mini-stat">
+        <span>Best Time</span>
+        <strong id="bestReaction">-- ms</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Last Time</span>
+        <strong id="lastReaction">-- ms</strong>
+      </div>
+
+      <div class="mini-stat">
+        <span>Status</span>
+        <strong id="reactionStateText">Idle</strong>
+      </div>
+
+      <button class="btn primary" id="reactionStartBtn" style="width:100%; margin-top:6px;">
+        Start Reaction Test
+      </button>
+    </div>
+
+    <div class="reaction-main">
+      <div class="reaction-box idle" id="reactionBox">
+        <div class="reaction-inner">
+          <div class="reaction-label" id="reactionLabel">Reaction Test</div>
+          <div class="reaction-tip" id="reactionTip">Click start to begin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
     <div class="footer-note">Nyke Game Mode · first playable version</div>
   </div>
 
@@ -836,6 +1001,84 @@ if(heroBox){
     `;
   });
 }
+const reactionBox = document.getElementById("reactionBox");
+const reactionLabel = document.getElementById("reactionLabel");
+const reactionTip = document.getElementById("reactionTip");
+const reactionStartBtn = document.getElementById("reactionStartBtn");
+const bestReaction = document.getElementById("bestReaction");
+const lastReaction = document.getElementById("lastReaction");
+const reactionStateText = document.getElementById("reactionStateText");
+
+let reactionState = "idle"; // idle / waiting / ready / result / too-early
+let reactionTimer = null;
+let reactionStartTime = 0;
+let reactionBest = null;
+
+function setReactionUI(state, label, tip){
+  reactionState = state;
+
+  reactionBox.classList.remove("idle", "waiting", "ready", "result", "too-early");
+  reactionBox.classList.add(state);
+
+  reactionLabel.textContent = label;
+  reactionTip.textContent = tip;
+  reactionStateText.textContent = state;
+}
+
+function startReactionTest(){
+  if (reactionTimer) {
+    clearTimeout(reactionTimer);
+    reactionTimer = null;
+  }
+
+  const delay = Math.random() * 2500 + 1500;
+
+  setReactionUI("waiting", "Wait...", "Click only when the panel turns live");
+  reactionStartBtn.textContent = "Testing...";
+
+  reactionTimer = setTimeout(() => {
+    reactionStartTime = performance.now();
+    setReactionUI("ready", "CLICK!", "Now");
+    reactionTimer = null;
+  }, delay);
+}
+
+reactionStartBtn.addEventListener("click", () => {
+  startReactionTest();
+});
+
+reactionBox.addEventListener("click", () => {
+  if (reactionState === "waiting") {
+    if (reactionTimer) {
+      clearTimeout(reactionTimer);
+      reactionTimer = null;
+    }
+
+    setReactionUI("too-early", "Too Early", "You clicked before the signal");
+    reactionStartBtn.textContent = "Try Again";
+    lastReaction.textContent = "-- ms";
+    return;
+  }
+
+  if (reactionState === "ready") {
+    const time = Math.round(performance.now() - reactionStartTime);
+
+    setReactionUI("result", `${time} ms`, "Click start to test again");
+    reactionStartBtn.textContent = "Test Again";
+    lastReaction.textContent = `${time} ms`;
+
+    if (reactionBest === null || time < reactionBest) {
+      reactionBest = time;
+      bestReaction.textContent = `${reactionBest} ms`;
+    }
+
+    return;
+  }
+
+  if (reactionState === "idle" || reactionState === "result" || reactionState === "too-early") {
+    startReactionTest();
+  }
+});
   </script>
 </body>
 </html>
