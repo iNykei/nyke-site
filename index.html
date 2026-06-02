@@ -653,12 +653,14 @@ body.loading .hero-box{
 }
 
 body.loading .card-section,
+body.loading .videos-section,
 body.loading .game-section{
   opacity: 0;
   transform: translateY(24px);
 }
 
 .card-section,
+.videos-section,
 .game-section{
   opacity: 1;
   transition:
@@ -1507,6 +1509,124 @@ body.lightning-active .page{
     radial-gradient(circle at 20% 0%, rgba(140,160,255,0.10), transparent 28%),
     radial-gradient(circle at 100% 100%, rgba(120,140,255,0.06), transparent 24%);
 }
+.videos-section{
+  padding: 90px 20px;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.videos-wrap{
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.videos-head{
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.videos-title{
+  font-size: 40px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.videos-subtitle{
+  color: #bfc7e6;
+  font-size: 16px;
+  line-height: 1.7;
+  opacity: 0.85;
+}
+
+.videos-controls{
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.video-arrow{
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: white;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.video-arrow:hover{
+  transform: translateY(-2px);
+  background: rgba(120,140,255,0.16);
+  border-color: rgba(140,160,255,0.34);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.28);
+}
+
+.videos-viewport{
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.videos-track{
+  display: flex;
+  gap: 18px;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.video-card{
+  flex: 0 0 calc((100% - 36px) / 3);
+  min-width: 0;
+  border-radius: 22px;
+  padding: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  opacity: 0.58;
+  transform: scale(0.96);
+  transition: opacity 0.32s ease, transform 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease;
+}
+
+.video-card.active{
+  opacity: 1;
+  transform: scale(1);
+  border-color: rgba(140,160,255,0.36);
+  box-shadow:
+    0 22px 54px rgba(0,0,0,0.36),
+    0 0 34px rgba(120,140,255,0.16);
+}
+
+.video-card video{
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: #000;
+  object-fit: cover;
+}
+
+.video-card h3{
+  margin: 14px 2px 6px;
+  font-size: 18px;
+  color: white;
+}
+
+.video-card p{
+  margin: 0 2px 2px;
+  color: #b8c1e0;
+  font-size: 14px;
+  line-height: 1.6;
+}
 @media (max-width: 768px){
 
   .nav{
@@ -1556,12 +1676,14 @@ body.lightning-active .page{
   .card-section,
   .about-section,
   .ai-section,
+  .videos-section,
   .game-section{
     padding: 60px 14px;
   }
 
   .card-title,
   .game-title,
+  .videos-title,
   .about-left h2,
   .ai-section-left h2{
     font-size: 28px;
@@ -1668,6 +1790,29 @@ body.lightning-active .page{
     width: 94vw;
   }
 
+  .videos-head{
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .videos-controls{
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .videos-viewport{
+    border-radius: 20px;
+  }
+
+  .videos-track{
+    gap: 14px;
+  }
+
+  .video-card{
+    flex-basis: 100%;
+    padding: 12px;
+  }
+
   .close-btn{
     top: -10px;
     right: -10px;
@@ -1698,6 +1843,7 @@ body.lightning-active .page{
 
   .card-title,
   .game-title,
+  .videos-title,
   .about-left h2,
   .ai-section-left h2{
     font-size: 24px;
@@ -1757,6 +1903,7 @@ body.lightning-active .page{
       <a href="#projects">Projects</a >
       <a href="#about">About</a >
       <a href="#gaming">Gaming</a >
+      <a href="#videos">Videos</a >
       <a href="game.html" target="_blank">Start Game</a>
     </div>
 
@@ -1929,6 +2076,68 @@ body.lightning-active .page{
           <h4>🔥 Highlights</h4>
           <p>Clutches, sharp entries, and clean edits.</p >
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="videos-section" id="videos">
+  <div class="videos-wrap">
+    <div class="videos-head">
+      <div>
+        <div class="game-badge">VIDEO VAULT</div>
+        <h2 class="videos-title">Highlights in motion.</h2>
+        <p class="videos-subtitle">
+          A quick lane for clips, edits, pressure plays, and the moments worth replaying.
+        </p >
+      </div>
+
+      <div class="videos-controls" aria-label="Video carousel controls">
+        <button class="video-arrow" id="videoPrev" type="button" aria-label="Previous video">‹</button>
+        <button class="video-arrow" id="videoNext" type="button" aria-label="Next video">›</button>
+      </div>
+    </div>
+
+    <div class="videos-viewport">
+      <div class="videos-track" id="videosTrack">
+        <article class="video-card active">
+          <video muted playsinline preload="metadata">
+            <source src="highlight.mp4" type="video/mp4">
+          </video>
+          <h3>Entry Clips</h3>
+          <p>Fast openings and first-contact pressure.</p >
+        </article>
+
+        <article class="video-card">
+          <video muted playsinline preload="metadata">
+            <source src="highlight.mp4" type="video/mp4">
+          </video>
+          <h3>Clutch Moments</h3>
+          <p>Late-round focus when the timer gets loud.</p >
+        </article>
+
+        <article class="video-card">
+          <video muted playsinline preload="metadata">
+            <source src="highlight.mp4" type="video/mp4">
+          </video>
+          <h3>Aim Highlights</h3>
+          <p>Clean taps, sharp tracking, and confident swings.</p >
+        </article>
+
+        <article class="video-card">
+          <video muted playsinline preload="metadata">
+            <source src="highlight.mp4" type="video/mp4">
+          </video>
+          <h3>Edit Flow</h3>
+          <p>Clip rhythm, timing, and visual pace.</p >
+        </article>
+
+        <article class="video-card">
+          <video muted playsinline preload="metadata">
+            <source src="highlight.mp4" type="video/mp4">
+          </video>
+          <h3>Pressure Plays</h3>
+          <p>Aggro decisions and high-tempo rounds.</p >
+        </article>
       </div>
     </div>
   </div>
@@ -2430,6 +2639,63 @@ window.addEventListener("scroll", () => {
   } else {
     nav.classList.remove("nav-active");
   }
+});
+let currentVideoSlide = 0;
+
+function updateVideoSlider() {
+  const track = document.getElementById("videosTrack");
+  const cards = document.querySelectorAll(".video-card");
+
+  if (!track || cards.length === 0) return;
+
+  const firstCard = cards[0];
+  const gap = parseFloat(getComputedStyle(track).gap) || 0;
+  const step = firstCard.getBoundingClientRect().width + gap;
+  const viewport = track.parentElement;
+  const maxOffset = Math.max(0, track.scrollWidth - (viewport?.clientWidth || 0));
+  const offset = Math.min(currentVideoSlide * step, maxOffset);
+
+  track.style.transform = `translateX(-${offset}px)`;
+
+  cards.forEach((card, index) => {
+    const isActive = index === currentVideoSlide;
+    const video = card.querySelector("video");
+
+    card.classList.toggle("active", isActive);
+
+    if (video) {
+      if (isActive) {
+        video.currentTime = video.currentTime || 0;
+      } else {
+        video.pause();
+      }
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll(".video-card");
+  const prev = document.getElementById("videoPrev");
+  const next = document.getElementById("videoNext");
+
+  if (cards.length === 0) return;
+
+  if (prev) {
+    prev.addEventListener("click", () => {
+      currentVideoSlide = (currentVideoSlide - 1 + cards.length) % cards.length;
+      updateVideoSlider();
+    });
+  }
+
+  if (next) {
+    next.addEventListener("click", () => {
+      currentVideoSlide = (currentVideoSlide + 1) % cards.length;
+      updateVideoSlider();
+    });
+  }
+
+  window.addEventListener("resize", updateVideoSlider);
+  updateVideoSlider();
 });
 const AI_CHAT_ENDPOINT = "https://nyke-ai-server.onrender.com/api/chat";
 let sendAiMessage = function () {};
