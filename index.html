@@ -2431,127 +2431,154 @@ window.addEventListener("scroll", () => {
     nav.classList.remove("nav-active");
   }
 });
-// --- 1. 初始化变量 ---
-const aiMessages = document.getElementById("aiMessages");
-const aiInput = document.getElementById("aiInput");
-const aiWidget = document.getElementById("aiWidget");
-const aiFab = document.getElementById("aiFab");
-const aiToggle = document.getElementById("aiToggle");
+const AI_CHAT_ENDPOINT = "https://nyke-ai-server.onrender.com/api/chat";
+let sendAiMessage = function () {};
+window.sendAiMessage = (...args) => sendAiMessage(...args);
 
-// 从本地存储加载历史记录，如果没有则为空数组
-let chatHistory = JSON.parse(localStorage.getItem("nyke_chat_history")) || [];
+function loadChatHistory() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("nyke_chat_history") || "[]");
+    return Array.isArray(saved) ? saved.slice(-10) : [];
+  } catch (err) {
+    console.warn("Could not load saved chat history:", err);
+    localStorage.removeItem("nyke_chat_history");
+    return [];
+  }
+}
 
-// --- 2. 发送消息的核心函数 (必须带 async) ---
-async function sendAiMessage() {
-    // 1. 动态获取输入框和消息容器（这样即便有多个 AI 区域也不会报错）
-    const inputEl = document.getElementById("aiInput");
-    const messagesContainer = document.getElementById("aiMessages");
+function saveChatHistory(history) {
+  localStorage.setItem("nyke_chat_history", JSON.stringify(history.slice(-10)));
+}
 
-    // 检查元素是否存在，防止报错
-    if (!inputEl) {
-        console.error("找不到 ID 为 aiInput 的输入框！请检查 HTML。");
-        return;
+function typeText(el, text) {
+  let i = 0;
+  el.textContent = "";
+  const speed = 25;
+
+  function typing() {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
     }
+  }
 
-    const text = inputEl.value.trim();
+  typing();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const aiMessages = document.getElementById("aiMessages");
+  const aiInput = document.getElementById("aiInput");
+  const aiSend = document.getElementById("aiSend");
+  const aiWidget = document.getElementById("aiWidget");
+  const aiFab = document.getElementById("aiFab");
+  const aiToggle = document.getElementById("aiToggle");
+  let chatHistory = loadChatHistory();
+  let isSending = false;
+
+  function setSendingState(sending) {
+    isSending = sending;
+    if (aiInput) aiInput.disabled = sending;
+    if (aiSend) aiSend.disabled = sending;
+    if (aiSend) aiSend.textContent = sending ? "..." : "Send";
+  }
+
+  function scrollMessages() {
+    if (aiMessages) aiMessages.scrollTop = aiMessages.scrollHeight;
+  }
+
+  function appendMessage(role, text) {
+    if (!aiMessages) return null;
+
+    const div = document.createElement("div");
+    div.className = `ai-bubble ${role === "user" ? "user" : "bot"}`;
+    div.textContent = text;
+    aiMessages.appendChild(div);
+    scrollMessages();
+    return div;
+  }
+
+  function renderSavedChat() {
+    if (!aiMessages || chatHistory.length === 0) return;
+
+    aiMessages.innerHTML = "";
+    chatHistory.forEach(msg => {
+      appendMessage(msg.role === "user" ? "user" : "assistant", msg.content);
+    });
+  }
+
+  sendAiMessage = async function () {
+    if (!aiInput || !aiMessages || isSending) return;
+
+    const text = aiInput.value.trim();
     if (!text) return;
 
-    // 2. 显示用户消息
-    const userDiv = document.createElement("div");
-    userDiv.className = "ai-bubble user";
-    userDiv.innerText = text;
-    messagesContainer.appendChild(userDiv);
-    
-    // 清空输入框
-    inputEl.value = ""; 
+    appendMessage("user", text);
+    aiInput.value = "";
 
-    // 3. 更新历史记录
     chatHistory.push({ role: "user", content: text });
     chatHistory = chatHistory.slice(-10);
-    localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
+    saveChatHistory(chatHistory);
 
-    // 4. 显示“思考中”
-    const thinkingDiv = document.createElement("div");
-    thinkingDiv.className = "ai-bubble bot";
-    thinkingDiv.innerText = "Let me cook...";
-    messagesContainer.appendChild(thinkingDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    const thinkingDiv = appendMessage("assistant", "Let me cook...");
+    setSendingState(true);
 
     try {
-        const response = await fetch("https://nyke-ai-server.onrender.com/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages: chatHistory })
-        });
+      const response = await fetch(AI_CHAT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: chatHistory })
+      });
 
-        const data = await response.json();
-        const replyText = data.reply || "No reply from AI.";
+      const data = await response.json().catch(() => ({}));
 
-        // 5. 移除“思考中”，显示 AI 回复
-        thinkingDiv.remove();
-        const botDiv = document.createElement("div");
-        botDiv.className = "ai-bubble bot";
-        messagesContainer.appendChild(botDiv);
-        
-        typeText(botDiv, replyText); // 确保你有 typeText 函数
+      if (!response.ok) {
+        throw new Error(data.error || `Server returned ${response.status}`);
+      }
 
-        chatHistory.push({ role: "assistant", content: replyText });
-        chatHistory = chatHistory.slice(-10);
-        localStorage.setItem("nyke_chat_history", JSON.stringify(chatHistory));
+      const replyText = data.reply || "No reply from AI.";
+      if (thinkingDiv) thinkingDiv.remove();
 
+      const botDiv = appendMessage("assistant", "");
+      if (botDiv) typeText(botDiv, replyText);
+
+      chatHistory.push({ role: "assistant", content: replyText });
+      chatHistory = chatHistory.slice(-10);
+      saveChatHistory(chatHistory);
     } catch (err) {
-        console.error("AI Error:", err);
-        thinkingDiv.innerText = "Server error. Please check if backend is running.";
+      console.error("AI Error:", err);
+      if (thinkingDiv) {
+        thinkingDiv.textContent = "Server error. Please try again in a moment.";
+      }
+    } finally {
+      setSendingState(false);
+      if (aiInput) aiInput.focus();
+      scrollMessages();
     }
+  };
 
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
+  window.sendAiMessage = sendAiMessage;
 
-// --- 3. 辅助函数：打字机效果 ---
-function typeText(el, text) {
-    let i = 0;
-    el.textContent = "";
-    const speed = 25; 
-    function typing() {
-        if (i < text.length) {
-            el.textContent += text.charAt(i);
-            i++;
-            setTimeout(typing, speed);
-        }
-    }
-    typing();
-}
-
-// --- 4. 界面交互逻辑 ---
-if (aiFab) {
+  if (aiFab && aiWidget) {
     aiFab.addEventListener("click", () => aiWidget.classList.toggle("show"));
-}
+  }
 
-if (aiToggle) {
+  if (aiToggle && aiWidget) {
     aiToggle.addEventListener("click", () => aiWidget.classList.remove("show"));
-}
+  }
 
-if (aiInput) {
+  if (aiSend) {
+    aiSend.addEventListener("click", sendAiMessage);
+  }
+
+  if (aiInput) {
     aiInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") sendAiMessage();
+      if (e.key === "Enter") sendAiMessage();
     });
-}
+  }
 
-// 页面加载时渲染之前的聊天记录
-function renderSavedChat() {
-    if (!aiMessages) return;
-    if (chatHistory.length > 0) {
-        aiMessages.innerHTML = "";
-        chatHistory.forEach(msg => {
-            const div = document.createElement("div");
-            div.className = `ai-bubble ${msg.role === "user" ? "user" : "bot"}`;
-            div.textContent = msg.content;
-            aiMessages.appendChild(div);
-        });
-        aiMessages.scrollTop = aiMessages.scrollHeight;
-    }
-}
-renderSavedChat();
+  renderSavedChat();
+});
 </script>
 <div id="videoModal" class="video-modal">
   <div class="video-box">
@@ -2586,7 +2613,7 @@ renderSavedChat();
 
         <div class="ai-input-row">
           <input id="aiInput" type="text" placeholder="Ask something..." />
-          <button onclick="sendAiMessage()">Send</button>
+          <button id="aiSend" type="button">Send</button>
         </div>
       </div>
     </div>
