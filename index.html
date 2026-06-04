@@ -236,7 +236,7 @@
 }
 
 .game-main .card{
-  width: 180px;
+  width: 100%;
   padding: 18px;
   border-radius: 16px;
 }
@@ -374,13 +374,13 @@
 
 .game-actions{
   margin-top: 22px;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  flex-wrap: wrap;
 }
 
 .game-actions .game-btn{
-  width: 180px;
+  width: 100%;
   height: 48px;
   text-align: center;
   display: inline-flex;
@@ -1746,7 +1746,7 @@ body.lightning-active .page{
   }
 
   .game-actions{
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .game-actions .game-btn{
