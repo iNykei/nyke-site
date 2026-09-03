@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+:root {
+  --background: #08090c;
+  --foreground: #f4f4f5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(103, 232, 249, 0.28);
+  color: #f4f4f5;
+}
+
+body:has(.page-light) {
+  background: #fbfaf8;
+  color: #18181b;
+}
+
+body:has(.page-dark) {
+  background: #111114;
+  color: #f4f4f5;
+}
+
+body:has(.page-dark) .site-header {
+  border-color: rgba(63, 63, 70, 0.7);
+  background: rgba(28, 28, 31, 0.85);
+}
+
+body:has(.page-dark) .site-logo,
+body:has(.page-dark) .site-nav-link {
+  color: #f4f4f5;
+}
+
+body:has(.page-dark) .site-nav-link {
+  color: #a1a1aa;
+}
+
+body:has(.page-dark) .site-nav-link:hover {
+  color: #ffffff;
+}
+
+body:has(.page-dark) .site-icon-btn {
+  border-color: #3f3f46;
+  background: rgba(39, 39, 42, 0.7);
+  color: #d4d4d8;
+}
+
+.activity-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 10px, black calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 10px, black calc(100% - 20px), transparent 100%);
+}
+
+.activity-scroll {
+  animation: activity-scroll 32s linear infinite;
+}
+
+.ticker {
+  animation: ticker 36s linear infinite;
+}
+
+.ticker:hover,
+.ticker:focus-within {
+  animation-play-state: paused;
+}
+
+.profile-stream-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+}
+
+.profile-stream-track {
+  animation: profile-stream 42s linear infinite;
+}
+
+.profile-stream-track-reverse {
+  animation-name: profile-stream-reverse;
+}
+
+.profile-stream-mask:hover .profile-stream-track,
+.profile-stream-mask:focus-within .profile-stream-track {
+  animation-play-state: paused;
+}
+
+@keyframes activity-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes profile-stream {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes profile-stream-reverse {
+  from {
+    transform: translateX(-33.333%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-scroll {
+    animation: none;
+  }
+
+  .ticker {
+    animation: none;
+  }
+
+  .profile-stream-track {
+    animation: none;
+  }
+}
