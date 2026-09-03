@@ -24,6 +24,7 @@ export type PublicProfileData = {
   profile: ProfileRow | null;
   settings: PlayerSettingsRow | null;
   player: PlayerProfile;
+  activeGear: GearItem[];
   isOwner: boolean;
 };
 
@@ -64,24 +65,28 @@ function buildGear(rows: GearItemRow[]): PlayerGear {
   };
 }
 
+function getActiveGear(gear: PlayerGear) {
+  return gearCategories.map((category) => gear[category]);
+}
+
 function buildRealPlayer(profile: ProfileRow, settings: PlayerSettingsRow | null, gearRows: GearItemRow[]): PlayerProfile {
   return {
     username: profile.username,
     displayName: profile.display_name || profile.username,
     avatarUrl: profile.avatar_url || undefined,
     avatarSeed: (profile.display_name || profile.username).slice(0, 2).toUpperCase(),
-    bio: profile.bio || "No bio yet.",
-    region: profile.region || "Not configured",
+    bio: profile.bio || "",
+    region: profile.region || "",
     role: "Player",
     team: "Independent",
     status: "offline",
     settings: {
-      game: settings?.game || "Not configured",
-      rank: settings?.rank || "Not configured",
+      game: settings?.game || "",
+      rank: settings?.rank || "",
       dpi: settings?.dpi ?? null,
       sensitivity: settings?.sensitivity === null || settings?.sensitivity === undefined ? null : Number(settings.sensitivity),
-      resolution: settings?.resolution || "Not configured",
-      pollingRate: settings?.polling_rate ? `${settings.polling_rate} Hz` : "Not configured",
+      resolution: settings?.resolution || "",
+      pollingRate: settings?.polling_rate ? `${settings.polling_rate} Hz` : "",
     },
     gear: buildGear(gearRows),
     highlights: [],
@@ -138,7 +143,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
   if (!supabase) {
     return demoPlayer
-      ? { source: "demo", profile: null, settings: null, player: demoPlayer, isOwner: false }
+      ? { source: "demo", profile: null, settings: null, player: demoPlayer, activeGear: getActiveGear(demoPlayer.gear), isOwner: false }
       : null;
   }
 
@@ -155,7 +160,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
   if (!realProfile) {
     return demoPlayer
-      ? { source: "demo", profile: null, settings: null, player: demoPlayer, isOwner: false }
+      ? { source: "demo", profile: null, settings: null, player: demoPlayer, activeGear: getActiveGear(demoPlayer.gear), isOwner: false }
       : null;
   }
 
@@ -185,11 +190,17 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
   assertQuerySucceeded(gearRowsError, "Could not load the gear catalog.");
 
+  const activeGear = gearCategories.flatMap((category) => {
+    const row = ((gearRows ?? []) as GearItemRow[]).find((item) => item.category === category);
+    return row ? [rowToGearItem(row)] : [];
+  });
+
   return {
     source: "real",
     profile: realProfile,
     settings: settings ?? null,
     player: buildRealPlayer(realProfile, settings ?? null, (gearRows ?? []) as GearItemRow[]),
+    activeGear,
     isOwner: current.user?.id === realProfile.id,
   };
 }
