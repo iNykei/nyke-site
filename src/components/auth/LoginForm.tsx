@@ -2,14 +2,12 @@
 
 import { LogIn } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toFriendlyAuthError } from "@/lib/auth-errors";
 import { createClient } from "@/lib/supabase/client";
 import { isValidEmail } from "@/lib/validation";
 
 export function LoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldError, setFieldError] = useState("");
@@ -35,7 +33,7 @@ export function LoginForm() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -45,24 +43,20 @@ export function LoginForm() {
         return;
       }
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("username")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        router.push(profile?.username ? `/${profile.username}` : "/");
-        router.refresh();
+      if (!data.session || !data.user) {
+        setServerError("We could not establish your session. Please try again.");
         return;
       }
 
-      router.push("/");
-      router.refresh();
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      // A document navigation starts only after @supabase/ssr has persisted the
+      // session cookies, so the next Server Component request sees the user.
+      window.location.replace(!profileError && profile?.username ? `/${profile.username}` : "/settings/profile");
     } catch {
       setServerError("Supabase is not configured for this environment.");
     } finally {

@@ -29,7 +29,9 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  // Validates the JWT and refreshes it when needed. setAll mirrors any rotated
+  // cookies to both the request seen by Server Components and the response.
+  await supabase.auth.getClaims();
 
   return response;
 }
