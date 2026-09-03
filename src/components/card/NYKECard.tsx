@@ -94,7 +94,7 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
   }
 
   return (
-    <div ref={viewportRef} className="relative w-full max-w-[400px] overflow-clip rounded-lg" style={{ height: CARD_HEIGHT * scale }} aria-label={`${player.displayName} NYKE Card preview`}>
+    <div ref={viewportRef} className="nyke-card-preview relative w-full max-w-[400px] overflow-clip rounded-lg" style={{ height: CARD_HEIGHT * scale }} aria-label={`${player.displayName} NYKE Card preview`}>
       <div
         ref={stageRef}
         className="nyke-card-stage absolute left-0 top-0 h-[610px] w-[540px]"
@@ -122,7 +122,11 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
             )}
           </header>
 
-          <div className="nyke-card-identity-pattern pointer-events-none absolute inset-x-0 bottom-[48px] top-[176px] z-0 overflow-hidden" aria-hidden="true">
+          <div className="nyke-card-body-brand pointer-events-none absolute z-0" aria-hidden="true">
+            <span className="nyke-card-body-wordmark">NYKE</span><span className="nyke-card-body-dot">.</span>
+          </div>
+
+          <div className="nyke-card-identity-pattern pointer-events-none absolute inset-x-0 bottom-[48px] top-[176px] z-[1] overflow-hidden" aria-hidden="true">
             <div className="nyke-card-identity-pattern-grid">
               {Array.from({ length: 24 }, (_, index) => <span key={index}>{identityPattern}</span>)}
             </div>
