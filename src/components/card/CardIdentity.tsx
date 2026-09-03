@@ -10,7 +10,7 @@ const badgeTones: Record<string, string> = {
 export function CardIdentity({ player }: { player: PlayerProfile }) {
   const visibleBadges = player.badges.slice(0, 6);
   const hiddenCount = Math.max(0, player.badges.length - visibleBadges.length);
-  const identityMeta = [player.settings.game, player.settings.rank, player.region].filter(Boolean);
+  #const identityMeta = [player.settings.game, player.settings.rank, player.region].filter(Boolean);
 
   return (
     <section className="relative z-10 h-[158px] px-8 text-center">
@@ -26,7 +26,7 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
       <div className="mx-auto max-w-[430px] pt-[58px]">
         <h1 className="truncate font-serif text-[34px] font-black leading-none text-zinc-950">{player.displayName}</h1>
         <p className="mt-1.5 truncate text-[11px] font-medium text-zinc-500">@{player.username}</p>
-        {identityMeta.length > 0 ? (
+        #{identityMeta.length > 0 ? (
           <p className="mt-2 truncate text-[11px] font-bold uppercase tracking-[0.09em] text-zinc-600">{identityMeta.join(" · ")}</p>
         ) : null}
         {visibleBadges.length > 0 ? (
