@@ -68,8 +68,8 @@ export function CardActions({ data }: CardActionsProps) {
       const blob = await toBlob(node, {
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
-        canvasWidth: 1080,
-        canvasHeight: 1350,
+        canvasWidth: CARD_WIDTH * 2,
+        canvasHeight: CARD_HEIGHT * 2,
         pixelRatio: 1,
         backgroundColor: "#ffffff",
         cacheBust: true,
@@ -156,15 +156,15 @@ export function CardActions({ data }: CardActionsProps) {
   return (
     <>
       <NYKECard data={data} cardRef={cardRef} />
-      <div className="mt-7 w-full max-w-[540px]">
+      <div className="mt-4 w-full max-w-[400px]">
         <div className="flex flex-wrap justify-center gap-2">
-          <button type="button" onClick={handleDownload} disabled={busy} className="inline-flex h-10 items-center gap-2 rounded-md bg-rose-300 px-4 text-sm font-semibold text-zinc-950 shadow-sm transition hover:bg-rose-200 disabled:cursor-wait disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
+          <button type="button" onClick={handleDownload} disabled={busy} className="inline-flex h-9 items-center gap-2 rounded-md bg-rose-300 px-3.5 text-[13px] font-semibold text-zinc-950 shadow-sm transition hover:bg-rose-200 disabled:cursor-wait disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
             <Download size={15} /> Download Card
           </button>
-          <button type="button" onClick={handleShare} disabled={busy} className="inline-flex h-10 items-center gap-2 rounded-md border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-800 transition hover:border-zinc-400 hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
+          <button type="button" onClick={handleShare} disabled={busy} className="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-300 bg-white px-3.5 text-[13px] font-semibold text-zinc-800 transition hover:border-zinc-400 hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
             <Share2 size={15} /> Share
           </button>
-          <Link href={`/${data.player.username}`} className="inline-flex h-10 items-center gap-2 rounded-md px-3 text-sm font-semibold text-zinc-600 transition hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
+          <Link href={`/${data.player.username}`} className="inline-flex h-9 items-center gap-2 rounded-md px-2.5 text-[13px] font-semibold text-zinc-600 transition hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
             <ArrowLeft size={15} /> Back to profile
           </Link>
         </div>

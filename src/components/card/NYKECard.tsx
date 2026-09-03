@@ -8,7 +8,7 @@ import { CardIdentity } from "./CardIdentity";
 import { CardLoadout } from "./CardLoadout";
 
 export const CARD_WIDTH = 540;
-export const CARD_HEIGHT = 675;
+export const CARD_HEIGHT = 610;
 const MAX_TILT = 2.5;
 const CENTER_DEAD_ZONE = 0.04;
 
@@ -33,9 +33,6 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
   const [scale, setScale] = useState(1);
   const { player } = data;
   const isFounder = player.badges.some((badge) => badge.slug === "founder");
-  const hasRank = Boolean(player.settings.game || player.settings.rank);
-  const hasAim = [player.settings.dpi, player.settings.sensitivity].some((value) => value !== null) || Boolean(player.settings.resolution || player.settings.pollingRate);
-  const hasLoadout = data.activeGear.some((item) => ["mouse", "keyboard", "monitor"].includes(item.category) && !item.id.startsWith("not-configured-"));
   const memberNumber = player.memberNumber === null ? null : formatMemberNumber(player.memberNumber);
   const identityPattern = `@${player.username} · ${memberNumber ? `${memberNumber} · ` : ""}NYKE`;
 
@@ -97,10 +94,10 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
   }
 
   return (
-    <div ref={viewportRef} className="relative w-full max-w-[540px] overflow-clip rounded-xl" style={{ height: CARD_HEIGHT * scale }} aria-label={`${player.displayName} NYKE Card preview`}>
+    <div ref={viewportRef} className="relative w-full max-w-[400px] overflow-clip rounded-lg" style={{ height: CARD_HEIGHT * scale }} aria-label={`${player.displayName} NYKE Card preview`}>
       <div
         ref={stageRef}
-        className="nyke-card-stage absolute left-0 top-0 h-[675px] w-[540px]"
+        className="nyke-card-stage absolute left-0 top-0 h-[610px] w-[540px]"
         style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
         onPointerMove={handlePointerMove}
         onPointerLeave={resetPointer}
@@ -109,9 +106,9 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           ref={setCardRef}
           data-nyke-card
           data-founder={isFounder ? "true" : "false"}
-          className="nyke-card relative h-[675px] w-[540px] overflow-hidden rounded-xl border border-zinc-200 bg-white text-zinc-950"
+          className="nyke-card relative h-[610px] w-[540px] overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950"
         >
-          <header className="relative z-10 h-[210px] overflow-hidden bg-zinc-950">
+          <header className="relative z-10 h-[176px] overflow-hidden bg-zinc-950">
             {player.bannerUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={player.bannerUrl} alt={`${player.displayName} banner`} crossOrigin="anonymous" className="size-full object-cover" />
@@ -119,21 +116,21 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
             <div className="nyke-card-banner-overlay absolute inset-0" aria-hidden="true" />
           </header>
 
-          <div className="nyke-card-identity-pattern pointer-events-none absolute inset-x-0 bottom-[58px] top-[210px] z-0 overflow-hidden" aria-hidden="true">
+          <div className="nyke-card-identity-pattern pointer-events-none absolute inset-x-0 bottom-[48px] top-[176px] z-0 overflow-hidden" aria-hidden="true">
             <div className="nyke-card-identity-pattern-grid">
               {Array.from({ length: 18 }, (_, index) => <span key={index}>{identityPattern}</span>)}
             </div>
           </div>
 
           <CardIdentity player={player} />
-          <div className={`relative z-10 flex h-[275px] flex-col ${!hasRank && !hasAim && !hasLoadout ? "justify-end" : ""}`}>
+          <div className="relative z-10 flex h-[228px] flex-col items-center justify-center gap-5 px-8 py-4">
+            <CardLoadout activeGear={data.activeGear} />
             <CardAim player={player} />
-            <CardLoadout activeGear={data.activeGear} prominent={!hasAim} />
           </div>
 
-          <footer className="relative z-10 flex h-[58px] items-center justify-between px-8">
-            <div><p className="font-serif text-[18px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[320px] truncate font-mono text-[8px] text-zinc-500">nyke.life/{player.username}</p></div>
-            <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-zinc-500">NYKE ID / 01</p>
+          <footer className="relative z-10 flex h-[48px] items-center justify-between border-t border-zinc-100 px-7">
+            <div><p className="font-serif text-[16px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[300px] truncate font-mono text-[7px] text-zinc-400">nyke.life/{player.username}</p></div>
+            {memberNumber ? <p className="font-mono text-[11px] font-bold tabular-nums tracking-[0.04em] text-zinc-700">{memberNumber}</p> : null}
           </footer>
           <div className="nyke-card-sheen pointer-events-none absolute inset-0 z-20" aria-hidden="true" />
           {isFounder ? <span className="nyke-card-founder-mark absolute right-3 top-3 z-20 size-3 border-r border-t border-[#a58b5b]" aria-hidden="true" /> : null}
