@@ -139,6 +139,13 @@ export const players: PlayerProfile[] = [
   {
     username: "cyx",
     displayName: "cyx",
+    memberNumber: 1,
+    badges: [
+      { slug: "founder", name: "Founder", description: "Founding identity in the NYKE community." },
+      { slug: "first-10", name: "First 10", description: "One of the first ten registered NYKE members." },
+      { slug: "early-100", name: "Early 100", description: "One of the first one hundred registered NYKE members." },
+      { slug: "beta", name: "Beta", description: "Joined while NYKE public beta enrollment was active." },
+    ],
     avatarSeed: "CX",
     bio: "Student, editor, and FPS player turning old NYKELIFE energy into a public aim profile.",
     region: "CN",
@@ -166,6 +173,8 @@ export const players: PlayerProfile[] = [
   {
     username: "nova",
     displayName: "Nova",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "NV",
     bio: "Entry aimer focused on clean first-contact mechanics and low-noise setups.",
     region: "NA",
@@ -179,6 +188,8 @@ export const players: PlayerProfile[] = [
   {
     username: "vex",
     displayName: "Vex",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "VX",
     bio: "Sentinel player cataloging compact gear and repeatable crosshair placement.",
     region: "EU",
@@ -192,6 +203,8 @@ export const players: PlayerProfile[] = [
   {
     username: "orbit",
     displayName: "Orbit",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "OB",
     bio: "Controller main sharing practical setups for ranked consistency.",
     region: "APAC",
@@ -205,6 +218,8 @@ export const players: PlayerProfile[] = [
   {
     username: "mako",
     displayName: "Mako",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "MK",
     bio: "Calm mid-round controller with measured sens and classic monitor preferences.",
     region: "KR",
@@ -218,6 +233,8 @@ export const players: PlayerProfile[] = [
   {
     username: "sable",
     displayName: "Sable",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "SB",
     bio: "EU initiator comparing magnetic boards and balanced pads.",
     region: "EU",
@@ -231,6 +248,8 @@ export const players: PlayerProfile[] = [
   {
     username: "rune",
     displayName: "Rune",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "RN",
     bio: "NA Chamber specialist testing faster skates on control cloth.",
     region: "NA",
@@ -244,6 +263,8 @@ export const players: PlayerProfile[] = [
   {
     username: "pixel",
     displayName: "Pixel",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "PX",
     bio: "APAC ranked grinder documenting fingertip mouse fit and OLED motion clarity.",
     region: "APAC",
@@ -257,6 +278,8 @@ export const players: PlayerProfile[] = [
   {
     username: "stride",
     displayName: "Stride",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "ST",
     bio: "CS2 rifler keeping a simple 400 DPI desk setup.",
     region: "NA",
@@ -270,6 +293,8 @@ export const players: PlayerProfile[] = [
   {
     username: "lynx",
     displayName: "Lynx",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "LX",
     bio: "Apex controller-to-mouse convert with fast pad experiments.",
     region: "EU",
@@ -283,6 +308,8 @@ export const players: PlayerProfile[] = [
   {
     username: "frost",
     displayName: "Frost",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "FR",
     bio: "KR duelist using low eDPI for disciplined burst control.",
     region: "KR",
@@ -296,6 +323,8 @@ export const players: PlayerProfile[] = [
   {
     username: "echo",
     displayName: "Echo",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "EC",
     bio: "NA initiator logging ergonomic changes across scrim blocks.",
     region: "NA",
@@ -309,6 +338,8 @@ export const players: PlayerProfile[] = [
   {
     username: "kai",
     displayName: "Kai",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "KI",
     bio: "CN sentinel comparing stretched resolution with modern OLED panels.",
     region: "CN",
@@ -322,6 +353,8 @@ export const players: PlayerProfile[] = [
   {
     username: "mono",
     displayName: "Mono",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "MO",
     bio: "Overwatch hitscan player keeping a cross-game profile for aim transfer.",
     region: "EU",
@@ -335,6 +368,8 @@ export const players: PlayerProfile[] = [
   {
     username: "zero",
     displayName: "Zero",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "Z0",
     bio: "APAC sentinel prioritizing desk consistency and stable stopping power.",
     region: "APAC",
@@ -348,6 +383,8 @@ export const players: PlayerProfile[] = [
   {
     username: "asher",
     displayName: "Asher",
+    memberNumber: null,
+    badges: [],
     avatarSeed: "AS",
     bio: "NA flex player testing low-latency gear with mid sens.",
     region: "NA",

@@ -4,6 +4,7 @@ export type ProfileRow = {
   display_name: string | null;
   avatar_url: string | null;
   banner_url: string | null;
+  member_number: number | null;
   bio: string | null;
   region: string | null;
   created_at: string;
@@ -40,6 +41,21 @@ export type PlayerGearRow = {
   created_at: string;
 };
 
+export type BadgeRow = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  display_order: number;
+  created_at: string;
+};
+
+export type ProfileBadgeRow = {
+  profile_id: string;
+  badge_id: string;
+  awarded_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -56,7 +72,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Omit<ProfileRow, "id" | "created_at">>;
+        Update: Partial<Omit<ProfileRow, "id" | "member_number" | "created_at">>;
         Relationships: [];
       };
       player_settings: {
@@ -99,6 +115,29 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Omit<PlayerGearRow, "id" | "user_id" | "created_at">>;
+        Relationships: [];
+      };
+      badges: {
+        Row: BadgeRow;
+        Insert: {
+          id?: string;
+          slug: string;
+          name: string;
+          description?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+        Update: Partial<Omit<BadgeRow, "id" | "created_at">>;
+        Relationships: [];
+      };
+      profile_badges: {
+        Row: ProfileBadgeRow;
+        Insert: {
+          profile_id: string;
+          badge_id: string;
+          awarded_at?: string;
+        };
+        Update: Partial<Omit<ProfileBadgeRow, "profile_id" | "badge_id">>;
         Relationships: [];
       };
     };

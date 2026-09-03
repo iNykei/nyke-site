@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { getPlayerByUsername, players } from "@/lib/mock-data";
-import type { GearItem, PlayerGear, PlayerProfile } from "@/types";
-import type { GearItemRow, PlayerGearRow, PlayerSettingsRow, ProfileRow } from "@/types/database";
+import type { GearItem, PlayerGear, PlayerProfile, ProfileBadge } from "@/types";
+import type { BadgeRow, GearItemRow, PlayerGearRow, PlayerSettingsRow, ProfileBadgeRow, ProfileRow } from "@/types/database";
 
 const gearCategories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"] as const;
+const identityProfileColumns = "id, username, display_name, avatar_url, banner_url, member_number, bio, region, created_at, updated_at";
 const profileColumns = "id, username, display_name, avatar_url, banner_url, bio, region, created_at, updated_at";
 const legacyProfileColumns = "id, username, display_name, avatar_url, bio, region, created_at, updated_at";
 type ServerSupabaseClient = NonNullable<Awaited<ReturnType<typeof createClient>>>;
@@ -14,10 +15,10 @@ function assertQuerySucceeded(error: { message: string } | null, message: string
   }
 }
 
-function isMissingBannerColumn(error: { code?: string; message: string } | null) {
+function isMissingColumn(error: { code?: string; message: string } | null, column: string) {
   return Boolean(
     error &&
-      error.message.includes("banner_url") &&
+      error.message.includes(column) &&
       (error.code === "42703" || error.code === "PGRST204"),
   );
 }
@@ -27,16 +28,33 @@ async function queryProfile(
   column: "id" | "username",
   value: string,
 ) {
+  const identityResponse = await supabase.from("profiles").select(identityProfileColumns).eq(column, value).maybeSingle();
+
+  if (!identityResponse.error) {
+    return { data: identityResponse.data as ProfileRow | null, error: null };
+  }
+
+  if (!isMissingColumn(identityResponse.error, "member_number") && !isMissingColumn(identityResponse.error, "banner_url")) {
+    return { data: null, error: identityResponse.error };
+  }
+
   const response = await supabase.from("profiles").select(profileColumns).eq(column, value).maybeSingle();
 
-  if (!isMissingBannerColumn(response.error)) {
-    return { data: response.data as ProfileRow | null, error: response.error };
+  if (!response.error) {
+    return {
+      data: response.data ? ({ ...response.data, member_number: null } as ProfileRow) : null,
+      error: null,
+    };
+  }
+
+  if (!isMissingColumn(response.error, "banner_url")) {
+    return { data: null, error: response.error };
   }
 
   const legacyResponse = await supabase.from("profiles").select(legacyProfileColumns).eq(column, value).maybeSingle();
 
   return {
-    data: legacyResponse.data ? ({ ...legacyResponse.data, banner_url: null } as ProfileRow) : null,
+    data: legacyResponse.data ? ({ ...legacyResponse.data, banner_url: null, member_number: null } as ProfileRow) : null,
     error: legacyResponse.error,
   };
 }
@@ -81,6 +99,14 @@ function rowToGearItem(row: GearItemRow): GearItem {
   };
 }
 
+function rowToProfileBadge(row: BadgeRow): ProfileBadge {
+  return {
+    slug: row.slug,
+    name: row.name,
+    description: row.description || undefined,
+  };
+}
+
 function buildGear(rows: GearItemRow[]): PlayerGear {
   const byCategory = new Map(rows.map((row) => [row.category, rowToGearItem(row)]));
 
@@ -98,10 +124,17 @@ function getActiveGear(gear: PlayerGear) {
   return gearCategories.map((category) => gear[category]);
 }
 
-function buildRealPlayer(profile: ProfileRow, settings: PlayerSettingsRow | null, gearRows: GearItemRow[]): PlayerProfile {
+function buildRealPlayer(
+  profile: ProfileRow,
+  settings: PlayerSettingsRow | null,
+  gearRows: GearItemRow[],
+  badges: ProfileBadge[],
+): PlayerProfile {
   return {
     username: profile.username,
     displayName: profile.display_name || profile.username,
+    memberNumber: profile.member_number,
+    badges,
     avatarUrl: profile.avatar_url || undefined,
     bannerUrl: profile.banner_url || undefined,
     avatarSeed: (profile.display_name || profile.username).slice(0, 2).toUpperCase(),
@@ -182,7 +215,18 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
       : null;
   }
 
-  const [{ data: settings, error: settingsError }, { data: playerGear, error: playerGearError }] = await Promise.all([
+  const profileBadgesPromise = realProfile.member_number === null
+    ? Promise.resolve({ data: [] as ProfileBadgeRow[], error: null })
+    : supabase
+        .from("profile_badges")
+        .select("profile_id, badge_id, awarded_at")
+        .eq("profile_id", realProfile.id);
+
+  const [
+    { data: settings, error: settingsError },
+    { data: playerGear, error: playerGearError },
+    { data: profileBadges, error: profileBadgesError },
+  ] = await Promise.all([
     supabase
       .from("player_settings")
       .select("id, user_id, game, rank, dpi, sensitivity, resolution, polling_rate, created_at, updated_at")
@@ -193,31 +237,48 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
       .select("id, user_id, gear_item_id, category, is_active, created_at")
       .eq("user_id", realProfile.id)
       .eq("is_active", true),
+    profileBadgesPromise,
   ]);
 
   assertQuerySucceeded(settingsError, "Could not load the player's settings.");
   assertQuerySucceeded(playerGearError, "Could not load the player's gear.");
+  assertQuerySucceeded(profileBadgesError, "Could not load the player's badges.");
 
   const gearIds = ((playerGear ?? []) as PlayerGearRow[]).map((row) => row.gear_item_id);
-  const { data: gearRows, error: gearRowsError } = gearIds.length
-    ? await supabase
-        .from("gear_items")
-        .select("id, brand, model, category, created_at")
-        .in("id", gearIds)
-    : { data: [], error: null };
+  const badgeIds = ((profileBadges ?? []) as ProfileBadgeRow[]).map((row) => row.badge_id);
+  const [
+    { data: gearRows, error: gearRowsError },
+    { data: badgeRows, error: badgeRowsError },
+  ] = await Promise.all([
+    gearIds.length
+      ? supabase
+          .from("gear_items")
+          .select("id, brand, model, category, created_at")
+          .in("id", gearIds)
+      : Promise.resolve({ data: [] as GearItemRow[], error: null }),
+    badgeIds.length
+      ? supabase
+          .from("badges")
+          .select("id, slug, name, description, display_order, created_at")
+          .in("id", badgeIds)
+          .order("display_order", { ascending: true })
+      : Promise.resolve({ data: [] as BadgeRow[], error: null }),
+  ]);
 
   assertQuerySucceeded(gearRowsError, "Could not load the gear catalog.");
+  assertQuerySucceeded(badgeRowsError, "Could not load badge definitions.");
 
   const activeGear = gearCategories.flatMap((category) => {
     const row = ((gearRows ?? []) as GearItemRow[]).find((item) => item.category === category);
     return row ? [rowToGearItem(row)] : [];
   });
+  const badges = ((badgeRows ?? []) as BadgeRow[]).map(rowToProfileBadge);
 
   return {
     source: "real",
     profile: realProfile,
     settings: settings ?? null,
-    player: buildRealPlayer(realProfile, settings ?? null, (gearRows ?? []) as GearItemRow[]),
+    player: buildRealPlayer(realProfile, settings ?? null, (gearRows ?? []) as GearItemRow[], badges),
     activeGear,
     isOwner: current.user?.id === realProfile.id,
   };

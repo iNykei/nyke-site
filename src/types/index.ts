@@ -36,9 +36,17 @@ export type PlayerGear = {
   skates: GearItem;
 };
 
+export type ProfileBadge = {
+  slug: string;
+  name: string;
+  description?: string;
+};
+
 export type PlayerProfile = {
   username: string;
   displayName: string;
+  memberNumber: number | null;
+  badges: ProfileBadge[];
   avatarUrl?: string;
   bannerUrl?: string;
   avatarSeed: string;

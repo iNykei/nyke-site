@@ -1,5 +1,7 @@
 import type { PlayerProfile } from "@/types";
 import { AvatarMark } from "./AvatarMark";
+import { BadgeList } from "./profile/BadgeList";
+import { MemberNumber } from "./profile/MemberNumber";
 import { ProfileActions } from "./profile/ProfileActions";
 
 type ProfileHeaderProps = {
@@ -34,6 +36,12 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
             <h1 className="mt-1 break-words font-serif text-4xl font-black leading-[1.05] text-zinc-950 sm:text-5xl">
               {player.displayName}
             </h1>
+            {player.memberNumber !== null || player.badges.length > 0 ? (
+              <div className="mt-3 flex flex-col items-start gap-2.5">
+                <MemberNumber value={player.memberNumber} />
+                <BadgeList badges={player.badges} />
+              </div>
+            ) : null}
             {metadata.length > 0 ? (
               <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-zinc-600">
                 {metadata.map((item, index) => (
