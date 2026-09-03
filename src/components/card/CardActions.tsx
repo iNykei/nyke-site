@@ -56,6 +56,10 @@ export function CardActions({ data }: CardActionsProps) {
     setFeedback("preparing");
     await document.fonts.ready;
     await waitForImages(node);
+    node.style.setProperty("--card-rx", "0deg");
+    node.style.setProperty("--card-ry", "0deg");
+    node.style.setProperty("--card-mx", "50%");
+    node.style.setProperty("--card-my", "50%");
     node.dataset.exporting = "true";
 
     try {
@@ -67,7 +71,7 @@ export function CardActions({ data }: CardActionsProps) {
         canvasWidth: 1080,
         canvasHeight: 1350,
         pixelRatio: 1,
-        backgroundColor: "#f8f3ea",
+        backgroundColor: "#ffffff",
         cacheBust: true,
         imagePlaceholder,
         onImageErrorHandler: () => { usedImageFallback = true; },
