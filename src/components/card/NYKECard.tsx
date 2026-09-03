@@ -33,6 +33,9 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
   const [scale, setScale] = useState(1);
   const { player } = data;
   const isFounder = player.badges.some((badge) => badge.slug === "founder");
+  const hasRank = Boolean(player.settings.game || player.settings.rank);
+  const hasAim = [player.settings.dpi, player.settings.sensitivity].some((value) => value !== null) || Boolean(player.settings.resolution || player.settings.pollingRate);
+  const hasLoadout = data.activeGear.some((item) => ["mouse", "keyboard", "monitor"].includes(item.category) && !item.id.startsWith("not-configured-"));
   const memberNumber = player.memberNumber === null ? null : formatMemberNumber(player.memberNumber);
   const identityPattern = `@${player.username} · ${memberNumber ? `${memberNumber} · ` : ""}NYKE`;
 
@@ -123,8 +126,10 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           </div>
 
           <CardIdentity player={player} />
-          <CardAim player={player} />
-          <CardLoadout activeGear={data.activeGear} />
+          <div className={`relative z-10 flex h-[275px] flex-col ${!hasRank && !hasAim && !hasLoadout ? "justify-end" : ""}`}>
+            <CardAim player={player} />
+            <CardLoadout activeGear={data.activeGear} prominent={!hasAim} />
+          </div>
 
           <footer className="relative z-10 flex h-[58px] items-center justify-between px-8">
             <div><p className="font-serif text-[18px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[320px] truncate font-mono text-[8px] text-zinc-500">nyke.life/{player.username}</p></div>

@@ -24,9 +24,9 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
       </div>
 
       {player.memberNumber !== null ? (
-        <div className="absolute right-8 top-0 -translate-y-1/2 rounded-md border border-zinc-200 bg-white px-4 py-2 text-right">
+        <div className="absolute right-8 top-4 text-right">
           <p className="text-[7px] font-bold uppercase tracking-[0.16em] text-zinc-400">NYKE member</p>
-          <p className="mt-0.5 font-mono text-[17px] font-bold tabular-nums tracking-[0.04em] text-zinc-950">{formatMemberNumber(player.memberNumber)}</p>
+          <p className="mt-1 font-mono text-[17px] font-bold tabular-nums tracking-[0.04em] text-zinc-950">{formatMemberNumber(player.memberNumber)}</p>
         </div>
       ) : null}
 

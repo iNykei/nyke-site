@@ -15,10 +15,14 @@ export function CardAim({ player }: { player: PlayerProfile }) {
         ? { value: String(settings.sensitivity), label: "Sensitivity", technical: false }
         : null;
 
+  if (!hasRank && !hasAim) {
+    return null;
+  }
+
   return (
-    <section className="relative z-10 mx-8 h-[183px] border-t border-zinc-200 py-4">
+    <section className="relative z-10 mx-8 border-t border-zinc-200">
       {hasRank ? (
-        <div className="flex min-h-10 items-end justify-between gap-5">
+        <div className="flex min-h-[54px] items-center justify-between gap-5 py-3">
           <div className="min-w-0">
             <p className="text-[7px] font-bold uppercase tracking-[0.15em] text-zinc-400">Game</p>
             <p className="mt-1 truncate text-[11px] font-semibold uppercase text-zinc-600">{settings.game || "Unspecified"}</p>
@@ -28,7 +32,7 @@ export function CardAim({ player }: { player: PlayerProfile }) {
       ) : null}
 
       {hasAim ? (
-        <div className={`grid items-end gap-7 ${hasRank ? "mt-5" : "mt-2"} ${primary ? "grid-cols-[1.08fr_1fr]" : "grid-cols-1"}`}>
+        <div className={`grid min-h-[112px] items-center gap-7 py-4 ${hasRank ? "border-t border-zinc-100" : ""} ${primary ? "grid-cols-[1.08fr_1fr]" : "grid-cols-1"}`}>
           {primary ? (
             <div>
               <p className="text-[7px] font-bold uppercase tracking-[0.16em] text-zinc-400">Aim signature</p>
@@ -42,15 +46,10 @@ export function CardAim({ player }: { player: PlayerProfile }) {
             {cm360 !== null ? <div className="col-span-2"><dt className="text-[7px] font-bold uppercase text-zinc-400">Physical signature</dt><dd className="mt-1 font-mono text-[14px] font-semibold tabular-nums text-lime-700">{formatNumber(cm360, 2)} <span className="text-[8px] text-zinc-500">CM / 360</span></dd></div> : null}
           </dl>
         </div>
-      ) : (
-        <div className={`${hasRank ? "mt-5" : "mt-10"}`}>
-          <p className="text-[7px] font-bold uppercase tracking-[0.16em] text-zinc-400">Aim</p>
-          <p className="mt-2 text-[11px] text-zinc-500">Aim signature not configured</p>
-        </div>
-      )}
+      ) : null}
 
       {[settings.resolution, settings.pollingRate].some(Boolean) ? (
-        <p className="absolute bottom-4 left-0 font-mono text-[8px] uppercase tracking-[0.06em] text-zinc-500">{[settings.resolution, settings.pollingRate].filter(Boolean).join("  ·  ")}</p>
+        <p className="border-t border-zinc-100 py-2 font-mono text-[8px] uppercase tracking-[0.06em] text-zinc-500">{[settings.resolution, settings.pollingRate].filter(Boolean).join("  ·  ")}</p>
       ) : null}
     </section>
   );
