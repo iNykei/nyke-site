@@ -14,7 +14,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
   return (
     <section id="home" className="overflow-hidden rounded-lg border border-zinc-700 bg-[#1b1b1f] shadow-2xl shadow-black/20">
       <div className="h-[190px] bg-zinc-100 sm:h-[240px]">
-        <div className="h-full w-full opacity-85 [background-image:radial-gradient(circle_at_78%_16%,rgba(34,211,238,.20),transparent_24%),linear-gradient(135deg,rgba(255,255,255,.10),rgba(124,58,237,.12)),repeating-linear-gradient(135deg,rgba(0,0,0,.07)_0_1px,transparent_1px_8px)]" />
+        <div className="h-full w-full opacity-85 [background-image:radial-gradient(circle_at_78%_16%,rgba(190,242,100,.16),transparent_24%),linear-gradient(135deg,rgba(255,255,255,.10),rgba(244,114,182,.12)),repeating-linear-gradient(135deg,rgba(0,0,0,.07)_0_1px,transparent_1px_8px)]" />
       </div>
       <div className="relative bg-[#1b1b1f]/95 px-4 pb-4 pt-8 sm:px-5">
         <div className="absolute -top-12 left-5">
@@ -35,7 +35,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-semibold leading-[25px] text-zinc-50">{player.displayName}</h1>
-              <span className="rounded-full bg-cyan-300/15 px-1.5 py-0.5 text-[10px] font-bold text-cyan-200">
+              <span className="rounded-full bg-lime-300/15 px-1.5 py-0.5 text-[10px] font-bold text-lime-200">
                 {player.settings.rank}
               </span>
             </div>
@@ -48,7 +48,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
             {isOwner ? (
               <Link
                 href="/settings/profile"
-                className="inline-flex h-9 items-center rounded-md border border-cyan-300/40 bg-cyan-300/10 px-3 text-xs font-semibold text-cyan-100 transition duration-200 hover:border-cyan-200 hover:bg-cyan-300/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/40"
+                className="inline-flex h-9 items-center rounded-md border border-rose-300/40 bg-rose-300/10 px-3 text-xs font-semibold text-rose-100 transition duration-200 hover:border-rose-200 hover:bg-rose-300/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/40"
               >
                 Edit profile
               </Link>
@@ -57,7 +57,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
               <button
                 key={index}
                 type="button"
-                className="grid size-9 place-items-center rounded-md border border-zinc-600 bg-zinc-800 text-zinc-300 transition duration-200 hover:border-zinc-400 hover:bg-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/40"
+                className="grid size-9 place-items-center rounded-md border border-zinc-600 bg-zinc-800 text-zinc-300 transition duration-200 hover:border-rose-300/40 hover:bg-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/40"
                 aria-label={`Profile action ${index + 1}`}
               >
                 <Icon size={15} />

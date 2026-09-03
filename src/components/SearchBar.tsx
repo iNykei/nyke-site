@@ -12,8 +12,8 @@ type SearchBarProps = {
 export function SearchBar({ value, onChange, placeholder, tone = "dark" }: SearchBarProps) {
   const inputClass =
     tone === "light"
-      ? "border-zinc-200 bg-white text-zinc-900 placeholder:text-zinc-400 focus:border-cyan-300"
-      : "border-white/10 bg-white/[0.035] text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-300/50";
+      ? "border-zinc-200 bg-white text-zinc-900 placeholder:text-zinc-400 focus:border-rose-300"
+      : "border-white/10 bg-white/[0.035] text-zinc-100 placeholder:text-zinc-600 focus:border-rose-300/50";
 
   return (
     <label className="relative block">

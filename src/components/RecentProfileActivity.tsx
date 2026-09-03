@@ -39,10 +39,10 @@ export function RecentProfileActivity({ activities }: RecentProfileActivityProps
               <Link
                 key={activity.id}
                 href={`/${player.username}`}
-                className="group block overflow-hidden rounded-xl border border-zinc-200 bg-white transition duration-200 hover:border-zinc-300 hover:bg-zinc-50/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60"
+                className="group block overflow-hidden rounded-xl border border-zinc-200 bg-white transition duration-200 hover:border-zinc-300 hover:bg-zinc-50/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
               >
                 <div className="h-[74px] bg-zinc-100">
-                  <div className="h-full opacity-80 [background-image:radial-gradient(circle_at_82%_18%,rgba(34,211,238,.20),transparent_26%),repeating-linear-gradient(135deg,rgba(0,0,0,.06)_0_1px,transparent_1px_7px)]" />
+                  <div className="h-full opacity-80 [background-image:radial-gradient(circle_at_82%_18%,rgba(253,164,175,.20),transparent_26%),repeating-linear-gradient(135deg,rgba(0,0,0,.06)_0_1px,transparent_1px_7px)]" />
                 </div>
                 <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3">
                   <AvatarMark seed={player.avatarSeed} size="md" />
@@ -52,7 +52,7 @@ export function RecentProfileActivity({ activities }: RecentProfileActivityProps
                       {activity.activity} / {player.settings.rank} / {player.region}
                     </p>
                   </div>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-violet-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-rose-400 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
                     {index === 0 ? <Radio size={10} /> : null}
                     {activity.relativeTime}
                   </span>
@@ -83,7 +83,7 @@ export function RecentProfileActivity({ activities }: RecentProfileActivityProps
                   <Link
                     key={`${activity.id}-${index}`}
                     href={`/${player.username}`}
-                    className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-2.5 transition duration-150 hover:bg-zinc-50 focus:outline-none focus-visible:bg-cyan-50"
+                    className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-2.5 transition duration-150 hover:bg-zinc-50 focus:outline-none focus-visible:bg-rose-50"
                   >
                     <AvatarMark seed={player.avatarSeed} size="sm" />
                     <div className="min-w-0">

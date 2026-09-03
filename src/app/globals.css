@@ -23,8 +23,8 @@ body {
 }
 
 ::selection {
-  background: rgba(103, 232, 249, 0.28);
-  color: #f4f4f5;
+  background: rgba(253, 164, 175, 0.34);
+  color: #18181b;
 }
 
 body:has(.page-light) {
@@ -59,6 +59,104 @@ body:has(.page-dark) .site-icon-btn {
   border-color: #3f3f46;
   background: rgba(39, 39, 42, 0.7);
   color: #d4d4d8;
+}
+
+.nyke-hero-stage {
+  perspective: 1200px;
+}
+
+.nyke-hero-interactive {
+  --nyke-rx: 0deg;
+  --nyke-ry: 0deg;
+  --nyke-mx: 50%;
+  --nyke-my: 50%;
+  transform: perspective(1200px) rotateX(var(--nyke-rx)) rotateY(var(--nyke-ry)) translateY(0);
+  transform-style: preserve-3d;
+  transition:
+    transform 440ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 220ms ease;
+  will-change: transform;
+}
+
+.nyke-hero-interactive::after {
+  content: "";
+  position: absolute;
+  inset: -28px;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--nyke-mx) var(--nyke-my),
+    rgba(253, 164, 175, 0.22),
+    rgba(251, 113, 133, 0.08) 38%,
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.nyke-hero-sweep {
+  position: absolute;
+  left: 2%;
+  top: 0;
+  z-index: 2;
+  height: 24%;
+  width: 96%;
+  pointer-events: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, rgba(253, 164, 175, 0.42), transparent);
+  filter: blur(18px);
+  opacity: 0;
+  transform: translateY(-160%);
+}
+
+.nyke-hero-electric {
+  position: absolute;
+  left: 9%;
+  z-index: 2;
+  height: 1px;
+  width: 82%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(244, 114, 182, 0.88), rgba(190, 242, 100, 0.52), transparent);
+  filter: blur(0.3px);
+  opacity: 0;
+  transform-origin: center;
+}
+
+.nyke-hero-electric-a {
+  top: 35%;
+  transform: rotate(-5deg) scaleX(0.28);
+}
+
+.nyke-hero-electric-b {
+  top: 61%;
+  transform: rotate(4deg) scaleX(0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nyke-hero-interactive:hover {
+    transform: perspective(1200px) rotateX(var(--nyke-rx)) rotateY(var(--nyke-ry)) translateY(-4px) scale(1.004);
+  }
+
+  .nyke-hero-interactive:hover::after {
+    opacity: 1;
+  }
+}
+
+.nyke-hero-burst {
+  filter: saturate(1.04);
+}
+
+.nyke-hero-burst .nyke-hero-sweep {
+  animation: nyke-hero-sweep 520ms ease-out forwards;
+}
+
+.nyke-hero-burst .nyke-hero-electric-a {
+  animation: nyke-hero-electric-a 220ms ease-out forwards;
+}
+
+.nyke-hero-burst .nyke-hero-electric-b {
+  animation: nyke-hero-electric-b 180ms ease-out 50ms forwards;
 }
 
 .activity-mask {
@@ -137,6 +235,54 @@ body:has(.page-dark) .site-icon-btn {
   }
 }
 
+@keyframes nyke-hero-sweep {
+  0% {
+    opacity: 0;
+    transform: translateY(-160%);
+  }
+
+  22% {
+    opacity: 0.92;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(460%);
+  }
+}
+
+@keyframes nyke-hero-electric-a {
+  0% {
+    opacity: 0;
+    transform: rotate(-5deg) scaleX(0.24) translateX(-6%);
+  }
+
+  24% {
+    opacity: 0.88;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(-5deg) scaleX(1) translateX(8%);
+  }
+}
+
+@keyframes nyke-hero-electric-b {
+  0% {
+    opacity: 0;
+    transform: rotate(4deg) scaleX(0.2) translateX(-8%);
+  }
+
+  28% {
+    opacity: 0.78;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(4deg) scaleX(0.94) translateX(9%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .activity-scroll {
     animation: none;
@@ -148,5 +294,18 @@ body:has(.page-dark) .site-icon-btn {
 
   .profile-stream-track {
     animation: none;
+  }
+
+  .nyke-hero-interactive,
+  .nyke-hero-interactive:hover {
+    transform: none;
+    transition: none;
+  }
+
+  .nyke-hero-interactive::after,
+  .nyke-hero-sweep,
+  .nyke-hero-electric {
+    animation: none !important;
+    opacity: 0 !important;
   }
 }

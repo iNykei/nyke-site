@@ -58,44 +58,44 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
 
       <Section title="Profile">
         <Field label="Display name">
-          <input name="display_name" defaultValue={data.profile.display_name ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="display_name" defaultValue={data.profile.display_name ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Username">
-          <input name="username" defaultValue={data.profile.username} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="username" defaultValue={data.profile.username} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Region">
-          <input name="region" defaultValue={data.profile.region ?? ""} placeholder="CN, NA, EU..." className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="region" defaultValue={data.profile.region ?? ""} placeholder="CN, NA, EU..." className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Avatar URL">
-          <input name="avatar_url" defaultValue={data.profile.avatar_url ?? ""} placeholder="https://..." className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="avatar_url" defaultValue={data.profile.avatar_url ?? ""} placeholder="https://..." className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <label className="block sm:col-span-2">
           <span className="text-sm text-zinc-600">Bio</span>
-          <textarea name="bio" defaultValue={data.profile.bio ?? ""} rows={4} maxLength={240} className="mt-2 w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <textarea name="bio" defaultValue={data.profile.bio ?? ""} rows={4} maxLength={240} className="mt-2 w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </label>
       </Section>
 
       <Section title="Game">
         <Field label="Game">
-          <input name="game" defaultValue={data.settings?.game ?? ""} placeholder="VALORANT" className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="game" defaultValue={data.settings?.game ?? ""} placeholder="VALORANT" className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Rank">
-          <input name="rank" defaultValue={data.settings?.rank ?? ""} placeholder="Immortal" className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="rank" defaultValue={data.settings?.rank ?? ""} placeholder="Immortal" className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
       </Section>
 
       <Section title="Settings">
         <Field label="DPI">
-          <input name="dpi" type="number" min={100} max={12800} defaultValue={data.settings?.dpi ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="dpi" type="number" min={100} max={12800} defaultValue={data.settings?.dpi ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Sensitivity">
-          <input name="sensitivity" type="number" min="0.001" step="0.001" defaultValue={data.settings?.sensitivity ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="sensitivity" type="number" min="0.001" step="0.001" defaultValue={data.settings?.sensitivity ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Resolution">
-          <input name="resolution" defaultValue={data.settings?.resolution ?? ""} placeholder="1920 x 1080" className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="resolution" defaultValue={data.settings?.resolution ?? ""} placeholder="1920 x 1080" className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <Field label="Polling rate">
-          <input name="polling_rate" type="number" min={125} max={8000} defaultValue={data.settings?.polling_rate ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300" />
+          <input name="polling_rate" type="number" min={125} max={8000} defaultValue={data.settings?.polling_rate ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <div className="grid grid-cols-2 gap-2 sm:col-span-2">
           <div className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-600">eDPI: <span className="font-semibold text-zinc-950">{formatNumber(edpi, 0)}</span></div>
@@ -106,7 +106,7 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
       <Section title="Gear">
         {categories.map((category) => (
           <Field key={category} label={category}>
-            <select name={`gear_${category}`} defaultValue={data.activeGear[category] ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300">
+            <select name={`gear_${category}`} defaultValue={data.activeGear[category] ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300">
               <option value="">Not configured</option>
               {data.gearItems
                 .filter((item) => item.category === category)

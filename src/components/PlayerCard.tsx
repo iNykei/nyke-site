@@ -17,14 +17,14 @@ export function PlayerCard({ player, tone = "light" }: PlayerCardProps) {
   return (
     <Link
       href={`/${player.username}`}
-      className={`group block h-[260px] overflow-hidden rounded-xl border transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60 ${
+      className={`group block h-[260px] overflow-hidden rounded-xl border transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 ${
         isLight
           ? "border-zinc-200 bg-white text-zinc-950 hover:border-zinc-300 hover:bg-zinc-50/40"
           : "border-zinc-700 bg-[#1b1b1f] text-zinc-100 hover:border-zinc-500 hover:bg-[#202024]"
       }`}
     >
       <div className={`h-[98px] ${isLight ? "bg-zinc-100" : "bg-zinc-800"}`}>
-        <div className="h-full w-full opacity-80 [background-image:radial-gradient(circle_at_80%_15%,rgba(34,211,238,.20),transparent_24%),repeating-linear-gradient(135deg,rgba(0,0,0,.07)_0_1px,transparent_1px_7px)]" />
+        <div className="h-full w-full opacity-80 [background-image:radial-gradient(circle_at_80%_15%,rgba(253,164,175,.20),transparent_24%),repeating-linear-gradient(135deg,rgba(0,0,0,.07)_0_1px,transparent_1px_7px)]" />
       </div>
       <div className="relative px-3 pb-3 pt-8 sm:px-4">
         <div className="absolute -top-8 left-4">
@@ -32,7 +32,7 @@ export function PlayerCard({ player, tone = "light" }: PlayerCardProps) {
         </div>
         <div className="absolute right-3 top-3">
           {player.status !== "offline" ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-violet-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+            <span className="inline-flex items-center gap-1 rounded-full bg-lime-400 px-2 py-0.5 text-[10px] font-bold uppercase text-zinc-950">
               <Radio size={10} />
               {player.status === "online" ? "live" : "scrim"}
             </span>

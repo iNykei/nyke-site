@@ -39,7 +39,7 @@ function rowToGearItem(row: GearItemRow): GearItem {
     maker: row.brand,
     category: row.category as GearItem["category"],
     summary: `${row.brand} ${row.model}`,
-    accent: "from-zinc-600 to-cyan-300/40",
+    accent: "from-zinc-600 to-lime-300/30",
     specs: {},
   };
 }
@@ -77,7 +77,7 @@ function buildRealPlayer(profile: ProfileRow, settings: PlayerSettingsRow | null
       pollingRate: settings?.polling_rate ? `${settings.polling_rate} Hz` : "Not configured",
     },
     gear: buildGear(gearRows),
-    highlights: ["Profile identity is synced from Supabase.", "Settings and gear can be edited by the owner.", "Derived aim metrics are calculated at render time."],
+    highlights: [],
   };
 }
 

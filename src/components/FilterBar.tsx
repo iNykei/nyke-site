@@ -15,11 +15,11 @@ export function FilterBar({ options, active, onChange, tone = "dark" }: FilterBa
           key={option}
           type="button"
           onClick={() => onChange(option)}
-          className={`h-9 rounded-md border px-3 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/35 ${
+          className={`h-9 rounded-md border px-3 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/40 ${
             active === option
               ? tone === "light"
-                ? "border-cyan-300 bg-cyan-50 text-cyan-700"
-                : "border-cyan-300/60 bg-cyan-300/10 text-cyan-100"
+                ? "border-rose-300 bg-rose-50 text-rose-700"
+                : "border-rose-300/60 bg-rose-300/10 text-rose-100"
               : tone === "light"
                 ? "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-950"
                 : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/20 hover:text-zinc-100"

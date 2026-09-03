@@ -17,16 +17,16 @@ export async function Navbar() {
   return (
     <header className="site-header sticky top-0 z-40 h-[57px] border-b border-zinc-200/80 bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex h-[57px] max-w-[1232px] items-center justify-between px-4">
-        <Link href="/" className="site-logo flex items-baseline gap-0.5 text-[20px] font-black italic leading-none text-zinc-950 transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50">
+        <Link href="/" className="site-logo flex items-baseline gap-0.5 text-[20px] font-black italic leading-none text-zinc-950 transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60">
           <span>nyke</span>
-          <span className="text-cyan-400">.</span>
+          <span className="text-rose-400">.</span>
         </Link>
         <nav className="hidden h-full items-center gap-3 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="site-nav-link flex h-full items-center border-b-2 border-transparent px-3 text-xs font-medium text-zinc-600 transition duration-150 hover:border-cyan-300 hover:text-zinc-950 focus:outline-none focus-visible:border-cyan-400"
+              className="site-nav-link flex h-full items-center border-b-2 border-transparent px-3 text-xs font-medium text-zinc-600 transition duration-150 hover:border-rose-300 hover:text-zinc-950 focus:outline-none focus-visible:border-rose-400"
             >
               {item.label}
             </Link>
@@ -35,7 +35,7 @@ export async function Navbar() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-2 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50 sm:flex"
+            className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-2 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 sm:flex"
           >
             <Search size={14} />
             Search
@@ -43,7 +43,7 @@ export async function Navbar() {
           </button>
           <Link
             href="/gear"
-            className="site-icon-btn grid size-8 place-items-center rounded-md border border-zinc-200 bg-white/70 text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50"
+            className="site-icon-btn grid size-8 place-items-center rounded-md border border-zinc-200 bg-white/70 text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
             aria-label="Gear"
           >
             <Monitor size={15} />
@@ -52,7 +52,7 @@ export async function Navbar() {
             <>
               <Link
                 href={`/${displayUsername}`}
-                className="site-icon-btn flex h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-2 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50"
+                className="site-icon-btn flex h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-2 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
               >
                 <span className="grid size-5 place-items-center rounded-full bg-zinc-950 text-[9px] font-bold text-white">{profileInitial}</span>
                 <span className="hidden max-w-24 truncate sm:inline">{displayUsername}</span>
@@ -63,13 +63,13 @@ export async function Navbar() {
             <>
               <Link
                 href="/login"
-                className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-3 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50 sm:flex"
+                className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-3 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 sm:flex"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
-                className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-3 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50 sm:flex"
+                className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-3 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 sm:flex"
               >
                 <UserPlus size={14} />
                 Join
@@ -78,7 +78,7 @@ export async function Navbar() {
           )}
           <button
             type="button"
-            className="site-icon-btn grid size-8 place-items-center rounded-md border border-zinc-200 bg-white/70 text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50 md:hidden"
+            className="site-icon-btn grid size-8 place-items-center rounded-md border border-zinc-200 bg-white/70 text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 md:hidden"
             aria-label="Open menu"
           >
             <Menu size={16} />

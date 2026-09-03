@@ -109,7 +109,7 @@ export function RegisterForm() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="player@example.com"
-            className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300"
+            className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300"
             autoComplete="email"
           />
         </label>
@@ -119,7 +119,7 @@ export function RegisterForm() {
             value={username}
             onChange={(event) => setUsername(event.target.value.toLowerCase())}
             placeholder="cyx"
-            className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300"
+            className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300"
             autoComplete="username"
           />
         </label>
@@ -131,7 +131,7 @@ export function RegisterForm() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="••••••••"
-              className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300"
+              className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300"
               autoComplete="new-password"
             />
           </label>
@@ -142,7 +142,7 @@ export function RegisterForm() {
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
               placeholder="••••••••"
-              className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-cyan-300"
+              className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300"
               autoComplete="new-password"
             />
           </label>

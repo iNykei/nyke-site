@@ -56,6 +56,7 @@ export type ProfileActivity = {
   username: string;
   activity: string;
   relativeTime: string;
+  source?: "demo" | "real";
 };
 
 export type TrendingGearItem = GearItem & {

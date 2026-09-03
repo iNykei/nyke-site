@@ -7,7 +7,7 @@ export const gearItems: GearItem[] = [
     maker: "Razer",
     category: "mouse",
     summary: "Lightweight wireless shape with a tournament-focused sensor package.",
-    accent: "from-zinc-700 to-cyan-300/60",
+    accent: "from-zinc-700 to-rose-300/60",
     specs: { weight: "54g", sensor: "Focus Pro 35K", connection: "2.4 GHz" },
   },
   {
@@ -34,7 +34,7 @@ export const gearItems: GearItem[] = [
     maker: "ARTISAN",
     category: "mousepad",
     summary: "Control-leaning cloth pad with clean micro-adjustment feedback.",
-    accent: "from-zinc-500 to-cyan-300/30",
+    accent: "from-zinc-500 to-lime-300/30",
     specs: { size: "490 x 420mm", surface: "Control", base: "Soft" },
   },
   {
@@ -61,7 +61,7 @@ export const gearItems: GearItem[] = [
     maker: "Wooting",
     category: "keyboard",
     summary: "Analog 60 percent keyboard with rapid trigger tuning.",
-    accent: "from-cyan-300/70 to-zinc-800",
+    accent: "from-rose-300/70 to-zinc-800",
     specs: { layout: "60%", switch: "Hall effect", feature: "Rapid trigger" },
   },
   {
@@ -70,7 +70,7 @@ export const gearItems: GearItem[] = [
     maker: "DrunkDeer",
     category: "keyboard",
     summary: "Hall effect keyboard with compact arrow-key layout.",
-    accent: "from-violet-300/70 to-zinc-800",
+    accent: "from-rose-200/70 to-zinc-800",
     specs: { layout: "75%", switch: "Magnetic", polling: "8K" },
   },
   {
@@ -79,7 +79,7 @@ export const gearItems: GearItem[] = [
     maker: "ASUS",
     category: "monitor",
     summary: "High-refresh OLED display tuned for competitive clarity.",
-    accent: "from-zinc-600 to-cyan-200/70",
+    accent: "from-zinc-600 to-lime-200/60",
     specs: { size: "27 in", refresh: "360 Hz", panel: "OLED" },
   },
   {
@@ -106,7 +106,7 @@ export const gearItems: GearItem[] = [
     maker: "Logitech G",
     category: "headset",
     summary: "Wireless headset with familiar esports fit.",
-    accent: "from-zinc-500 to-sky-300/50",
+    accent: "from-zinc-500 to-lime-300/40",
     specs: { type: "Wireless", driver: "Graphene", weight: "345g" },
   },
   {
@@ -124,7 +124,7 @@ export const gearItems: GearItem[] = [
     maker: "Esports Tiger",
     category: "skates",
     summary: "Fast replacement skates for low-friction pad movement.",
-    accent: "from-sky-200 to-zinc-600",
+    accent: "from-lime-200 to-zinc-600",
     specs: { material: "PTFE", style: "Full fit", glide: "Fast" },
   },
 ];
@@ -140,7 +140,7 @@ export const players: PlayerProfile[] = [
     username: "cyx",
     displayName: "cyx",
     avatarSeed: "CX",
-    bio: "CN flex aimer tracking practical VALORANT settings and a compact OLED setup.",
+    bio: "Student, editor, and FPS player turning old NYKELIFE energy into a public aim profile.",
     region: "CN",
     role: "Flex",
     team: "Unsigned",
@@ -161,7 +161,7 @@ export const players: PlayerProfile[] = [
       headset: gear("hyperx-cloud-iii"),
       skates: gear("corepad-pro-dots"),
     },
-    highlights: ["Immortal ranked set", "240 eDPI baseline", "OLED clarity notes"],
+    highlights: ["VALORANT pressure plays", "240 eDPI baseline", "NYKELIFE clips and setup notes"],
   },
   {
     username: "nova",
@@ -379,6 +379,7 @@ export const profileActivities: ProfileActivity[] = Array.from({ length: 28 }, (
     id: `activity-${index + 1}`,
     username: player.username,
     activity: activityCopy[index % activityCopy.length],
+    source: "demo",
     relativeTime:
       index < 6
         ? `${index + 2}m ago`
