@@ -11,6 +11,7 @@ import {
   type ProfileMediaKind,
 } from "@/lib/profile-media";
 import { createClient } from "@/lib/supabase/client";
+import { AvatarCropDialog } from "./AvatarCropDialog";
 
 type ProfileMediaFieldProps = {
   fallbackText: string;
@@ -46,6 +47,7 @@ function statusClass(status: ProfileMediaActionResult["status"]) {
 export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, value }: ProfileMediaFieldProps) {
   const [busy, setBusy] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [avatarEditor, setAvatarEditor] = useState<{ fileName: string; url: string } | null>(null);
   const [result, setResult] = useState<ProfileMediaActionResult | null>(null);
   const previewRef = useRef<string | null>(null);
   const { description, title } = labels[kind];
@@ -57,8 +59,12 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
       if (previewRef.current) {
         URL.revokeObjectURL(previewRef.current);
       }
+
+      if (avatarEditor) {
+        URL.revokeObjectURL(avatarEditor.url);
+      }
     };
-  }, []);
+  }, [avatarEditor]);
 
   function setOperationBusy(nextBusy: boolean) {
     setBusy(nextBusy);
@@ -74,25 +80,46 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
     setPreviewUrl(null);
   }
 
-  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-
-    if (!file) {
-      return;
-    }
-
+  function validateFile(file: File) {
     const extension = getProfileMediaExtension(file.type);
 
     if (!extension) {
       setResult({ status: "error", message: "Choose a JPG, PNG, or WebP image." });
-      return;
+      return false;
     }
 
     if (file.size > PROFILE_MEDIA_LIMITS[kind]) {
       setResult({ status: "error", message: `${title} images must be ${kind === "avatar" ? "5" : "8"} MB or smaller.` });
+      return false;
+    }
+
+    return true;
+  }
+
+  function closeAvatarEditor() {
+    setAvatarEditor((current) => {
+      if (current) URL.revokeObjectURL(current.url);
+      return null;
+    });
+  }
+
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file || !validateFile(file)) return;
+
+    if (kind === "avatar") {
+      closeAvatarEditor();
+      setAvatarEditor({ fileName: file.name, url: URL.createObjectURL(file) });
+      setResult(null);
       return;
     }
+
+    await uploadFile(file);
+  }
+
+  async function uploadFile(file: File) {
 
     clearPreview();
     const localPreviewUrl = URL.createObjectURL(file);
@@ -151,6 +178,11 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
       clearPreview();
       setOperationBusy(false);
     }
+  }
+
+  async function handleAvatarApply(file: File) {
+    closeAvatarEditor();
+    await uploadFile(file);
   }
 
   async function handleRemove() {
@@ -235,6 +267,14 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
       </div>
 
       {result ? <p className={`mt-3 text-xs leading-5 ${statusClass(result.status)}`} aria-live="polite">{result.message}</p> : null}
+      {avatarEditor ? (
+        <AvatarCropDialog
+          fileName={avatarEditor.fileName}
+          sourceUrl={avatarEditor.url}
+          onCancel={closeAvatarEditor}
+          onApply={handleAvatarApply}
+        />
+      ) : null}
     </div>
   );
 }
