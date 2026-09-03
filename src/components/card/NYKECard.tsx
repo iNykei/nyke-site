@@ -131,9 +131,16 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           </div>
 
           <CardIdentity player={player} />
-          <div className="relative z-10 flex h-[228px] flex-col items-center justify-center gap-5 px-8 py-4">
+          <div className="relative z-10 flex h-[234px] flex-col items-center justify-center gap-5 px-8 py-4">
             <CardLoadout activeGear={data.activeGear} />
             <CardAim player={player} />
+            {player.settings.resolution || player.settings.pollingRate || data.activeGear.length > 0 ? (
+              <p className="flex max-w-[390px] flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[8px] uppercase tracking-[0.08em] text-zinc-400">
+                {player.settings.resolution ? <span>{player.settings.resolution}</span> : null}
+                {player.settings.pollingRate ? <span>{player.settings.pollingRate}</span> : null}
+                {data.activeGear.length > 0 ? <span>{data.activeGear.length} active peripherals</span> : null}
+              </p>
+            ) : null}
           </div>
 
           <footer className="relative z-10 flex h-[48px] items-center justify-between border-t border-zinc-100 bg-[#f4f4f5] px-7">
