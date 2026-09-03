@@ -136,7 +136,7 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
             <CardAim player={player} />
           </div>
 
-          <footer className="relative z-10 flex h-[48px] items-center justify-between border-t border-zinc-100 px-7">
+          <footer className="relative z-10 flex h-[48px] items-center justify-between border-t border-zinc-100 bg-[#f4f4f5] px-7">
             <div><p className="font-serif text-[16px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[300px] truncate font-mono text-[7px] text-zinc-400">nyke.life/{player.username}</p></div>
             {memberNumber ? <p className="font-mono text-[13px] font-bold tabular-nums tracking-[0.04em] text-zinc-700">{memberNumber}</p> : null}
           </footer>
