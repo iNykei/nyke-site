@@ -228,7 +228,7 @@ body:has(.page-dark) .site-icon-btn {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: #ffffff;
+  background: #f4f4f5;
 }
 
 .nyke-card-default-lockup {
