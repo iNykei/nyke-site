@@ -23,14 +23,16 @@ export function CardLoadout({ activeGear }: { activeGear: GearItem[] }) {
 
   const layoutClass = loadout.length === 1
     ? "grid-cols-[170px]"
-    : `grid-cols-[170px_170px] ${loadout.length === 3 ? "[&>li:last-child]:col-span-2 [&>li:last-child]:justify-self-center" : ""}`;
+    : `grid-cols-[170px_170px] ${loadout.length === 3 ? "[&>li:last-child]:col-span-2" : ""}`;
 
   return (
-    <ul aria-label="Active loadout" className={`relative z-10 grid justify-center gap-x-12 gap-y-5 text-left ${layoutClass}`}>
-      {loadout.map((item) => {
+    <ul aria-label="Active loadout" className={`relative z-10 grid justify-center gap-x-8 gap-y-5 text-left ${layoutClass}`}>
+      {loadout.map((item, index) => {
         const Icon = categoryIcons[item.category] ?? Square;
+        const isCentered = loadout.length === 1 || (loadout.length === 3 && index === 2);
+        const alignmentClass = isCentered ? "justify-self-center" : index % 2 === 0 ? "justify-self-end" : "justify-self-start";
         return (
-          <li key={item.id} className="flex w-[170px] min-w-0 items-center gap-3">
+          <li key={item.id} className={`flex w-fit max-w-[170px] min-w-0 items-center gap-3 ${alignmentClass}`}>
             <Icon aria-hidden="true" className="size-4 shrink-0 stroke-[1.5] text-zinc-600" />
             <div className="min-w-0">
               <p className="truncate text-[9px] font-semibold uppercase tracking-[0.1em] text-zinc-500">{item.maker}</p>
