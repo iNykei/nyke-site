@@ -235,7 +235,7 @@ body:has(.page-dark) .site-icon-btn {
   position: relative;
   z-index: 1;
   display: inline-flex;
-  align-items: baseline;
+  align-items: flex-end;
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   font-size: 58px;
   font-style: italic;
@@ -255,7 +255,14 @@ body:has(.page-dark) .site-icon-btn {
 }
 
 .nyke-card-default-dot {
-  color: rgba(251, 113, 133, 0.72);
+  width: 8px;
+  height: 8px;
+  margin-bottom: 5px;
+  margin-left: 2px;
+  flex: none;
+  border-radius: 999px;
+  background: rgba(251, 113, 133, 0.72);
+  color: transparent;
 }
 
 .nyke-card-banner-overlay {
