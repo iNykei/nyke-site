@@ -4,6 +4,13 @@ import type { GearItem, PlayerGear, PlayerProfile } from "@/types";
 import type { GearItemRow, PlayerGearRow, PlayerSettingsRow, ProfileRow } from "@/types/database";
 
 const gearCategories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"] as const;
+type ServerSupabaseClient = NonNullable<Awaited<ReturnType<typeof createClient>>>;
+
+function assertQuerySucceeded(error: { message: string } | null, message: string) {
+  if (error) {
+    throw new Error(message, { cause: error });
+  }
+}
 
 export type EditableProfileData = {
   profile: ProfileRow;
@@ -94,15 +101,13 @@ export async function getProfileByUsername(username: string): Promise<ProfileRow
     .eq("username", username.toLowerCase())
     .maybeSingle();
 
-  if (error) {
-    return null;
-  }
+  assertQuerySucceeded(error, "Could not load the profile.");
 
   return data;
 }
 
-export async function getCurrentUserAndProfile() {
-  const supabase = await createClient();
+export async function getCurrentUserAndProfile(client?: ServerSupabaseClient) {
+  const supabase = client ?? await createClient();
 
   if (!supabase) {
     return { user: null, profile: null };
@@ -116,11 +121,13 @@ export async function getCurrentUserAndProfile() {
     return { user: null, profile: null };
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("id, username, display_name, avatar_url, bio, region, created_at, updated_at")
     .eq("id", user.id)
     .maybeSingle();
+
+  assertQuerySucceeded(profileError, "Could not load the signed-in profile.");
 
   return { user, profile };
 }
@@ -135,14 +142,16 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
       : null;
   }
 
-  const [{ data: realProfile }, current] = await Promise.all([
+  const [{ data: realProfile, error: realProfileError }, current] = await Promise.all([
     supabase
       .from("profiles")
       .select("id, username, display_name, avatar_url, bio, region, created_at, updated_at")
       .eq("username", username.toLowerCase())
       .maybeSingle(),
-    getCurrentUserAndProfile(),
+    getCurrentUserAndProfile(supabase),
   ]);
+
+  assertQuerySucceeded(realProfileError, "Could not load the public profile.");
 
   if (!realProfile) {
     return demoPlayer
@@ -150,7 +159,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
       : null;
   }
 
-  const [{ data: settings }, { data: playerGear }] = await Promise.all([
+  const [{ data: settings, error: settingsError }, { data: playerGear, error: playerGearError }] = await Promise.all([
     supabase
       .from("player_settings")
       .select("id, user_id, game, rank, dpi, sensitivity, resolution, polling_rate, created_at, updated_at")
@@ -163,13 +172,18 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
       .eq("is_active", true),
   ]);
 
+  assertQuerySucceeded(settingsError, "Could not load the player's settings.");
+  assertQuerySucceeded(playerGearError, "Could not load the player's gear.");
+
   const gearIds = ((playerGear ?? []) as PlayerGearRow[]).map((row) => row.gear_item_id);
-  const { data: gearRows } = gearIds.length
+  const { data: gearRows, error: gearRowsError } = gearIds.length
     ? await supabase
         .from("gear_items")
         .select("id, brand, model, category, created_at")
         .in("id", gearIds)
-    : { data: [] };
+    : { data: [], error: null };
+
+  assertQuerySucceeded(gearRowsError, "Could not load the gear catalog.");
 
   return {
     source: "real",
@@ -187,13 +201,17 @@ export async function getEditableProfileData(): Promise<EditableProfileData | nu
     return null;
   }
 
-  const { user, profile } = await getCurrentUserAndProfile();
+  const { user, profile } = await getCurrentUserAndProfile(supabase);
 
   if (!user || !profile) {
     return null;
   }
 
-  const [{ data: settings }, { data: gearItems }, { data: activeGearRows }] = await Promise.all([
+  const [
+    { data: settings, error: settingsError },
+    { data: gearItems, error: gearItemsError },
+    { data: activeGearRows, error: activeGearError },
+  ] = await Promise.all([
     supabase
       .from("player_settings")
       .select("id, user_id, game, rank, dpi, sensitivity, resolution, polling_rate, created_at, updated_at")
@@ -211,6 +229,10 @@ export async function getEditableProfileData(): Promise<EditableProfileData | nu
       .eq("user_id", user.id)
       .eq("is_active", true),
   ]);
+
+  assertQuerySucceeded(settingsError, "Could not load your settings.");
+  assertQuerySucceeded(gearItemsError, "Could not load the gear catalog.");
+  assertQuerySucceeded(activeGearError, "Could not load your selected gear.");
 
   return {
     profile,

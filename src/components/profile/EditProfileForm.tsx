@@ -2,7 +2,6 @@
 
 import { Save } from "lucide-react";
 import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import type { saveProfile, SaveProfileState } from "@/app/settings/profile/actions";
 import type { EditableProfileData } from "@/lib/profiles";
 import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations";
@@ -34,7 +33,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export function EditProfileForm({ data, action }: EditProfileFormProps) {
-  const router = useRouter();
   const [state, formAction, isPending] = useActionState(action, initialState);
   const dpi = data.settings?.dpi ?? null;
   const sensitivity = data.settings?.sensitivity === null || data.settings?.sensitivity === undefined ? null : Number(data.settings.sensitivity);
@@ -43,10 +41,9 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
 
   useEffect(() => {
     if (state.status === "success" && state.username) {
-      router.push(`/${state.username}`);
-      router.refresh();
+      window.location.replace(`/${state.username}`);
     }
-  }, [router, state.status, state.username]);
+  }, [state.status, state.username]);
 
   return (
     <form action={formAction} className="mx-auto w-full max-w-3xl space-y-8 border border-zinc-200 bg-white p-6 shadow-xl shadow-zinc-200/70">

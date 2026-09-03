@@ -3,16 +3,19 @@ import Link from "next/link";
 import { getCurrentUserAndProfile } from "@/lib/profiles";
 import { SignOutButton } from "./auth/SignOutButton";
 
-const navItems = [
+const discoveryNavItems = [
   { href: "/explore", label: "Explore" },
   { href: "/gear", label: "Gear" },
-  { href: "/cyx", label: "Profile" },
 ];
 
 export async function Navbar() {
   const { profile } = await getCurrentUserAndProfile();
   const displayUsername = profile?.username;
   const profileInitial = displayUsername?.slice(0, 2).toUpperCase();
+  const navItems = [
+    ...discoveryNavItems,
+    { href: displayUsername ? `/${displayUsername}` : "/cyx", label: "Profile" },
+  ];
 
   return (
     <header className="site-header sticky top-0 z-40 h-[57px] border-b border-zinc-200/80 bg-white/85 backdrop-blur-md">

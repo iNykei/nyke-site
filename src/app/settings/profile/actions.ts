@@ -92,12 +92,16 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
     return { status: "error", message: "Sensitivity must be a positive number." };
   }
 
-  const { data: existingUsername } = await supabase
+  const { data: existingUsername, error: usernameLookupError } = await supabase
     .from("profiles")
     .select("id")
     .eq("username", username)
     .neq("id", user.id)
     .maybeSingle();
+
+  if (usernameLookupError) {
+    return { status: "error", message: "Username availability could not be checked." };
+  }
 
   if (existingUsername) {
     return { status: "error", message: "That username is already taken." };
@@ -112,7 +116,9 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
       region,
       avatar_url: avatarUrl,
     })
-    .eq("id", user.id);
+    .eq("id", user.id)
+    .select("id")
+    .single();
 
   if (profileError) {
     return { status: "error", message: "Profile could not be saved." };
@@ -131,7 +137,9 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
         polling_rate: pollingRate,
       },
       { onConflict: "user_id" },
-    );
+    )
+    .select("id")
+    .single();
 
   if (settingsError) {
     return { status: "error", message: "Game settings could not be saved." };
@@ -141,12 +149,16 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
     .map((category) => String(formData.get(`gear_${category}`) ?? "").trim())
     .filter(Boolean);
 
-  const { data: validGearRows } = selectedGearIds.length
+  const { data: validGearRows, error: gearLookupError } = selectedGearIds.length
     ? await supabase
         .from("gear_items")
         .select("id, category")
         .in("id", selectedGearIds)
-    : { data: [] };
+    : { data: [], error: null };
+
+  if (gearLookupError) {
+    return { status: "error", message: "Selected gear could not be verified." };
+  }
 
   const validGearById = new Map((validGearRows ?? []).map((row) => [row.id, row.category]));
 
@@ -179,7 +191,9 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
           gear_item_id: gearItemId,
           category,
           is_active: true,
-        });
+        })
+        .select("id")
+        .single();
 
       if (gearError) {
         return { status: "error", message: "Gear could not be saved." };
