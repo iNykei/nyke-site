@@ -208,12 +208,6 @@ body:has(.page-dark) .site-icon-btn {
   perspective-origin: 50% 50%;
 }
 
-.nyke-card-preview {
-  box-shadow:
-    0 14px 38px rgba(24, 24, 27, 0.08),
-    0 3px 10px rgba(24, 24, 27, 0.045);
-}
-
 .nyke-card {
   --card-rx: 0deg;
   --card-ry: 0deg;
@@ -224,6 +218,9 @@ body:has(.page-dark) .site-icon-btn {
   transform-style: preserve-3d;
   transition: transform 110ms ease-out;
   will-change: transform;
+  box-shadow:
+    0 14px 38px rgba(24, 24, 27, 0.08),
+    0 3px 10px rgba(24, 24, 27, 0.045);
 }
 
 .nyke-card-default-banner {
@@ -231,33 +228,34 @@ body:has(.page-dark) .site-icon-btn {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: #18181b;
+  background: #ffffff;
 }
 
-.nyke-card-default-wordmark {
+.nyke-card-default-lockup {
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: baseline;
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   font-size: 58px;
   font-style: italic;
   font-weight: 900;
   line-height: 1;
-  color: #ffffff;
 }
 
-.nyke-card-default-wordmark span {
-  color: #fb7185;
+.nyke-card-default-wordmark {
+  color: transparent;
+  background: linear-gradient(105deg, rgba(39, 39, 42, 0.5) 0 42%, rgba(161, 161, 170, 0.92) 49%, rgba(39, 39, 42, 0.5) 56% 100%);
+  background-size: 280% 100%;
+  background-position: 125% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nyke-card-default-wordmark-sweep 5.4s ease-in-out infinite;
 }
 
-.nyke-card-default-banner::after {
-  content: "";
-  position: absolute;
-  inset: -55% auto -55% -32%;
-  width: 18%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
-  filter: blur(2px);
-  transform: translateX(-220%) skewX(-12deg);
-  animation: nyke-card-banner-sweep 6s ease-in-out infinite;
+.nyke-card-default-dot {
+  color: rgba(251, 113, 133, 0.72);
 }
 
 .nyke-card-banner-overlay {
@@ -274,39 +272,10 @@ body:has(.page-dark) .site-icon-btn {
 }
 
 .nyke-card[data-founder="true"] {
-  box-shadow: inset 0 0 0 1px rgba(165, 139, 91, 0.52);
-}
-
-.nyke-card-body-brand {
-  top: 325px;
-  left: -24px;
-  width: 590px;
-  transform: rotate(-7deg);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  font-size: 84px;
-  font-style: italic;
-  font-weight: 900;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  user-select: none;
-  mask-image: linear-gradient(to bottom, #000 0 46%, rgba(0, 0, 0, 0.72) 60%, transparent 88%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0 46%, rgba(0, 0, 0, 0.72) 60%, transparent 88%);
-}
-
-.nyke-card-body-wordmark {
-  color: transparent;
-  background: linear-gradient(105deg, rgba(24, 24, 27, 0.5) 0 42%, rgba(255, 255, 255, 0.9) 49%, rgba(24, 24, 27, 0.5) 56% 100%);
-  background-size: 280% 100%;
-  background-position: 125% 0;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: nyke-card-body-wordmark-sweep 5.4s ease-in-out infinite;
-}
-
-.nyke-card-body-dot {
-  color: rgba(251, 113, 133, 0.72);
+  box-shadow:
+    0 14px 38px rgba(24, 24, 27, 0.08),
+    0 3px 10px rgba(24, 24, 27, 0.045),
+    inset 0 0 0 1px rgba(165, 139, 91, 0.52);
 }
 
 .nyke-card-identity-pattern {
@@ -337,6 +306,7 @@ body:has(.page-dark) .site-icon-btn {
 .nyke-card[data-exporting="true"] {
   transform: none !important;
   transition: none !important;
+  box-shadow: none !important;
 }
 
 .nyke-card[data-exporting="true"] *,
@@ -350,14 +320,14 @@ body:has(.page-dark) .site-icon-btn {
   display: none;
 }
 
-.nyke-card[data-exporting="true"] .nyke-card-default-banner::after {
-  display: none;
+.nyke-card[data-exporting="true"] .nyke-card-default-wordmark {
+  color: rgba(39, 39, 42, 0.5);
+  background: none;
+  -webkit-text-fill-color: rgba(39, 39, 42, 0.5);
 }
 
-.nyke-card[data-exporting="true"] .nyke-card-body-wordmark {
-  color: rgba(24, 24, 27, 0.5);
-  background: none;
-  -webkit-text-fill-color: rgba(24, 24, 27, 0.5);
+.nyke-card[data-exporting="true"][data-founder="true"] {
+  box-shadow: inset 0 0 0 1px rgba(165, 139, 91, 0.52) !important;
 }
 
 .nyke-card[data-exporting="true"] .nyke-card-identity-pattern {
@@ -378,19 +348,7 @@ body:has(.page-dark) .site-icon-btn {
   }
 }
 
-@keyframes nyke-card-banner-sweep {
-  0%,
-  18% {
-    transform: translateX(-220%) skewX(-12deg);
-  }
-
-  52%,
-  100% {
-    transform: translateX(820%) skewX(-12deg);
-  }
-}
-
-@keyframes nyke-card-body-wordmark-sweep {
+@keyframes nyke-card-default-wordmark-sweep {
   0%,
   18% {
     background-position: 125% 0;
@@ -555,14 +513,10 @@ body:has(.page-dark) .site-icon-btn {
     display: none !important;
   }
 
-  .nyke-card-default-banner::after {
-    display: none !important;
-  }
-
-  .nyke-card-body-wordmark {
-    color: rgba(24, 24, 27, 0.5);
+  .nyke-card-default-wordmark {
+    color: rgba(39, 39, 42, 0.5);
     background: none;
-    -webkit-text-fill-color: rgba(24, 24, 27, 0.5);
+    -webkit-text-fill-color: rgba(39, 39, 42, 0.5);
   }
 
   .nyke-card-identity-pattern,
