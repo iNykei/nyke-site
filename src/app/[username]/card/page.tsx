@@ -1,5 +1,4 @@
 import { CardActions } from "@/components/card/CardActions";
-import { formatMemberNumber } from "@/lib/identity";
 import { getCachedPublicProfileData } from "@/lib/profiles";
 
 type PlayerCardPageProps = {
@@ -10,15 +9,10 @@ export default async function PlayerCardPage({ params }: PlayerCardPageProps) {
   const { username } = await params;
   const publicProfile = await getCachedPublicProfileData(username);
   if (!publicProfile) return null;
-  const memberNumber = publicProfile.player.memberNumber === null ? null : formatMemberNumber(publicProfile.player.memberNumber);
 
   return (
-    <section className="mx-auto mt-7 flex w-full max-w-3xl flex-col items-center sm:mt-8">
-        <header className="mb-4 text-center">
-          <h1 className="font-serif text-xl font-black leading-none sm:text-2xl">NYKE Card</h1>
-          <p className="mt-2 text-[10px] font-semibold text-zinc-500">@{publicProfile.player.username}{memberNumber ? ` · ${memberNumber}` : ""}</p>
-        </header>
-        <CardActions data={{ player: publicProfile.player, activeGear: publicProfile.activeGear }} />
+    <section className="mx-auto mt-5 flex w-full max-w-3xl flex-col items-center sm:mt-6">
+      <CardActions data={{ player: publicProfile.player, activeGear: publicProfile.activeGear }} />
     </section>
   );
 }

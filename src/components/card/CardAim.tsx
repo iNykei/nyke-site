@@ -17,7 +17,7 @@ export function CardAim({ player }: { player: PlayerProfile }) {
   }
 
   return (
-    <p className="relative z-10 text-center font-mono text-[11px] font-semibold tabular-nums tracking-[0.03em] text-zinc-600">
+    <p className="relative z-10 text-center font-mono text-[13px] font-semibold tabular-nums tracking-[0.02em] text-zinc-600">
       {values.map((value, index) => (
         <span key={value}>
           {index > 0 ? <span className="mx-2 text-zinc-300">·</span> : null}

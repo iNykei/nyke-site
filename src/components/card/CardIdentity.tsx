@@ -24,13 +24,13 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
       </div>
 
       <div className="mx-auto max-w-[430px] pt-[58px]">
-        <h1 className="truncate font-serif text-[30px] font-black leading-none text-zinc-950">{player.displayName}</h1>
-        <p className="mt-1.5 truncate text-[10px] font-medium text-zinc-500">@{player.username}</p>
+        <h1 className="truncate font-serif text-[34px] font-black leading-none text-zinc-950">{player.displayName}</h1>
+        <p className="mt-1.5 truncate text-[11px] font-medium text-zinc-500">@{player.username}</p>
         {identityMeta.length > 0 ? (
-          <p className="mt-2 truncate text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-600">{identityMeta.join(" · ")}</p>
+          <p className="mt-2 truncate text-[11px] font-bold uppercase tracking-[0.09em] text-zinc-600">{identityMeta.join(" · ")}</p>
         ) : null}
         {visibleBadges.length > 0 ? (
-          <ul aria-label="NYKE identity badges" className="mt-2 flex max-h-8 flex-wrap justify-center gap-y-1 overflow-hidden text-[9px] font-bold uppercase tracking-[0.07em]">
+          <ul aria-label="NYKE identity badges" className="mt-2 flex max-h-8 flex-wrap justify-center gap-y-1 overflow-hidden text-[10px] font-bold uppercase tracking-[0.06em]">
             {visibleBadges.map((badge, index) => (
               <li key={badge.slug} className={badgeTones[badge.slug] ?? badgeTones["early-100"]}>
                 {index > 0 ? <span className="mx-1.5 text-zinc-300">·</span> : null}

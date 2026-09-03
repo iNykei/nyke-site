@@ -221,10 +221,37 @@ body:has(.page-dark) .site-icon-btn {
 }
 
 .nyke-card-default-banner {
-  background:
-    radial-gradient(circle at 76% 34%, rgba(251, 113, 133, 0.94) 0 4%, transparent 4.4%),
-    linear-gradient(118deg, transparent 0 58%, #18181b 58.2% 67%, transparent 67.2%),
-    linear-gradient(166deg, #ffffff 0 48%, #f4f4f5 48.2% 70%, #ffffff 70.2%);
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #18181b;
+}
+
+.nyke-card-default-wordmark {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: 58px;
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.nyke-card-default-wordmark span {
+  color: #fb7185;
+}
+
+.nyke-card-default-banner::after {
+  content: "";
+  position: absolute;
+  inset: -55% auto -55% -32%;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  filter: blur(2px);
+  transform: translateX(-220%) skewX(-12deg);
+  animation: nyke-card-banner-sweep 6s ease-in-out infinite;
 }
 
 .nyke-card-banner-overlay {
@@ -245,7 +272,7 @@ body:has(.page-dark) .site-icon-btn {
 }
 
 .nyke-card-identity-pattern {
-  opacity: 0.012;
+  opacity: 0.01;
   color: #3f3f46;
   transition: opacity 260ms ease;
 }
@@ -253,13 +280,13 @@ body:has(.page-dark) .site-icon-btn {
 .nyke-card-identity-pattern-grid {
   display: grid;
   grid-template-columns: repeat(2, max-content);
-  gap: 24px 42px;
-  width: 760px;
-  transform: translate(-78px, -25px) rotate(-16deg);
+  gap: 40px 72px;
+  width: 920px;
+  transform: translate(-175px, -90px) rotate(-15deg);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
@@ -285,6 +312,10 @@ body:has(.page-dark) .site-icon-btn {
   display: none;
 }
 
+.nyke-card[data-exporting="true"] .nyke-card-default-banner::after {
+  display: none;
+}
+
 .nyke-card[data-exporting="true"] .nyke-card-identity-pattern {
   opacity: 0.032;
   mask-image: none;
@@ -297,9 +328,21 @@ body:has(.page-dark) .site-icon-btn {
   }
 
   .nyke-card:hover .nyke-card-identity-pattern {
-    opacity: 0.14;
-    -webkit-mask-image: radial-gradient(circle 220px at var(--card-mx) var(--card-my), #000 0, rgba(0, 0, 0, 0.82) 42%, transparent 82%);
-    mask-image: radial-gradient(circle 220px at var(--card-mx) var(--card-my), #000 0, rgba(0, 0, 0, 0.82) 42%, transparent 82%);
+    opacity: 0.12;
+    -webkit-mask-image: radial-gradient(circle 360px at var(--card-mx) var(--card-my), #000 0, rgba(0, 0, 0, 0.76) 44%, rgba(0, 0, 0, 0.26) 76%, rgba(0, 0, 0, 0.08) 100%);
+    mask-image: radial-gradient(circle 360px at var(--card-mx) var(--card-my), #000 0, rgba(0, 0, 0, 0.76) 44%, rgba(0, 0, 0, 0.26) 76%, rgba(0, 0, 0, 0.08) 100%);
+  }
+}
+
+@keyframes nyke-card-banner-sweep {
+  0%,
+  18% {
+    transform: translateX(-220%) skewX(-12deg);
+  }
+
+  52%,
+  100% {
+    transform: translateX(820%) skewX(-12deg);
   }
 }
 
@@ -453,6 +496,10 @@ body:has(.page-dark) .site-icon-btn {
   }
 
   .nyke-card-sheen {
+    display: none !important;
+  }
+
+  .nyke-card-default-banner::after {
     display: none !important;
   }
 
