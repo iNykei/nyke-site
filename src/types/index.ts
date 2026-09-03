@@ -40,6 +40,7 @@ export type PlayerProfile = {
   username: string;
   displayName: string;
   avatarUrl?: string;
+  bannerUrl?: string;
   avatarSeed: string;
   bio: string;
   region: string;

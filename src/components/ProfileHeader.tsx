@@ -9,10 +9,17 @@ type ProfileHeaderProps = {
 
 export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
   const metadata = [player.settings.game, player.settings.rank, player.region].filter(Boolean);
+  const hasBanner = Boolean(player.bannerUrl);
 
   return (
     <section id="home" className="profile-reveal border-b border-zinc-200 pb-10 pt-4 sm:pb-14 sm:pt-8">
-      <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+      {player.bannerUrl ? (
+        <div className="aspect-[3/1] w-full overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm sm:aspect-[4/1]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={player.bannerUrl} alt={`${player.displayName} profile banner`} className="size-full object-cover" />
+        </div>
+      ) : null}
+      <div className={`flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between ${hasBanner ? "relative -mt-8 px-4 sm:-mt-12 sm:px-6" : ""}`}>
         <div className="flex min-w-0 flex-col gap-6 sm:flex-row sm:items-start">
           <div className="group/avatar size-24 shrink-0 overflow-hidden rounded-full border-4 border-white bg-zinc-950 shadow-lg shadow-zinc-300/60 ring-1 ring-zinc-200 transition duration-200 hover:ring-rose-300/70">
             {player.avatarUrl ? (
@@ -22,7 +29,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
               <AvatarMark seed={player.avatarSeed} size="xl" />
             )}
           </div>
-          <div className="min-w-0 pt-1">
+          <div className={`min-w-0 pt-1 ${hasBanner ? "sm:pt-12" : ""}`}>
             <p className="text-xs font-medium text-zinc-500">@{player.username}</p>
             <h1 className="mt-1 break-words font-serif text-4xl font-black leading-[1.05] text-zinc-950 sm:text-5xl">
               {player.displayName}
@@ -40,7 +47,9 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
             {player.bio ? <p className="mt-5 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-[15px]">{player.bio}</p> : null}
           </div>
         </div>
-        <ProfileActions displayName={player.displayName} isOwner={isOwner} />
+        <div className={hasBanner ? "sm:pt-12" : ""}>
+          <ProfileActions displayName={player.displayName} isOwner={isOwner} />
+        </div>
       </div>
     </section>
   );

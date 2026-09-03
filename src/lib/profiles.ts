@@ -4,12 +4,41 @@ import type { GearItem, PlayerGear, PlayerProfile } from "@/types";
 import type { GearItemRow, PlayerGearRow, PlayerSettingsRow, ProfileRow } from "@/types/database";
 
 const gearCategories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"] as const;
+const profileColumns = "id, username, display_name, avatar_url, banner_url, bio, region, created_at, updated_at";
+const legacyProfileColumns = "id, username, display_name, avatar_url, bio, region, created_at, updated_at";
 type ServerSupabaseClient = NonNullable<Awaited<ReturnType<typeof createClient>>>;
 
 function assertQuerySucceeded(error: { message: string } | null, message: string) {
   if (error) {
     throw new Error(message, { cause: error });
   }
+}
+
+function isMissingBannerColumn(error: { code?: string; message: string } | null) {
+  return Boolean(
+    error &&
+      error.message.includes("banner_url") &&
+      (error.code === "42703" || error.code === "PGRST204"),
+  );
+}
+
+async function queryProfile(
+  supabase: ServerSupabaseClient,
+  column: "id" | "username",
+  value: string,
+) {
+  const response = await supabase.from("profiles").select(profileColumns).eq(column, value).maybeSingle();
+
+  if (!isMissingBannerColumn(response.error)) {
+    return { data: response.data as ProfileRow | null, error: response.error };
+  }
+
+  const legacyResponse = await supabase.from("profiles").select(legacyProfileColumns).eq(column, value).maybeSingle();
+
+  return {
+    data: legacyResponse.data ? ({ ...legacyResponse.data, banner_url: null } as ProfileRow) : null,
+    error: legacyResponse.error,
+  };
 }
 
 export type EditableProfileData = {
@@ -74,6 +103,7 @@ function buildRealPlayer(profile: ProfileRow, settings: PlayerSettingsRow | null
     username: profile.username,
     displayName: profile.display_name || profile.username,
     avatarUrl: profile.avatar_url || undefined,
+    bannerUrl: profile.banner_url || undefined,
     avatarSeed: (profile.display_name || profile.username).slice(0, 2).toUpperCase(),
     bio: profile.bio || "",
     region: profile.region || "",
@@ -100,11 +130,7 @@ export async function getProfileByUsername(username: string): Promise<ProfileRow
     return null;
   }
 
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, username, display_name, avatar_url, bio, region, created_at, updated_at")
-    .eq("username", username.toLowerCase())
-    .maybeSingle();
+  const { data, error } = await queryProfile(supabase, "username", username.toLowerCase());
 
   assertQuerySucceeded(error, "Could not load the profile.");
 
@@ -126,11 +152,7 @@ export async function getCurrentUserAndProfile(client?: ServerSupabaseClient) {
     return { user: null, profile: null };
   }
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("id, username, display_name, avatar_url, bio, region, created_at, updated_at")
-    .eq("id", user.id)
-    .maybeSingle();
+  const { data: profile, error: profileError } = await queryProfile(supabase, "id", user.id);
 
   assertQuerySucceeded(profileError, "Could not load the signed-in profile.");
 
@@ -148,11 +170,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
   }
 
   const [{ data: realProfile, error: realProfileError }, current] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url, bio, region, created_at, updated_at")
-      .eq("username", username.toLowerCase())
-      .maybeSingle(),
+    queryProfile(supabase, "username", username.toLowerCase()),
     getCurrentUserAndProfile(supabase),
   ]);
 

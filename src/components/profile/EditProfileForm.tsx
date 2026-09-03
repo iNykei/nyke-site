@@ -1,10 +1,12 @@
 "use client";
 
 import { Save } from "lucide-react";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import type { saveProfile, SaveProfileState } from "@/app/settings/profile/actions";
 import type { EditableProfileData } from "@/lib/profiles";
 import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations";
+import type { ProfileMediaKind } from "@/lib/profile-media";
+import { ProfileMediaField } from "./ProfileMediaField";
 
 const categories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"];
 const initialState: SaveProfileState = { status: "idle", message: "" };
@@ -34,6 +36,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function EditProfileForm({ data, action }: EditProfileFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(data.profile.avatar_url);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(data.profile.banner_url);
+  const [mediaBusy, setMediaBusy] = useState<Record<ProfileMediaKind, boolean>>({ avatar: false, banner: false });
   const dpi = data.settings?.dpi ?? null;
   const sensitivity = data.settings?.sensitivity === null || data.settings?.sensitivity === undefined ? null : Number(data.settings.sensitivity);
   const edpi = calculateEdpi(dpi, sensitivity);
@@ -45,13 +50,45 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
     }
   }, [state.status, state.username]);
 
+  const isMediaBusy = mediaBusy.avatar || mediaBusy.banner;
+
+  function handleMediaBusyChange(kind: ProfileMediaKind, busy: boolean) {
+    setMediaBusy((current) => ({ ...current, [kind]: busy }));
+  }
+
   return (
-    <form action={formAction} className="mx-auto w-full max-w-3xl space-y-8 border border-zinc-200 bg-white p-6 shadow-xl shadow-zinc-200/70">
+    <form
+      action={formAction}
+      onSubmit={(event) => {
+        if (isMediaBusy) {
+          event.preventDefault();
+        }
+      }}
+      className="mx-auto w-full max-w-3xl space-y-8 border border-zinc-200 bg-white p-6 shadow-xl shadow-zinc-200/70"
+    >
       <div>
         <p className="text-xs uppercase tracking-[0.24em] text-rose-400">Profile settings</p>
         <h1 className="mt-3 font-serif text-3xl font-black text-zinc-950">Edit profile</h1>
         <p className="mt-3 text-sm leading-6 text-zinc-600">Update public identity, FPS settings, and active setup. Changes save together.</p>
       </div>
+
+      <Section title="Profile media">
+        <ProfileMediaField
+          fallbackText={(data.profile.display_name || data.profile.username).slice(0, 2).toUpperCase()}
+          kind="avatar"
+          value={avatarUrl}
+          onChange={setAvatarUrl}
+          onBusyChange={handleMediaBusyChange}
+        />
+        <ProfileMediaField
+          fallbackText=""
+          kind="banner"
+          value={bannerUrl}
+          onChange={setBannerUrl}
+          onBusyChange={handleMediaBusyChange}
+        />
+        <input type="hidden" name="avatar_url" value={avatarUrl ?? ""} readOnly />
+      </Section>
 
       <Section title="Profile">
         <Field label="Display name">
@@ -62,9 +99,6 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
         </Field>
         <Field label="Region">
           <input name="region" defaultValue={data.profile.region ?? ""} placeholder="CN, NA, EU..." className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
-        </Field>
-        <Field label="Avatar URL">
-          <input name="avatar_url" defaultValue={data.profile.avatar_url ?? ""} placeholder="https://..." className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300" />
         </Field>
         <label className="block sm:col-span-2">
           <span className="text-sm text-zinc-600">Bio</span>
@@ -121,9 +155,9 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
         <p className={state.status === "error" ? "text-sm text-rose-500" : "rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700"}>{state.message}</p>
       ) : null}
 
-      <button type="submit" disabled={isPending} className="flex h-11 w-full items-center justify-center gap-2 rounded-md bg-rose-300 text-sm font-semibold text-zinc-950 shadow-lg shadow-rose-200/70 transition hover:bg-rose-200 disabled:cursor-not-allowed disabled:opacity-60">
+      <button type="submit" disabled={isPending || isMediaBusy} className="flex h-11 w-full items-center justify-center gap-2 rounded-md bg-rose-300 text-sm font-semibold text-zinc-950 shadow-lg shadow-rose-200/70 transition hover:bg-rose-200 disabled:cursor-not-allowed disabled:opacity-60">
         <Save size={16} />
-        {isPending ? "Saving..." : "Save"}
+        {isPending ? "Saving..." : isMediaBusy ? "Uploading image..." : "Save"}
       </button>
     </form>
   );
