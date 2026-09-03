@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getPlayerByUsername, players } from "@/lib/mock-data";
 import type { GearItem, PlayerGear, PlayerProfile, ProfileBadge } from "@/types";
@@ -283,6 +284,8 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
     isOwner: current.user?.id === realProfile.id,
   };
 }
+
+export const getCachedPublicProfileData = cache(getPublicProfileData);
 
 export async function getEditableProfileData(): Promise<EditableProfileData | null> {
   const supabase = await createClient();

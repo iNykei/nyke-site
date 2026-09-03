@@ -1,15 +1,16 @@
 "use client";
 
-import { Check, Pencil, Share2 } from "lucide-react";
+import { Check, CreditCard, Pencil, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type ProfileActionsProps = {
   displayName: string;
+  username: string;
   isOwner: boolean;
 };
 
-export function ProfileActions({ displayName, isOwner }: ProfileActionsProps) {
+export function ProfileActions({ displayName, username, isOwner }: ProfileActionsProps) {
   const [feedback, setFeedback] = useState<"idle" | "copied" | "error">("idle");
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -66,6 +67,13 @@ export function ProfileActions({ displayName, isOwner }: ProfileActionsProps) {
           Edit profile
         </Link>
       ) : null}
+      <Link
+        href={`/${username}/card`}
+        className="group inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white px-4 text-sm font-semibold text-zinc-700 shadow-sm transition duration-200 hover:-translate-y-px hover:border-zinc-300 hover:text-zinc-950 hover:shadow-md active:translate-y-0 active:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/70 sm:flex-none"
+      >
+        <CreditCard size={14} className="transition-transform duration-200 group-hover:-translate-y-px" />
+        Card
+      </Link>
       <button
         type="button"
         onClick={handleShare}
