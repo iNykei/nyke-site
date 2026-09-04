@@ -35,8 +35,6 @@ export function CardLoadout({ activeGear }: { activeGear: GearItem[] }) {
   key={item.id}
   className={`grid w-[170px] min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-3 ${
     isCentered ? "justify-self-center" : ""
-  } ${
-    item.category === "keyboard" ? "-translate-x-3" : ""
   }`}
 >
             <Icon aria-hidden="true" className="size-4 stroke-[1.5] text-zinc-600" />
