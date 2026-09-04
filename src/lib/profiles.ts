@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { gearItemColumns, mapGearItemRow } from "@/lib/gear";
 import { createClient } from "@/lib/supabase/server";
 import { getPlayerByUsername, players } from "@/lib/mock-data";
 import type { GearItem, PlayerGear, PlayerProfile, ProfileBadge } from "@/types";
@@ -132,18 +133,6 @@ function placeholderGear(category: string): GearItem {
   };
 }
 
-function rowToGearItem(row: GearItemRow): GearItem {
-  return {
-    id: row.id,
-    name: row.model,
-    maker: row.brand,
-    category: row.category as GearItem["category"],
-    summary: `${row.brand} ${row.model}`,
-    accent: "from-zinc-600 to-lime-300/30",
-    specs: {},
-  };
-}
-
 function rowToProfileBadge(row: BadgeRow): ProfileBadge {
   return {
     slug: row.slug,
@@ -153,7 +142,7 @@ function rowToProfileBadge(row: BadgeRow): ProfileBadge {
 }
 
 function buildGear(rows: GearItemRow[]): PlayerGear {
-  const byCategory = new Map(rows.map((row) => [row.category, rowToGearItem(row)]));
+  const byCategory = new Map(rows.map((row) => [row.category, mapGearItemRow(row)]));
 
   return {
     mouse: byCategory.get("mouse") ?? placeholderGear("mouse"),
@@ -242,7 +231,7 @@ export async function getExploreProfiles(): Promise<PlayerProfile[]> {
   const gearResponse = gearIds.length
     ? await supabase
         .from("gear_items")
-        .select("id, brand, model, category, created_at")
+        .select(gearItemColumns)
         .in("id", gearIds)
     : { data: [] as GearItemRow[], error: null };
 
@@ -367,7 +356,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
     gearIds.length
       ? supabase
           .from("gear_items")
-          .select("id, brand, model, category, created_at")
+          .select(gearItemColumns)
           .in("id", gearIds)
       : Promise.resolve({ data: [] as GearItemRow[], error: null }),
     badgeIds.length
@@ -384,7 +373,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
   const activeGear = gearCategories.flatMap((category) => {
     const row = ((gearRows ?? []) as GearItemRow[]).find((item) => item.category === category);
-    return row ? [rowToGearItem(row)] : [];
+    return row ? [mapGearItemRow(row)] : [];
   });
   const badges = ((badgeRows ?? []) as BadgeRow[]).map(rowToProfileBadge);
 
@@ -425,7 +414,7 @@ export async function getEditableProfileData(): Promise<EditableProfileData | nu
       .maybeSingle(),
     supabase
       .from("gear_items")
-      .select("id, brand, model, category, created_at")
+      .select(gearItemColumns)
       .order("category")
       .order("brand")
       .order("model"),

@@ -4,16 +4,15 @@ import { useMemo, useState } from "react";
 import { FilterBar } from "@/components/FilterBar";
 import { GearCard } from "@/components/GearCard";
 import { SearchBar } from "@/components/SearchBar";
-import type { GearItem } from "@/types";
+import type { GearCatalogItem } from "@/types";
 
 const filters = ["All", "mouse", "mousepad", "keyboard", "headset", "monitor", "skates"];
 
 type GearClientProps = {
-  items: GearItem[];
-  profileCounts: Record<string, number>;
+  items: GearCatalogItem[];
 };
 
-export function GearClient({ items, profileCounts }: GearClientProps) {
+export function GearClient({ items }: GearClientProps) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
 
@@ -46,10 +45,14 @@ export function GearClient({ items, profileCounts }: GearClientProps) {
       </header>
       <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {filteredItems.map((item) => (
-          <GearCard key={item.id} item={item} profileCount={profileCounts[item.id] ?? 0} />
+          <GearCard key={item.id} item={item} profileCount={item.profileCount} />
         ))}
       </div>
-      {filteredItems.length === 0 ? (
+      {items.length === 0 ? (
+        <div className="mt-6 rounded-lg border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500">
+          No gear yet.
+        </div>
+      ) : filteredItems.length === 0 ? (
         <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500">
           No gear matches this search.
         </div>

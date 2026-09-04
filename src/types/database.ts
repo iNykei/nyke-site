@@ -29,6 +29,9 @@ export type GearItemRow = {
   brand: string;
   model: string;
   category: string;
+  image_url: string | null;
+  specs: Record<string, unknown>;
+  source_url: string | null;
   created_at: string;
 };
 
@@ -99,6 +102,9 @@ export type Database = {
           brand: string;
           model: string;
           category: string;
+          image_url?: string | null;
+          specs?: Record<string, unknown>;
+          source_url?: string | null;
           created_at?: string;
         };
         Update: Partial<Omit<GearItemRow, "id" | "created_at">>;

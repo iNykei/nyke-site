@@ -16,6 +16,12 @@ export type GearItem = {
   summary: string;
   specs: Record<string, string>;
   accent: string;
+  imageUrl?: string;
+  sourceUrl?: string;
+};
+
+export type GearCatalogItem = GearItem & {
+  profileCount: number;
 };
 
 export type GameSettings = {
