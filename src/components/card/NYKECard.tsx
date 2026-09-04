@@ -145,8 +145,7 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
 
           <footer className="relative flex h-[48px] items-center justify-between border-t border-zinc-100 bg-[#f4f4f5] px-7">
             <div className="relative z-10"><p className="font-serif text-[16px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[300px] truncate font-mono text-[11px] font-medium tracking-[0.01em] text-zinc-600">
-  nyke.life/{player.username}
-</p></p></div>
+  nyke.life/{player.username}</p></div>
             {memberNumber ? <p className="relative z-10 font-mono text-[13px] font-bold tabular-nums tracking-[0.04em] text-zinc-700">{memberNumber}</p> : null}
           </footer>
           <div className="nyke-card-sheen pointer-events-none absolute inset-0 z-20" aria-hidden="true" />
