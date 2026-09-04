@@ -314,17 +314,21 @@ body:has(.page-dark) .site-icon-btn {
 }
 
 .nyke-card-identity-pattern {
-  opacity: 0.006;
+  opacity: 0.012;
   color: #3f3f46;
-  transition: opacity 300ms ease;
+  transition: opacity 180ms ease;
 }
 
 .nyke-card-identity-pattern-grid {
+  position: absolute;
+  inset: -220px;
   display: grid;
-  grid-template-columns: repeat(2, max-content);
-  gap: 40px 72px;
-  width: 920px;
-  transform: translate(-175px, -90px) rotate(-15deg);
+  grid-template-columns: repeat(4, max-content);
+  grid-auto-rows: max-content;
+  align-content: space-around;
+  justify-content: space-around;
+  gap: 44px 72px;
+  transform: rotate(-15deg);
   font-family: var(--font-geist-mono), monospace;
   font-size: 13px;
   font-weight: 600;
@@ -335,13 +339,15 @@ body:has(.page-dark) .site-icon-btn {
 .nyke-card-sheen {
   opacity: 0;
   background: radial-gradient(
-    ellipse 390px 330px at var(--card-mx) var(--card-my),
-    rgba(251, 207, 213, 0.14) 0%,
-    rgba(233, 213, 255, 0.1) 32%,
-    rgba(204, 242, 231, 0.075) 54%,
-    rgba(255, 255, 255, 0) 78%
+    ellipse 320px 280px at var(--card-mx) var(--card-my),
+    rgba(207, 250, 254, 0.11) 0%,
+    rgba(233, 213, 255, 0.095) 24%,
+    rgba(251, 207, 232, 0.085) 42%,
+    rgba(217, 249, 157, 0.055) 57%,
+    rgba(254, 249, 195, 0.045) 66%,
+    rgba(255, 255, 255, 0) 82%
   );
-  transition: opacity 300ms ease;
+  transition: opacity 180ms ease;
 }
 
 .nyke-card-specular {
@@ -401,7 +407,7 @@ body:has(.page-dark) .site-icon-btn {
   }
 
   .nyke-card:hover .nyke-card-sheen {
-    opacity: 0.24;
+    opacity: 0.26;
   }
 
   .nyke-card:hover .nyke-card-specular {
@@ -409,9 +415,9 @@ body:has(.page-dark) .site-icon-btn {
   }
 
   .nyke-card:hover .nyke-card-identity-pattern {
-    opacity: 0.09;
-    -webkit-mask-image: radial-gradient(ellipse 440px 390px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.82) 32%, rgba(0, 0, 0, 0.5) 58%, rgba(0, 0, 0, 0.17) 80%, rgba(0, 0, 0, 0.04) 94%, transparent 100%);
-    mask-image: radial-gradient(ellipse 440px 390px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.82) 32%, rgba(0, 0, 0, 0.5) 58%, rgba(0, 0, 0, 0.17) 80%, rgba(0, 0, 0, 0.04) 94%, transparent 100%);
+    opacity: 0.1;
+    -webkit-mask-image: radial-gradient(ellipse 270px 240px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.84) 28%, rgba(0, 0, 0, 0.54) 54%, rgba(0, 0, 0, 0.24) 76%, rgba(0, 0, 0, 0.12) 100%);
+    mask-image: radial-gradient(ellipse 270px 240px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.84) 28%, rgba(0, 0, 0, 0.54) 54%, rgba(0, 0, 0, 0.24) 76%, rgba(0, 0, 0, 0.12) 100%);
   }
 }
 

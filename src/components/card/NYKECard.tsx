@@ -9,7 +9,7 @@ import { CardLoadout } from "./CardLoadout";
 
 export const CARD_WIDTH = 540;
 export const CARD_HEIGHT = 610;
-const MAX_TILT = 4;
+const MAX_TILT = 5.5;
 const CENTER_DEAD_ZONE = 0.04;
 
 type NYKECardProps = {
@@ -108,7 +108,7 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           data-founder={isFounder ? "true" : "false"}
           className="nyke-card relative h-[610px] w-[540px] overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950"
         >
-          <header className="relative z-10 h-[176px] overflow-hidden bg-zinc-950">
+          <header className="relative h-[176px] overflow-hidden bg-zinc-950">
             {player.bannerUrl ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -124,9 +124,9 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
             )}
           </header>
 
-          <div className="nyke-card-identity-pattern pointer-events-none absolute inset-x-0 bottom-[48px] top-[176px] z-[1] overflow-hidden" aria-hidden="true">
+          <div className="nyke-card-identity-pattern pointer-events-none absolute inset-0 z-[5] overflow-hidden" aria-hidden="true">
             <div className="nyke-card-identity-pattern-grid">
-              {Array.from({ length: 24 }, (_, index) => <span key={index}>{identityPattern}</span>)}
+              {Array.from({ length: 48 }, (_, index) => <span key={index}>{identityPattern}</span>)}
             </div>
           </div>
 
@@ -143,13 +143,13 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
             ) : null}
           </div>
 
-          <footer className="relative z-10 flex h-[48px] items-center justify-between border-t border-zinc-100 bg-[#f4f4f5] px-7">
-            <div><p className="font-serif text-[16px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[300px] truncate font-mono text-[7px] text-zinc-400">nyke.life/{player.username}</p></div>
-            {memberNumber ? <p className="font-mono text-[13px] font-bold tabular-nums tracking-[0.04em] text-zinc-700">{memberNumber}</p> : null}
+          <footer className="relative flex h-[48px] items-center justify-between border-t border-zinc-100 bg-[#f4f4f5] px-7">
+            <div className="relative z-10"><p className="font-serif text-[16px] font-black italic text-zinc-950">NYKE<span className="text-rose-400">.</span></p><p className="mt-0.5 max-w-[300px] truncate font-mono text-[7px] text-zinc-400">nyke.life/{player.username}</p></div>
+            {memberNumber ? <p className="relative z-10 font-mono text-[13px] font-bold tabular-nums tracking-[0.04em] text-zinc-700">{memberNumber}</p> : null}
           </footer>
-          <div className="nyke-card-specular pointer-events-none absolute inset-0 z-[19]" aria-hidden="true" />
           <div className="nyke-card-sheen pointer-events-none absolute inset-0 z-20" aria-hidden="true" />
-          {isFounder ? <span className="nyke-card-founder-mark absolute right-3 top-3 z-20 size-3 border-r border-t border-[#a58b5b]" aria-hidden="true" /> : null}
+          <div className="nyke-card-specular pointer-events-none absolute inset-0 z-[21]" aria-hidden="true" />
+          {isFounder ? <span className="nyke-card-founder-mark absolute right-3 top-3 z-[22] size-3 border-r border-t border-[#a58b5b]" aria-hidden="true" /> : null}
           <div className="nyke-card-edge-highlight pointer-events-none absolute inset-0 z-30 rounded-[inherit]" aria-hidden="true" />
         </div>
       </div>
