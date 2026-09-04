@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { ProfileBadgeCollection } from "@/components/profile/ProfileBadgeCollection";
+import { ProfileGearCard } from "@/components/profile/ProfileGearCard";
 import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations";
 import { players } from "@/lib/mock-data";
 import { getCachedPublicProfileData } from "@/lib/profiles";
@@ -27,6 +30,8 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
     ["eDPI", valueOrDash(edpi), true],
     ["cm / 360", cm360 === null ? "—" : `${valueOrDash(cm360, 2)} cm`, true],
   ] as const;
+  const gearPriority = ["mouse", "keyboard", "monitor", "mousepad", "headset", "skates"];
+  const homeGear = [...data.activeGear].sort((a, b) => gearPriority.indexOf(a.category) - gearPriority.indexOf(b.category)).slice(0, 4);
 
   return (
     <div className="mx-auto mt-10 max-w-5xl sm:mt-12">
@@ -58,7 +63,36 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
         </article>
       </section>
 
-      <section className="mt-4 rounded-lg border border-[var(--profile-border)] bg-white p-5 sm:p-6">
+      <section className="mt-14 sm:mt-16" aria-labelledby="active-gear-heading">
+        <header className="mb-6 text-center">
+          <h2 id="active-gear-heading" className="font-serif text-2xl font-black text-[var(--profile-text)]">Active gear</h2>
+          <span className="mx-auto mt-3 block h-px w-8 bg-rose-400" aria-hidden="true" />
+        </header>
+        {homeGear.length > 0 ? (
+          <>
+            <div className="flex flex-wrap justify-center gap-4">
+              {homeGear.map((item) => <ProfileGearCard key={item.id} item={item} compact />)}
+            </div>
+            {data.activeGear.length > homeGear.length ? <div className="mt-5 text-center"><Link href={`/${player.username}/gear`} className="text-xs font-semibold text-zinc-500 transition hover:text-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2">View all gear →</Link></div> : null}
+          </>
+        ) : (
+          <div className="text-center">
+            <p className="text-sm text-[var(--profile-muted)]">No active gear yet.</p>
+            {data.isOwner ? <Link href="/settings/profile" className="mt-2 inline-block text-xs font-semibold text-rose-500 hover:text-rose-600">Add gear</Link> : null}
+          </div>
+        )}
+      </section>
+
+      <section className="mt-14 sm:mt-16" aria-labelledby="badges-heading">
+        <header className="mb-6 text-center">
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">NYKE identity achievements</p>
+          <h2 id="badges-heading" className="mt-2 font-serif text-2xl font-black text-[var(--profile-text)]">Badges</h2>
+          <span className="mx-auto mt-3 block h-px w-8 bg-rose-400" aria-hidden="true" />
+        </header>
+        <ProfileBadgeCollection badges={player.badges} />
+      </section>
+
+      <section className="mt-14 rounded-lg border border-[var(--profile-border)] bg-white p-5 sm:mt-16 sm:p-6">
         <div className="flex items-center justify-between"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">Highlights</p><span className="size-1.5 rounded-full bg-[var(--profile-accent)]" /></div>
         {player.highlights.length > 0 ? (
           <ol className="mt-5 grid gap-px overflow-hidden rounded-md border border-[var(--profile-border)] bg-[var(--profile-border)] sm:grid-cols-3">
