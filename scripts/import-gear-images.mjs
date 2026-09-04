@@ -23,6 +23,7 @@ function expectedFilename(item) {
   return `${item.brand}-${item.model}`
     .normalize("NFKD")
     .toLowerCase()
+    .replaceAll("+", "-plus")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "") + ".webp";
 }
