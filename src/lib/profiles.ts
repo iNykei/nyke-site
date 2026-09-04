@@ -60,6 +60,50 @@ async function queryProfile(
   };
 }
 
+async function queryProfiles(supabase: ServerSupabaseClient) {
+  const identityResponse = await supabase
+    .from("profiles")
+    .select(identityProfileColumns)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
+
+  if (!identityResponse.error) {
+    return { data: (identityResponse.data ?? []) as ProfileRow[], error: null };
+  }
+
+  if (!isMissingColumn(identityResponse.error, "member_number") && !isMissingColumn(identityResponse.error, "banner_url")) {
+    return { data: [] as ProfileRow[], error: identityResponse.error };
+  }
+
+  const response = await supabase
+    .from("profiles")
+    .select(profileColumns)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
+
+  if (!response.error) {
+    return {
+      data: (response.data ?? []).map((row) => ({ ...row, member_number: null }) as ProfileRow),
+      error: null,
+    };
+  }
+
+  if (!isMissingColumn(response.error, "banner_url")) {
+    return { data: [] as ProfileRow[], error: response.error };
+  }
+
+  const legacyResponse = await supabase
+    .from("profiles")
+    .select(legacyProfileColumns)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
+
+  return {
+    data: (legacyResponse.data ?? []).map((row) => ({ ...row, banner_url: null, member_number: null }) as ProfileRow),
+    error: legacyResponse.error,
+  };
+}
+
 export type EditableProfileData = {
   profile: ProfileRow;
   settings: PlayerSettingsRow | null;
@@ -155,6 +199,75 @@ function buildRealPlayer(
     gear: buildGear(gearRows),
     highlights: [],
   };
+}
+
+export async function getExploreProfiles(): Promise<PlayerProfile[]> {
+  const supabase = await createClient();
+
+  if (!supabase) {
+    if (process.env.NODE_ENV === "development") {
+      return getDemoProfiles();
+    }
+
+    throw new Error("Explore data is unavailable.");
+  }
+
+  const { data: profiles, error: profilesError } = await queryProfiles(supabase);
+
+  assertQuerySucceeded(profilesError, "Could not load Explore profiles.");
+
+  if (profiles.length === 0) {
+    return [];
+  }
+
+  const profileIds = profiles.map((profile) => profile.id);
+  const [settingsResponse, playerGearResponse] = await Promise.all([
+    supabase
+      .from("player_settings")
+      .select("id, user_id, game, rank, dpi, sensitivity, resolution, polling_rate, created_at, updated_at")
+      .in("user_id", profileIds),
+    supabase
+      .from("player_gear")
+      .select("id, user_id, gear_item_id, category, is_active, created_at")
+      .in("user_id", profileIds)
+      .eq("is_active", true),
+  ]);
+
+  assertQuerySucceeded(settingsResponse.error, "Could not load Explore player settings.");
+  assertQuerySucceeded(playerGearResponse.error, "Could not load Explore player gear.");
+
+  const settingsRows = (settingsResponse.data ?? []) as PlayerSettingsRow[];
+  const playerGearRows = (playerGearResponse.data ?? []) as PlayerGearRow[];
+  const gearIds = [...new Set(playerGearRows.map((row) => row.gear_item_id))];
+  const gearResponse = gearIds.length
+    ? await supabase
+        .from("gear_items")
+        .select("id, brand, model, category, created_at")
+        .in("id", gearIds)
+    : { data: [] as GearItemRow[], error: null };
+
+  assertQuerySucceeded(gearResponse.error, "Could not load the Explore gear catalog.");
+
+  const settingsByUser = new Map(settingsRows.map((row) => [row.user_id, row]));
+  const gearById = new Map(((gearResponse.data ?? []) as GearItemRow[]).map((row) => [row.id, row]));
+  const gearByUser = new Map<string, GearItemRow[]>();
+
+  playerGearRows.forEach((row) => {
+    const gearItem = gearById.get(row.gear_item_id);
+    if (!gearItem) return;
+    const current = gearByUser.get(row.user_id) ?? [];
+    current.push(gearItem);
+    gearByUser.set(row.user_id, current);
+  });
+
+  return profiles.map((profile) =>
+    buildRealPlayer(
+      profile,
+      settingsByUser.get(profile.id) ?? null,
+      gearByUser.get(profile.id) ?? [],
+      [],
+    ),
+  );
 }
 
 export async function getProfileByUsername(username: string): Promise<ProfileRow | null> {
