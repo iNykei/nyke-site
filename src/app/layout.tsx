@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "NYKE | Aim Profiles and Gear",
-  description: "A dark, dense FPS profile prototype for player settings and gear discovery.",
+  description: "Build and share your FPS profile with aim settings, active gear and your NYKE Card.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -190,7 +190,7 @@ function buildRealPlayer(
   };
 }
 
-export async function getExploreProfiles(): Promise<PlayerProfile[]> {
+export async function getExploreProfiles(options: { includeBadges?: boolean } = {}): Promise<PlayerProfile[]> {
   const supabase = await createClient();
 
   if (!supabase) {
@@ -210,7 +210,13 @@ export async function getExploreProfiles(): Promise<PlayerProfile[]> {
   }
 
   const profileIds = profiles.map((profile) => profile.id);
-  const [settingsResponse, playerGearResponse] = await Promise.all([
+  const profileBadgesPromise = options.includeBadges
+    ? supabase
+        .from("profile_badges")
+        .select("profile_id, badge_id, awarded_at")
+        .in("profile_id", profileIds)
+    : Promise.resolve({ data: [] as ProfileBadgeRow[], error: null });
+  const [settingsResponse, playerGearResponse, profileBadgesResponse] = await Promise.all([
     supabase
       .from("player_settings")
       .select("id, user_id, game, rank, dpi, sensitivity, resolution, polling_rate, created_at, updated_at")
@@ -220,26 +226,41 @@ export async function getExploreProfiles(): Promise<PlayerProfile[]> {
       .select("id, user_id, gear_item_id, category, is_active, created_at")
       .in("user_id", profileIds)
       .eq("is_active", true),
+    profileBadgesPromise,
   ]);
 
   assertQuerySucceeded(settingsResponse.error, "Could not load Explore player settings.");
   assertQuerySucceeded(playerGearResponse.error, "Could not load Explore player gear.");
+  assertQuerySucceeded(profileBadgesResponse.error, "Could not load Explore player badges.");
 
   const settingsRows = (settingsResponse.data ?? []) as PlayerSettingsRow[];
   const playerGearRows = (playerGearResponse.data ?? []) as PlayerGearRow[];
+  const profileBadgeRows = (profileBadgesResponse.data ?? []) as ProfileBadgeRow[];
   const gearIds = [...new Set(playerGearRows.map((row) => row.gear_item_id))];
-  const gearResponse = gearIds.length
-    ? await supabase
-        .from("gear_items")
-        .select(gearItemColumns)
-        .in("id", gearIds)
-    : { data: [] as GearItemRow[], error: null };
+  const badgeIds = [...new Set(profileBadgeRows.map((row) => row.badge_id))];
+  const [gearResponse, badgesResponse] = await Promise.all([
+    gearIds.length
+      ? supabase
+          .from("gear_items")
+          .select(gearItemColumns)
+          .in("id", gearIds)
+      : Promise.resolve({ data: [] as GearItemRow[], error: null }),
+    badgeIds.length
+      ? supabase
+          .from("badges")
+          .select("id, slug, name, description, display_order, created_at")
+          .in("id", badgeIds)
+          .order("display_order", { ascending: true })
+      : Promise.resolve({ data: [] as BadgeRow[], error: null }),
+  ]);
 
   assertQuerySucceeded(gearResponse.error, "Could not load the Explore gear catalog.");
+  assertQuerySucceeded(badgesResponse.error, "Could not load Explore badge definitions.");
 
   const settingsByUser = new Map(settingsRows.map((row) => [row.user_id, row]));
   const gearById = new Map(((gearResponse.data ?? []) as GearItemRow[]).map((row) => [row.id, row]));
   const gearByUser = new Map<string, GearItemRow[]>();
+  const badgeIdsByUser = new Map<string, Set<string>>();
 
   playerGearRows.forEach((row) => {
     const gearItem = gearById.get(row.gear_item_id);
@@ -249,12 +270,22 @@ export async function getExploreProfiles(): Promise<PlayerProfile[]> {
     gearByUser.set(row.user_id, current);
   });
 
+  profileBadgeRows.forEach((row) => {
+    const current = badgeIdsByUser.get(row.profile_id) ?? new Set<string>();
+    current.add(row.badge_id);
+    badgeIdsByUser.set(row.profile_id, current);
+  });
+
+  const badgeRows = (badgesResponse.data ?? []) as BadgeRow[];
+
   return profiles.map((profile) =>
     buildRealPlayer(
       profile,
       settingsByUser.get(profile.id) ?? null,
       gearByUser.get(profile.id) ?? [],
-      [],
+      badgeRows
+        .filter((badge) => badgeIdsByUser.get(profile.id)?.has(badge.id))
+        .map(rowToProfileBadge),
     ),
   );
 }
