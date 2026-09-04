@@ -156,7 +156,7 @@ export function CardActions({ data }: CardActionsProps) {
   return (
     <>
       <NYKECard data={data} cardRef={cardRef} />
-      <div className="mt-4 w-full max-w-[400px]">
+      <div className="mt-4 w-full max-w-[540px]">
         <div className="flex flex-wrap justify-center gap-2">
           <button type="button" onClick={handleDownload} disabled={busy} className="inline-flex h-9 items-center gap-2 rounded-md bg-rose-300 px-3.5 text-[13px] font-semibold text-zinc-950 shadow-sm transition hover:bg-rose-200 disabled:cursor-wait disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
             <Download size={15} /> Download Card

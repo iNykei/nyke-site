@@ -94,7 +94,7 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
   }
 
   return (
-    <div ref={viewportRef} className="relative w-full max-w-[400px] overflow-visible" style={{ height: CARD_HEIGHT * scale }} aria-label={`${player.displayName} NYKE Card preview`}>
+    <div ref={viewportRef} className="relative w-full max-w-[540px] overflow-visible" style={{ height: CARD_HEIGHT * scale }} aria-label={`${player.displayName} NYKE Card preview`}>
       <div
         ref={stageRef}
         className="nyke-card-stage absolute left-0 top-0 h-[610px] w-[540px]"
