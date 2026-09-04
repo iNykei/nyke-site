@@ -31,10 +31,14 @@ export function CardLoadout({ activeGear }: { activeGear: GearItem[] }) {
         const Icon = categoryIcons[item.category] ?? Square;
         const isCentered = loadout.length === 1 || (loadout.length === 3 && index === 2);
         return (
-          <li
-            key={item.id}
-            className={`grid w-[170px] min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-3 ${isCentered ? "justify-self-center" : ""}`}
-          >
+<li
+  key={item.id}
+  className={`grid w-[170px] min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-3 ${
+    isCentered ? "justify-self-center" : ""
+  } ${
+    item.category === "keyboard" ? "-translate-x-3" : ""
+  }`}
+>
             <Icon aria-hidden="true" className="size-4 stroke-[1.5] text-zinc-600" />
             <div className="min-w-0">
               <p className="truncate text-[9px] font-semibold uppercase tracking-[0.1em] text-zinc-500">{item.maker}</p>
