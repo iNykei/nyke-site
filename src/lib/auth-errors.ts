@@ -4,7 +4,14 @@ export function toFriendlyAuthError(message: string) {
   if (normalized.includes("invalid login credentials")) {
     return "Email or password is incorrect.";
   }
-
+  
+  if (normalized.includes("rate limit") ||
+  normalized.includes("too many requests") ||
+  normalized.includes("email rate limit exceeded")
+) {
+  return "Too many emails sent. Please wait a while and try again.";
+}
+  
   if (normalized.includes("already registered") || normalized.includes("user already registered")) {
     return "An account with this email already exists.";
   }
