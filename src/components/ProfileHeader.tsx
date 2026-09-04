@@ -16,7 +16,12 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={player.bannerUrl} alt={`${player.displayName} profile banner`} className="size-full object-cover" />
         ) : (
-          <div className="profile-banner-fallback size-full" aria-hidden="true" />
+          <div className="profile-banner-fallback size-full" aria-hidden="true">
+            <span className="profile-banner-lockup">
+              <span className="profile-banner-wordmark">NYKE</span>
+              <span className="profile-banner-dot">.</span>
+            </span>
+          </div>
         )}
       </div>
       <div className="relative px-4 pb-5 sm:px-7 sm:pb-6">

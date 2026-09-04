@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagePlus, LoaderCircle, Trash2, Upload } from "lucide-react";
+import { ImagePlus, LoaderCircle, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { commitProfileMedia, removeProfileMedia, type ProfileMediaActionResult } from "@/app/settings/profile/media-actions";
 import {
@@ -11,7 +11,7 @@ import {
   type ProfileMediaKind,
 } from "@/lib/profile-media";
 import { createClient } from "@/lib/supabase/client";
-import { AvatarCropDialog } from "./AvatarCropDialog";
+import { ProfileMediaCropDialog } from "./ProfileMediaCropDialog";
 
 type ProfileMediaFieldProps = {
   fallbackText: string;
@@ -47,9 +47,11 @@ function statusClass(status: ProfileMediaActionResult["status"]) {
 export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, value }: ProfileMediaFieldProps) {
   const [busy, setBusy] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [avatarEditor, setAvatarEditor] = useState<{ fileName: string; url: string } | null>(null);
+  const [mediaEditor, setMediaEditor] = useState<{ fileName: string; url: string } | null>(null);
   const [result, setResult] = useState<ProfileMediaActionResult | null>(null);
   const previewRef = useRef<string | null>(null);
+  const editorUrlRef = useRef<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { description, title } = labels[kind];
   const displayUrl = previewUrl ?? value;
   const inputId = `profile-${kind}-upload`;
@@ -60,11 +62,9 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
         URL.revokeObjectURL(previewRef.current);
       }
 
-      if (avatarEditor) {
-        URL.revokeObjectURL(avatarEditor.url);
-      }
+      if (editorUrlRef.current) URL.revokeObjectURL(editorUrlRef.current);
     };
-  }, [avatarEditor]);
+  }, []);
 
   function setOperationBusy(nextBusy: boolean) {
     setBusy(nextBusy);
@@ -96,11 +96,10 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
     return true;
   }
 
-  function closeAvatarEditor() {
-    setAvatarEditor((current) => {
-      if (current) URL.revokeObjectURL(current.url);
-      return null;
-    });
+  function closeMediaEditor() {
+    if (editorUrlRef.current) URL.revokeObjectURL(editorUrlRef.current);
+    editorUrlRef.current = null;
+    setMediaEditor(null);
   }
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -109,14 +108,11 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
 
     if (!file || !validateFile(file)) return;
 
-    if (kind === "avatar") {
-      closeAvatarEditor();
-      setAvatarEditor({ fileName: file.name, url: URL.createObjectURL(file) });
-      setResult(null);
-      return;
-    }
-
-    await uploadFile(file);
+    closeMediaEditor();
+    const url = URL.createObjectURL(file);
+    editorUrlRef.current = url;
+    setMediaEditor({ fileName: file.name, url });
+    setResult(null);
   }
 
   async function uploadFile(file: File) {
@@ -180,8 +176,8 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
     }
   }
 
-  async function handleAvatarApply(file: File) {
-    closeAvatarEditor();
+  async function handleMediaApply(file: File) {
+    closeMediaEditor();
     await uploadFile(file);
   }
 
@@ -216,43 +212,38 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
 
       <div className="mt-4">
         {kind === "avatar" ? (
-          <div className="grid size-24 place-items-center overflow-hidden rounded-full border-4 border-white bg-zinc-950 text-xl font-bold text-white shadow-md ring-1 ring-zinc-200">
+          <button type="button" disabled={busy} onClick={() => inputRef.current?.click()} aria-label="Edit avatar" className="group relative grid size-24 place-items-center overflow-hidden rounded-full border-4 border-white bg-zinc-950 text-xl font-bold text-white shadow-md ring-1 ring-zinc-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60">
             {displayUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={displayUrl} alt="Current avatar preview" className="size-full object-cover" />
             ) : (
               fallbackText
             )}
-          </div>
+            <span className="absolute inset-0 grid place-items-center bg-zinc-950/45 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil size={19} aria-hidden="true" /></span>
+          </button>
         ) : (
-          <div className="grid aspect-[3/1] w-full place-items-center overflow-hidden rounded-md border border-zinc-200 bg-white text-zinc-400 sm:aspect-[4/1]">
+          <button type="button" disabled={busy} onClick={() => inputRef.current?.click()} aria-label="Edit banner" className="group relative grid aspect-[3/1] w-full place-items-center overflow-hidden rounded-md border border-zinc-200 bg-zinc-100 text-zinc-400 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60 sm:aspect-[4/1]">
             {displayUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={displayUrl} alt="Current banner preview" className="size-full object-cover" />
             ) : (
               <span className="inline-flex items-center gap-2 text-xs"><ImagePlus size={15} /> No banner</span>
             )}
-          </div>
+            <span className="absolute inset-0 grid place-items-center bg-zinc-950/35 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"><span className="grid size-10 place-items-center rounded-full bg-white/90 text-zinc-800 shadow-sm"><Pencil size={18} aria-hidden="true" /></span></span>
+          </button>
         )}
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
         <input
           id={inputId}
+          ref={inputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp"
           className="sr-only"
           disabled={busy}
           onChange={handleFileChange}
         />
-        <label
-          htmlFor={inputId}
-          aria-disabled={busy}
-          className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-md bg-rose-300 px-3 text-xs font-semibold text-zinc-950 shadow-sm transition duration-200 hover:bg-rose-200 aria-disabled:pointer-events-none aria-disabled:opacity-60"
-        >
-          <Upload size={14} />
-          {value ? "Replace" : "Upload"}
-        </label>
         {value ? (
           <button
             type="button"
@@ -267,12 +258,13 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
       </div>
 
       {result ? <p className={`mt-3 text-xs leading-5 ${statusClass(result.status)}`} aria-live="polite">{result.message}</p> : null}
-      {avatarEditor ? (
-        <AvatarCropDialog
-          fileName={avatarEditor.fileName}
-          sourceUrl={avatarEditor.url}
-          onCancel={closeAvatarEditor}
-          onApply={handleAvatarApply}
+      {mediaEditor ? (
+        <ProfileMediaCropDialog
+          fileName={mediaEditor.fileName}
+          kind={kind}
+          sourceUrl={mediaEditor.url}
+          onCancel={closeMediaEditor}
+          onApply={handleMediaApply}
         />
       ) : null}
     </div>

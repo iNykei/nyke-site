@@ -273,12 +273,42 @@ body:has(.page-dark) .site-icon-btn {
 }
 
 .profile-banner-fallback {
-  background-image:
-    linear-gradient(rgba(63, 63, 70, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(63, 63, 70, 0.045) 1px, transparent 1px),
-    radial-gradient(circle at 78% 25%, rgba(251, 113, 133, 0.13), transparent 28%);
-  background-size: 28px 28px, 28px 28px, auto;
-  background-color: #fafafa;
+  display: grid;
+  place-items: center;
+  background: #f4f4f5;
+}
+
+.profile-banner-lockup {
+  display: inline-flex;
+  align-items: flex-end;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: clamp(42px, 6vw, 76px);
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.profile-banner-wordmark {
+  display: inline-block;
+  margin-right: -4px;
+  padding-right: 6px;
+  color: transparent;
+  background: linear-gradient(105deg, rgba(39, 39, 42, 0.5) 0 42%, rgba(161, 161, 170, 0.92) 49%, rgba(39, 39, 42, 0.5) 56% 100%);
+  background-size: 280% 100%;
+  background-position: 125% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nyke-card-default-wordmark-sweep 5.4s ease-in-out infinite;
+}
+
+.profile-banner-dot {
+  width: 10px;
+  height: 10px;
+  margin-bottom: 6px;
+  margin-left: 2px;
+  border-radius: 999px;
+  background: rgba(251, 113, 133, 0.76);
 }
 
 .nyke-card-identity-pattern {
@@ -512,6 +542,13 @@ body:has(.page-dark) .site-icon-btn {
   .profile-highlight {
     animation: none !important;
     transform: none !important;
+  }
+
+  .profile-banner-wordmark {
+    animation: none !important;
+    color: rgba(39, 39, 42, 0.5);
+    background: none;
+    -webkit-text-fill-color: rgba(39, 39, 42, 0.5);
   }
 
   .nyke-card,
