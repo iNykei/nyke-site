@@ -9,7 +9,7 @@ import { CardLoadout } from "./CardLoadout";
 
 export const CARD_WIDTH = 540;
 export const CARD_HEIGHT = 610;
-const MAX_TILT = 5.5;
+const MAX_TILT = 6.25;
 const CENTER_DEAD_ZONE = 0.04;
 
 type NYKECardProps = {

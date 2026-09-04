@@ -450,9 +450,9 @@ body:has(.page-dark) .site-icon-btn {
   }
 
   .nyke-card:hover .nyke-card-identity-pattern {
-    opacity: 0.1;
-    -webkit-mask-image: radial-gradient(ellipse 270px 240px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.84) 28%, rgba(0, 0, 0, 0.54) 54%, rgba(0, 0, 0, 0.24) 76%, rgba(0, 0, 0, 0.12) 100%);
-    mask-image: radial-gradient(ellipse 270px 240px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.84) 28%, rgba(0, 0, 0, 0.54) 54%, rgba(0, 0, 0, 0.24) 76%, rgba(0, 0, 0, 0.12) 100%);
+    opacity: 0.12;
+    -webkit-mask-image: radial-gradient(ellipse 280px 250px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.88) 28%, rgba(0, 0, 0, 0.6) 54%, rgba(0, 0, 0, 0.3) 76%, rgba(0, 0, 0, 0.16) 100%);
+    mask-image: radial-gradient(ellipse 280px 250px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.88) 28%, rgba(0, 0, 0, 0.6) 54%, rgba(0, 0, 0, 0.3) 76%, rgba(0, 0, 0, 0.16) 100%);
   }
 }
 
