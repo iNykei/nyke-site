@@ -1,6 +1,7 @@
 "use client";
 
 import { ImagePlus, LoaderCircle, Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { commitProfileMedia, removeProfileMedia, type ProfileMediaActionResult } from "@/app/settings/profile/media-actions";
 import {
@@ -45,6 +46,7 @@ function statusClass(status: ProfileMediaActionResult["status"]) {
 }
 
 export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, value }: ProfileMediaFieldProps) {
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [mediaEditor, setMediaEditor] = useState<{ fileName: string; url: string } | null>(null);
@@ -165,6 +167,7 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
       }
 
       onChange(actionResult.url ?? null);
+      router.refresh();
     } catch {
       if (uploadedPath) {
         await supabase.storage.from(PROFILE_MEDIA_BUCKET).remove([uploadedPath]);
@@ -191,6 +194,7 @@ export function ProfileMediaField({ fallbackText, kind, onBusyChange, onChange, 
 
       if (actionResult.status !== "error") {
         onChange(null);
+        router.refresh();
       }
     } catch {
       setResult({ status: "error", message: `The ${kind} could not be removed. Try again.` });

@@ -11,6 +11,7 @@ const discoveryNavItems = [
 export async function Navbar() {
   const { profile } = await getCurrentUserAndProfile();
   const displayUsername = profile?.username;
+  const avatarUrl = profile?.avatar_url;
   const profileInitial = displayUsername?.slice(0, 2).toUpperCase();
   const navItems = [
     ...discoveryNavItems,
@@ -57,7 +58,12 @@ export async function Navbar() {
                 href={`/${displayUsername}`}
                 className="site-icon-btn flex h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-2 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60"
               >
-                <span className="grid size-5 place-items-center rounded-full bg-zinc-950 text-[9px] font-bold text-white">{profileInitial}</span>
+                <span className="grid size-5 shrink-0 place-items-center overflow-hidden rounded-full bg-zinc-950 text-[9px] font-bold text-white">
+                  {avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={avatarUrl} alt="" className="size-full object-cover" />
+                  ) : profileInitial}
+                </span>
                 <span className="hidden max-w-24 truncate sm:inline">{displayUsername}</span>
               </Link>
               <SignOutButton />
