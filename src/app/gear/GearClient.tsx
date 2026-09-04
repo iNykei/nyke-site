@@ -11,10 +11,11 @@ const filters = ["All", "mouse", "keyboard", "mousepad", "monitor", "headset", "
 
 type GearClientProps = {
   items: GearCatalogItem[];
+  initialSearch?: string;
 };
 
-export function GearClient({ items }: GearClientProps) {
-  const [query, setQuery] = useState("");
+export function GearClient({ items, initialSearch = "" }: GearClientProps) {
+  const [query, setQuery] = useState(initialSearch);
   const [filter, setFilter] = useState("All");
   const [brand, setBrand] = useState("All brands");
 
