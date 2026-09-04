@@ -10,7 +10,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
   const metadata = [player.region, player.settings.game, player.settings.rank].filter(Boolean);
 
   return (
-    <header className="profile-reveal overflow-hidden rounded-lg border border-[var(--profile-border)] bg-[var(--profile-surface)]">
+    <header className="profile-reveal nyke-surface-card overflow-hidden">
       <div className="relative aspect-[4/1] min-h-28 max-h-56 w-full overflow-hidden bg-zinc-100 sm:aspect-[5/1]">
         {player.bannerUrl ? (
           // eslint-disable-next-line @next/next/no-img-element

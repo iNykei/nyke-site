@@ -17,7 +17,7 @@ export default async function PlayerGearPage({ params }: { params: Promise<{ use
           {data.activeGear.map((item) => <ProfileGearCard key={item.id} item={item} />)}
         </div>
       ) : (
-        <div className="mx-auto max-w-xl rounded-lg border border-[var(--profile-border)] bg-white px-6 py-12 text-center">
+        <div className="nyke-surface-card mx-auto max-w-xl px-6 py-12 text-center">
           <p className="text-sm font-semibold text-zinc-800">No active gear</p>
           <p className="mt-1 text-xs text-[var(--profile-muted)]">This player has not published a loadout.</p>
         </div>

@@ -36,14 +36,14 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
   return (
     <div className="mx-auto mt-10 max-w-5xl sm:mt-12">
       <section className="grid gap-4 md:grid-cols-[0.72fr_1.28fr]">
-        <article className="rounded-lg border border-[var(--profile-border)] bg-white p-5 sm:p-6">
+        <article className="nyke-surface-card p-5 sm:p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">Player</p>
           <p className="mt-7 text-sm font-semibold uppercase text-zinc-500">{player.settings.game || "Not configured"}</p>
           <h2 className="mt-2 break-words font-serif text-3xl font-black leading-none text-[var(--profile-text)]">{player.settings.rank || "Unranked"}</h2>
           {player.region ? <p className="mt-6 text-xs text-[var(--profile-muted)]">Region {player.region}</p> : null}
         </article>
 
-        <article className="rounded-lg border border-[var(--profile-border)] bg-white p-5 sm:p-6">
+        <article className="nyke-surface-card p-5 sm:p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">Aim</p>
           {hasAim ? (
             <>
@@ -92,7 +92,7 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
         <ProfileBadgeCollection badges={player.badges} />
       </section>
 
-      <section className="mt-14 rounded-lg border border-[var(--profile-border)] bg-white p-5 sm:mt-16 sm:p-6">
+      <section className="nyke-surface-card mt-14 p-5 sm:mt-16 sm:p-6">
         <div className="flex items-center justify-between"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">Highlights</p><span className="size-1.5 rounded-full bg-[var(--profile-accent)]" /></div>
         {player.highlights.length > 0 ? (
           <ol className="mt-5 grid gap-px overflow-hidden rounded-md border border-[var(--profile-border)] bg-[var(--profile-border)] sm:grid-cols-3">

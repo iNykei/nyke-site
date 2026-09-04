@@ -22,10 +22,10 @@ export function ProfileGearCard({ compact = false, item }: ProfileGearCardProps)
 
   if (!compact) {
     return (
-      <article className="profile-gear-card group flex min-h-32 basis-full flex-col justify-between rounded-lg border border-zinc-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-200/60 sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(33.333%-0.667rem)] xl:basis-[calc(25%-0.75rem)]">
+      <article className="profile-gear-card nyke-surface-card nyke-surface-card--item flex min-h-32 basis-full flex-col justify-between p-5 sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(33.333%-0.667rem)] xl:basis-[calc(25%-0.75rem)]">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[10px] font-semibold uppercase text-zinc-500">{item.category}</p>
-          <span className="size-1.5 rounded-full bg-lime-400/80 transition-transform duration-200 group-hover:scale-125" aria-hidden="true" />
+          <span className="size-1.5 rounded-full bg-lime-400/80" aria-hidden="true" />
         </div>
         <div className="mt-7 min-w-0">
           <h3 className="truncate text-[15px] font-semibold leading-5 text-zinc-950">{item.name}</h3>
@@ -36,7 +36,7 @@ export function ProfileGearCard({ compact = false, item }: ProfileGearCardProps)
   }
 
   return (
-    <article className="profile-gear-card group flex min-h-40 basis-full flex-col justify-between rounded-lg border border-zinc-200 bg-white p-5 shadow-[0_8px_24px_rgba(24,24,27,0.035)] transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-[0_12px_28px_rgba(24,24,27,0.07)] sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(25%-0.75rem)]">
+    <article className="profile-gear-card nyke-surface-card nyke-surface-card--item flex min-h-40 basis-full flex-col justify-between p-5 sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(25%-0.75rem)]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <CategoryIcon category={item.category} />

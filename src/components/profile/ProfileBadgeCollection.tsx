@@ -24,7 +24,7 @@ export function ProfileBadgeCollection({ badges }: { badges: ProfileBadge[] }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="NYKE badges and identity achievements">
       {badges.map((badge) => (
-        <li key={badge.slug} className="flex min-w-0 gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-[0_8px_24px_rgba(24,24,27,0.03)]">
+        <li key={badge.slug} className="nyke-surface-card nyke-surface-card--item flex min-w-0 gap-3 p-4">
           <span className={`grid size-9 shrink-0 place-items-center rounded-md border ${markTone[badge.slug] ?? markTone["early-100"]}`}><BadgeMark slug={badge.slug} /></span>
           <div className="min-w-0 pt-0.5">
             <h3 className="text-sm font-semibold text-zinc-950">{badge.name}</h3>

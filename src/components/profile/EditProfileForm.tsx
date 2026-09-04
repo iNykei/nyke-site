@@ -64,7 +64,7 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
           event.preventDefault();
         }
       }}
-      className="mx-auto w-full max-w-3xl space-y-8 border border-zinc-200 bg-white p-6 shadow-xl shadow-zinc-200/70"
+      className="nyke-surface-card mx-auto w-full max-w-3xl space-y-8 p-6"
     >
       <div>
         <p className="text-xs uppercase tracking-[0.24em] text-rose-400">Profile settings</p>

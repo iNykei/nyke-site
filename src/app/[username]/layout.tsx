@@ -8,7 +8,7 @@ type ProfileLayoutProps = { children: ReactNode; params: Promise<{ username: str
 export const dynamic = "force-dynamic";
 
 const profileTheme = {
-  "--profile-bg": "#ffffff", "--profile-surface": "#ffffff", "--profile-text": "#18181b",
+  "--profile-bg": "#fafafa", "--profile-surface": "#ffffff", "--profile-text": "#18181b",
   "--profile-muted": "#71717a", "--profile-border": "#e4e4e7", "--profile-accent": "#fb7185",
   "--profile-technical": "#4d7c0f",
 } as CSSProperties;

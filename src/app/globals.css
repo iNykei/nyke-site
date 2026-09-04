@@ -159,6 +159,41 @@ body:has(.page-dark) .site-icon-btn {
   animation: nyke-hero-electric-b 180ms ease-out 50ms forwards;
 }
 
+.nyke-surface-card {
+  border: 1px solid rgba(24, 24, 27, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow:
+    0 2px 5px rgba(24, 24, 27, 0.06),
+    0 11px 26px rgba(24, 24, 27, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.nyke-surface-card--item {
+  box-shadow:
+    0 1px 3px rgba(24, 24, 27, 0.055),
+    0 6px 16px rgba(24, 24, 27, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.nyke-surface-card--interactive {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nyke-surface-card--interactive:hover {
+    transform: translateY(-1px);
+    border-color: rgba(24, 24, 27, 0.17);
+    box-shadow:
+      0 3px 7px rgba(24, 24, 27, 0.07),
+      0 14px 30px rgba(24, 24, 27, 0.085),
+      inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  }
+}
+
 .profile-reveal {
   animation: profile-reveal 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -571,7 +606,9 @@ body:has(.page-dark) .site-icon-btn {
   .profile-reveal,
   .profile-section,
   .profile-gear-card,
-  .profile-highlight {
+  .profile-highlight,
+  .nyke-surface-card--interactive,
+  .nyke-surface-card--interactive:hover {
     animation: none !important;
     transform: none !important;
   }
