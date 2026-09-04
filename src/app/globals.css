@@ -344,6 +344,25 @@ body:has(.page-dark) .site-icon-btn {
   transition: opacity 300ms ease;
 }
 
+.nyke-card-specular {
+  opacity: 0;
+  background: radial-gradient(
+    ellipse 210px 170px at var(--card-mx) var(--card-my),
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.15) 22%,
+    rgba(255, 255, 255, 0.055) 44%,
+    rgba(255, 255, 255, 0) 68%
+  );
+  transition: opacity 220ms ease;
+}
+
+.nyke-card-edge-highlight {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    inset 1px 0 0 rgba(255, 255, 255, 0.46),
+    inset 0 -1px 0 rgba(24, 24, 27, 0.055);
+}
+
 .nyke-card[data-exporting="true"] {
   transform: none !important;
   transition: none !important;
@@ -357,7 +376,8 @@ body:has(.page-dark) .site-icon-btn {
   transition: none !important;
 }
 
-.nyke-card[data-exporting="true"] .nyke-card-sheen {
+.nyke-card[data-exporting="true"] .nyke-card-sheen,
+.nyke-card[data-exporting="true"] .nyke-card-specular {
   display: none;
 }
 
@@ -382,6 +402,10 @@ body:has(.page-dark) .site-icon-btn {
 
   .nyke-card:hover .nyke-card-sheen {
     opacity: 0.24;
+  }
+
+  .nyke-card:hover .nyke-card-specular {
+    opacity: 0.58;
   }
 
   .nyke-card:hover .nyke-card-identity-pattern {
@@ -559,7 +583,8 @@ body:has(.page-dark) .site-icon-btn {
     transition: none !important;
   }
 
-  .nyke-card-sheen {
+  .nyke-card-sheen,
+  .nyke-card-specular {
     display: none !important;
   }
 
