@@ -14,7 +14,7 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
       <div className="relative aspect-[4/1] min-h-28 max-h-56 overflow-hidden bg-zinc-100 sm:aspect-[5/1]">
         {player.bannerUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={player.bannerUrl} alt={`${player.displayName} profile banner`} className="size-full object-cover" />
+          <img src={player.bannerUrl} alt={`${player.displayName} profile banner`} className="absolute inset-0 block h-full w-full max-w-none object-cover" />
         ) : (
           <div className="profile-banner-fallback size-full" aria-hidden="true">
             <span className="profile-banner-lockup">
