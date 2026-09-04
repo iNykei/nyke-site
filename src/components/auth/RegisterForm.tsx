@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { toFriendlyAuthError } from "@/lib/auth-errors";
 import { createClient } from "@/lib/supabase/client";
-import { isValidEmail, isValidUsername, normalizeUsername } from "@/lib/validation";
+import { isReservedUsername, isValidEmail, isValidUsername, normalizeUsername } from "@/lib/validation";
 
 const minPasswordLength = 8;
 
@@ -29,6 +29,11 @@ export function RegisterForm() {
 
     if (!isValidEmail(email)) {
       setFieldError("Enter a valid email address.");
+      return;
+    }
+
+    if (isReservedUsername(normalizedUsername)) {
+      setFieldError("That username is reserved. Choose another username.");
       return;
     }
 
@@ -88,7 +93,7 @@ export function RegisterForm() {
         return;
       }
 
-      setSuccessMessage("Account created. You can now open your profile from the navbar.");
+      window.location.replace("/settings/profile");
     } catch {
       setServerError("Supabase is not configured for this environment.");
     } finally {

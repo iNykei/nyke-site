@@ -7,11 +7,11 @@ import { toFriendlyAuthError } from "@/lib/auth-errors";
 import { createClient } from "@/lib/supabase/client";
 import { isValidEmail } from "@/lib/validation";
 
-export function LoginForm() {
+export function LoginForm({ nextPath, initialError = "" }: { nextPath?: string; initialError?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldError, setFieldError] = useState("");
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState(initialError);
   const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -56,7 +56,8 @@ export function LoginForm() {
 
       // A document navigation starts only after @supabase/ssr has persisted the
       // session cookies, so the next Server Component request sees the user.
-      window.location.replace(!profileError && profile?.username ? `/${profile.username}` : "/settings/profile");
+      const defaultDestination = !profileError && profile?.username ? `/${profile.username}` : "/settings/profile";
+      window.location.replace(nextPath || defaultDestination);
     } catch {
       setServerError("Supabase is not configured for this environment.");
     } finally {

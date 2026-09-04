@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { isValidUsername, normalizeUsername } from "@/lib/validation";
+import { isReservedUsername, isValidUsername, normalizeUsername } from "@/lib/validation";
 
 export type SaveProfileState = {
   status: "idle" | "success" | "error";
@@ -71,6 +71,10 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
   const dpi = optionalInteger(formData.get("dpi"), 100, 12800);
   const pollingRate = optionalInteger(formData.get("polling_rate"), 125, 8000);
   const sensitivity = optionalPositiveNumber(formData.get("sensitivity"), 20);
+
+  if (isReservedUsername(username)) {
+    return { status: "error", message: "That username is reserved. Choose another username." };
+  }
 
   if (!isValidUsername(username)) {
     return { status: "error", message: "Username must be 3-20 lowercase letters, numbers, underscore, or hyphen." };

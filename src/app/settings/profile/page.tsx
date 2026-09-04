@@ -7,7 +7,7 @@ export default async function SettingsProfilePage() {
   const data = await getEditableProfileData();
 
   if (!data) {
-    redirect("/login");
+    redirect("/login?next=%2Fsettings%2Fprofile");
   }
 
   return (

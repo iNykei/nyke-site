@@ -1,5 +1,6 @@
 import type { PlayerProfile } from "@/types";
 import { AvatarMark } from "./AvatarMark";
+import { MediaImage } from "./MediaImage";
 import { BadgeList } from "./profile/BadgeList";
 import { MemberNumber } from "./profile/MemberNumber";
 import { ProfileActions } from "./profile/ProfileActions";
@@ -12,28 +13,28 @@ export function ProfileHeader({ player, isOwner = false }: ProfileHeaderProps) {
   return (
     <header className="profile-reveal nyke-surface-card overflow-hidden">
       <div className="relative aspect-[4/1] min-h-28 max-h-56 w-full overflow-hidden bg-zinc-100 sm:aspect-[5/1]">
-        {player.bannerUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={player.bannerUrl} alt={`${player.displayName} profile banner`} className="absolute inset-0 block h-full w-full max-w-none object-cover" />
-        ) : (
-          <div className="profile-banner-fallback size-full" aria-hidden="true">
+        <MediaImage
+          src={player.bannerUrl}
+          alt={`${player.displayName} profile banner`}
+          className="absolute inset-0 block h-full w-full max-w-none object-cover"
+          fallback={<div className="profile-banner-fallback size-full" aria-hidden="true">
             <span className="profile-banner-lockup">
               <span className="profile-banner-wordmark">NYKE</span>
               <span className="profile-banner-dot">.</span>
             </span>
-          </div>
-        )}
+          </div>}
+        />
       </div>
       <div className="relative px-4 pb-5 sm:px-7 sm:pb-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:gap-5">
             <div className="-mt-10 size-24 shrink-0 overflow-hidden rounded-full border-4 border-white bg-zinc-950 shadow-sm ring-1 ring-zinc-200 sm:-mt-12 sm:size-28">
-              {player.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={player.avatarUrl} alt={`${player.displayName} avatar`} className="size-full object-cover" />
-              ) : (
-                <AvatarMark seed={player.avatarSeed} size="xl" />
-              )}
+              <MediaImage
+                src={player.avatarUrl}
+                alt={`${player.displayName} avatar`}
+                className="size-full object-cover"
+                fallback={<AvatarMark seed={player.avatarSeed} size="xl" />}
+              />
             </div>
             <div className="min-w-0 pb-1">
               <h1 className="break-words font-serif text-3xl font-black leading-none text-[var(--profile-text)] sm:text-4xl">{player.displayName}</h1>

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ProfileBadgeCollection } from "@/components/profile/ProfileBadgeCollection";
 import { ProfileGearCard } from "@/components/profile/ProfileGearCard";
 import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations";
-import { players } from "@/lib/mock-data";
 import { getCachedPublicProfileData } from "@/lib/profiles";
 
 type PlayerProfilePageProps = { params: Promise<{ username: string }> };
@@ -12,7 +11,7 @@ function valueOrDash(value: number | null, digits = 0) {
 }
 
 export function generateStaticParams() {
-  return players.map((player) => ({ username: player.username }));
+  return [{ username: "cyx" }];
 }
 
 export default async function PlayerProfilePage({ params }: PlayerProfilePageProps) {

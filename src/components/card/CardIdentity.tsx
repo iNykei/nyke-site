@@ -1,4 +1,5 @@
 import type { PlayerProfile } from "@/types";
+import { MediaImage } from "@/components/MediaImage";
 
 const badgeTones: Record<string, string> = {
   founder: "text-[#8a6038]",
@@ -14,12 +15,13 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
   return (
     <section className="relative z-10 h-[152px] px-8 text-center">
       <div className="nyke-card-avatar absolute -top-[50px] left-1/2 size-[100px] -translate-x-1/2 overflow-hidden rounded-full border-[4px] border-white bg-zinc-950 ring-1 ring-zinc-200">
-        {player.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={player.avatarUrl} alt={`${player.displayName} avatar`} crossOrigin="anonymous" className="size-full object-cover" />
-        ) : (
-          <span className="grid size-full place-items-center font-serif text-[30px] font-black text-white">{player.avatarSeed}</span>
-        )}
+        <MediaImage
+          src={player.avatarUrl}
+          alt={`${player.displayName} avatar`}
+          crossOrigin="anonymous"
+          className="size-full object-cover"
+          fallback={<span className="grid size-full place-items-center font-serif text-[30px] font-black text-white">{player.avatarSeed}</span>}
+        />
       </div>
 
       <div className="mx-auto max-w-[430px] pt-[60px]">

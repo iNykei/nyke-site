@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type PointerEvent, type RefObject } from "react";
+import { MediaImage } from "@/components/MediaImage";
 import { formatMemberNumber } from "@/lib/identity";
 import type { PublicProfileData } from "@/lib/profiles";
 import { CardAim } from "./CardAim";
@@ -109,19 +110,20 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           className="nyke-card relative h-[610px] w-[540px] overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950"
         >
           <header className="relative h-[176px] overflow-hidden bg-zinc-950">
-            {player.bannerUrl ? (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={player.bannerUrl} alt={`${player.displayName} banner`} crossOrigin="anonymous" className="size-full object-cover" />
-                <div className="nyke-card-banner-overlay absolute inset-0" aria-hidden="true" />
-              </>
-            ) : (
-              <div className="nyke-card-default-banner size-full" aria-hidden="true">
+            <MediaImage
+              src={player.bannerUrl}
+              alt={`${player.displayName} banner`}
+              crossOrigin="anonymous"
+              className="size-full object-cover"
+              fallback={<div className="nyke-card-default-banner size-full" aria-hidden="true">
                 <span className="nyke-card-default-lockup">
                   <span className="nyke-card-default-wordmark">NYKE</span><span className="nyke-card-default-dot">.</span>
                 </span>
-              </div>
-            )}
+              </div>}
+            />
+            {player.bannerUrl ? (
+                <div className="nyke-card-banner-overlay absolute inset-0" aria-hidden="true" />
+            ) : null}
           </header>
 
           <div className="nyke-card-identity-pattern pointer-events-none absolute inset-0 z-[5] overflow-hidden" aria-hidden="true">

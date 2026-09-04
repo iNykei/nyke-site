@@ -328,7 +328,10 @@ export async function getCurrentUserAndProfile(client?: ServerSupabaseClient) {
 
 export async function getPublicProfileData(username: string): Promise<PublicProfileData | null> {
   const supabase = await createClient();
-  const demoPlayer = getPlayerByUsername(username);
+  const normalizedUsername = username.toLowerCase();
+  const demoPlayer = normalizedUsername === "cyx" || process.env.NODE_ENV === "development"
+    ? getPlayerByUsername(normalizedUsername)
+    : undefined;
 
   if (!supabase) {
     return demoPlayer
@@ -337,7 +340,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
   }
 
   const [{ data: realProfile, error: realProfileError }, current] = await Promise.all([
-    queryProfile(supabase, "username", username.toLowerCase()),
+    queryProfile(supabase, "username", normalizedUsername),
     getCurrentUserAndProfile(supabase),
   ]);
 
@@ -420,6 +423,15 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
 export const getCachedPublicProfileData = cache(getPublicProfileData);
 
+export async function getPublicProfileIndex() {
+  const supabase = await createClient();
+  if (!supabase) return [];
+
+  const { data, error } = await queryProfiles(supabase);
+  assertQuerySucceeded(error, "Could not load the public profile index.");
+  return data.map(({ username, updated_at }) => ({ username, updatedAt: updated_at }));
+}
+
 export async function getEditableProfileData(): Promise<EditableProfileData | null> {
   const supabase = await createClient();
 
@@ -429,8 +441,12 @@ export async function getEditableProfileData(): Promise<EditableProfileData | nu
 
   const { user, profile } = await getCurrentUserAndProfile(supabase);
 
-  if (!user || !profile) {
+  if (!user) {
     return null;
+  }
+
+  if (!profile) {
+    throw new Error("The signed-in account does not have a profile identity.");
   }
 
   const [

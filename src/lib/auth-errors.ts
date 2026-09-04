@@ -13,6 +13,10 @@ export function toFriendlyAuthError(message: string) {
     return "That username is already taken.";
   }
 
+  if (normalized.includes("invalid_username") || normalized.includes("database error saving new user")) {
+    return "That username is unavailable. Choose another username and try again.";
+  }
+
   if (normalized.includes("email")) {
     return "Please check your email address and try again.";
   }

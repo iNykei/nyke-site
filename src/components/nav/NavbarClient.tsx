@@ -41,6 +41,7 @@ export function NavbarClient({ viewer }: NavbarClientProps) {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const desktopSearchButtonRef = useRef<HTMLButtonElement>(null);
   const searchTriggerRef = useRef<HTMLElement | null>(null);
   const [menuPath, setMenuPath] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -59,7 +60,10 @@ export function NavbarClient({ viewer }: NavbarClientProps) {
   ];
 
   function openSearch(trigger?: HTMLElement | null) {
-    searchTriggerRef.current = trigger ?? document.activeElement as HTMLElement | null;
+    const activeElement = document.activeElement instanceof HTMLElement && document.activeElement !== document.body
+      ? document.activeElement
+      : null;
+    searchTriggerRef.current = trigger ?? activeElement ?? desktopSearchButtonRef.current ?? menuButtonRef.current;
     setMenuPath(null);
     setSearchOpen(true);
   }
@@ -144,6 +148,7 @@ export function NavbarClient({ viewer }: NavbarClientProps) {
 
           <div className="flex items-center gap-2">
             <button
+              ref={desktopSearchButtonRef}
               type="button"
               onClick={handleSearchClick}
               className="site-icon-btn hidden h-8 items-center gap-2 rounded-md border border-zinc-200 bg-white/70 px-2 text-xs font-medium text-zinc-600 transition duration-200 hover:border-zinc-300 hover:bg-white hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/60 sm:flex"
