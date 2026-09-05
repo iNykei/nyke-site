@@ -14,7 +14,7 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
   const hiddenCount = Math.max(0, player.badges.length - visibleBadges.length);
 
   return (
-    <section className="relative z-10 h-[152px] px-8 text-center">
+    <section className="relative z-10 shrink-0 px-8 pb-3 text-center">
       <div className="nyke-card-avatar absolute -top-[50px] left-1/2 size-[100px] -translate-x-1/2 overflow-hidden rounded-full border-[4px] border-white bg-zinc-950 ring-1 ring-zinc-200">
         <MediaImage
           src={player.avatarUrl}
@@ -25,11 +25,11 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
         />
       </div>
 
-      <div className="mx-auto max-w-[430px] pt-[60px]">
+      <div className="mx-auto max-w-[430px] pt-[64px]">
         <h1 className="truncate font-serif text-[34px] font-black leading-none text-zinc-950">{player.displayName}</h1>
-        <p className="mt-1.5 truncate font-mono text-[11px] font-medium text-zinc-500">@{player.username}</p>
+        <p className="mt-2 truncate font-mono text-[12px] font-medium leading-4 text-zinc-500">@{player.username}</p>
         {visibleBadges.length > 0 ? (
-          <ul aria-label="NYKE identity badges" className="mt-2.5 flex max-h-8 flex-wrap justify-center gap-y-1 overflow-hidden text-[9px] font-bold uppercase tracking-[0.08em]">
+          <ul aria-label="NYKE identity badges" className="mt-3 flex max-h-9 flex-wrap justify-center gap-y-1 overflow-hidden text-[10px] font-bold uppercase leading-4">
             {visibleBadges.map((badge, index) => (
               <li key={badge.slug} className={`inline-flex items-center whitespace-nowrap ${badgeTones[badge.slug] ?? badgeTones["early-100"]}`}>
                 {index > 0 ? <span className="mx-1.5 text-zinc-300">·</span> : null}

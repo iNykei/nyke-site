@@ -26,21 +26,19 @@ export function CardLoadout({ activeGear }: { activeGear: GearItem[] }) {
     : `grid-cols-[170px_170px] ${loadout.length === 3 ? "[&>li:last-child]:col-span-2" : ""}`;
 
   return (
-    <ul aria-label="Active loadout" className={`relative z-10 grid justify-center gap-x-8 gap-y-5 text-left ${layoutClass}`}>
+    <ul aria-label="Active loadout" className={`relative z-10 grid shrink-0 justify-center gap-x-10 gap-y-6 text-left ${layoutClass}`}>
       {loadout.map((item, index) => {
         const Icon = categoryIcons[item.category] ?? Square;
         const isCentered = loadout.length === 1 || (loadout.length === 3 && index === 2);
         return (
-<li
-  key={item.id}
-  className={`grid w-[170px] min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-3 ${
-    isCentered ? "justify-self-center" : ""
-  }`}
->
+          <li
+            key={item.id}
+            className={`grid w-[170px] min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-3.5 ${isCentered ? "justify-self-center" : ""}`}
+          >
             <Icon aria-hidden="true" className="size-4 stroke-[1.5] text-zinc-600" />
             <div className="min-w-0">
-              <p className="truncate text-[9px] font-semibold uppercase tracking-[0.1em] text-zinc-500">{item.maker}</p>
-              <p className="truncate text-[13px] font-semibold leading-tight text-zinc-950" title={`${item.maker} ${item.name}`}>{item.name}</p>
+              <p className="truncate text-[9px] font-medium uppercase leading-3 text-zinc-500">{item.maker}</p>
+              <p className="truncate text-[14px] font-semibold leading-5 text-zinc-950" title={`${item.maker} ${item.name}`}>{item.name}</p>
             </div>
           </li>
         );
