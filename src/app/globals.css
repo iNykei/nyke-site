@@ -1,0 +1,652 @@
+@import "tailwindcss";
+
+:root {
+  --background: #08090c;
+  --foreground: #f4f4f5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(253, 164, 175, 0.34);
+  color: #18181b;
+}
+
+body:has(.page-light) {
+  background: #fbfaf8;
+  color: #18181b;
+}
+
+body:has(.page-dark) {
+  background: #111114;
+  color: #f4f4f5;
+}
+
+body:has(.page-dark) .site-header {
+  border-color: rgba(63, 63, 70, 0.7);
+  background: rgba(28, 28, 31, 0.85);
+}
+
+body:has(.page-dark) .site-logo,
+body:has(.page-dark) .site-nav-link {
+  color: #f4f4f5;
+}
+
+body:has(.page-dark) .site-nav-link {
+  color: #a1a1aa;
+}
+
+body:has(.page-dark) .site-nav-link:hover {
+  color: #ffffff;
+}
+
+body:has(.page-dark) .site-icon-btn {
+  border-color: #3f3f46;
+  background: rgba(39, 39, 42, 0.7);
+  color: #d4d4d8;
+}
+
+.nyke-hero-stage {
+  perspective: 1200px;
+}
+
+.nyke-hero-interactive {
+  --nyke-rx: 0deg;
+  --nyke-ry: 0deg;
+  --nyke-mx: 50%;
+  --nyke-my: 50%;
+  transform: perspective(1200px) rotateX(var(--nyke-rx)) rotateY(var(--nyke-ry)) translateY(0);
+  transform-style: preserve-3d;
+  transition:
+    transform 440ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 220ms ease;
+  will-change: transform;
+}
+
+.nyke-hero-interactive::after {
+  content: "";
+  position: absolute;
+  inset: -28px;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--nyke-mx) var(--nyke-my),
+    rgba(253, 164, 175, 0.22),
+    rgba(251, 113, 133, 0.08) 38%,
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.nyke-hero-sweep {
+  position: absolute;
+  left: 2%;
+  top: 0;
+  z-index: 2;
+  height: 24%;
+  width: 96%;
+  pointer-events: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, rgba(253, 164, 175, 0.42), transparent);
+  filter: blur(18px);
+  opacity: 0;
+  transform: translateY(-160%);
+}
+
+.nyke-hero-electric {
+  position: absolute;
+  left: 9%;
+  z-index: 2;
+  height: 1px;
+  width: 82%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(244, 114, 182, 0.88), rgba(190, 242, 100, 0.52), transparent);
+  filter: blur(0.3px);
+  opacity: 0;
+  transform-origin: center;
+}
+
+.nyke-hero-electric-a {
+  top: 35%;
+  transform: rotate(-5deg) scaleX(0.28);
+}
+
+.nyke-hero-electric-b {
+  top: 61%;
+  transform: rotate(4deg) scaleX(0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nyke-hero-interactive:hover {
+    transform: perspective(1200px) rotateX(var(--nyke-rx)) rotateY(var(--nyke-ry)) translateY(-4px) scale(1.004);
+  }
+
+  .nyke-hero-interactive:hover::after {
+    opacity: 1;
+  }
+}
+
+.nyke-hero-burst {
+  filter: saturate(1.04);
+}
+
+.nyke-hero-burst .nyke-hero-sweep {
+  animation: nyke-hero-sweep 520ms ease-out forwards;
+}
+
+.nyke-hero-burst .nyke-hero-electric-a {
+  animation: nyke-hero-electric-a 220ms ease-out forwards;
+}
+
+.nyke-hero-burst .nyke-hero-electric-b {
+  animation: nyke-hero-electric-b 180ms ease-out 50ms forwards;
+}
+
+.nyke-surface-card {
+  border: 1px solid rgba(24, 24, 27, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow:
+    0 2px 5px rgba(24, 24, 27, 0.06),
+    0 11px 26px rgba(24, 24, 27, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.nyke-surface-card--item {
+  box-shadow:
+    0 1px 3px rgba(24, 24, 27, 0.055),
+    0 6px 16px rgba(24, 24, 27, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.nyke-surface-card--interactive {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nyke-surface-card--interactive:hover {
+    transform: translateY(-1px);
+    border-color: rgba(24, 24, 27, 0.17);
+    box-shadow:
+      0 3px 7px rgba(24, 24, 27, 0.07),
+      0 14px 30px rgba(24, 24, 27, 0.085),
+      inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  }
+}
+
+.profile-reveal {
+  animation: profile-reveal 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.profile-section {
+  animation: profile-reveal 520ms 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.activity-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 10px, black calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 10px, black calc(100% - 20px), transparent 100%);
+}
+
+.activity-scroll {
+  animation: activity-scroll 32s linear infinite;
+}
+
+.ticker {
+  animation: ticker 36s linear infinite;
+}
+
+.ticker:hover,
+.ticker:focus-within {
+  animation-play-state: paused;
+}
+
+.profile-stream-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+}
+
+.profile-stream-track {
+  animation: profile-stream 42s linear infinite;
+}
+
+.profile-stream-track-reverse {
+  animation-name: profile-stream-reverse;
+}
+
+.profile-stream-mask:hover .profile-stream-track,
+.profile-stream-mask:focus-within .profile-stream-track {
+  animation-play-state: paused;
+}
+
+.nyke-card-stage {
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+}
+
+.nyke-card {
+  --card-rx: 0deg;
+  --card-ry: 0deg;
+  --card-mx: 50%;
+  --card-my: 50%;
+  transform: rotateX(var(--card-rx)) rotateY(var(--card-ry));
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  transition: transform 110ms ease-out, box-shadow 280ms ease;
+  will-change: transform;
+  box-shadow:
+    0 14px 38px rgba(24, 24, 27, 0.08),
+    0 3px 10px rgba(24, 24, 27, 0.045);
+}
+
+.nyke-card-default-banner {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #f4f4f5;
+}
+
+.nyke-card-default-lockup {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: flex-end;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: 58px;
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.nyke-card-default-wordmark {
+  display: inline-block;
+  margin-right: -4px;
+  padding-right: 6px;
+  color: transparent;
+  background: linear-gradient(105deg, rgba(39, 39, 42, 0.5) 0 42%, rgba(161, 161, 170, 0.92) 49%, rgba(39, 39, 42, 0.5) 56% 100%);
+  background-size: 280% 100%;
+  background-position: 125% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nyke-card-default-wordmark-sweep 5.4s ease-in-out infinite;
+}
+
+.nyke-card-default-dot {
+  width: 8px;
+  height: 8px;
+  margin-bottom: 5px;
+  margin-left: 2px;
+  flex: none;
+  border-radius: 999px;
+  background: rgba(251, 113, 133, 0.72);
+  color: transparent;
+}
+
+.nyke-card-banner-overlay {
+  background: linear-gradient(180deg, transparent 62%, rgba(255, 255, 255, 0.16));
+}
+
+.profile-banner-fallback {
+  display: grid;
+  place-items: center;
+  background: #f4f4f5;
+}
+
+.profile-banner-lockup {
+  display: inline-flex;
+  align-items: flex-end;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: clamp(42px, 6vw, 76px);
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.profile-banner-wordmark {
+  display: inline-block;
+  margin-right: -7px;
+  padding: 0 12px 0 4px;
+  color: transparent;
+  background: linear-gradient(105deg, rgba(39, 39, 42, 0.5) 0 42%, rgba(161, 161, 170, 0.92) 49%, rgba(39, 39, 42, 0.5) 56% 100%);
+  background-size: 280% 100%;
+  background-position: 125% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: skewX(-10deg);
+  transform-origin: 50% 50%;
+  animation: nyke-card-default-wordmark-sweep 5.4s ease-in-out infinite;
+}
+
+.profile-banner-dot {
+  width: 10px;
+  height: 10px;
+  margin-bottom: 6px;
+  margin-left: 2px;
+  border-radius: 999px;
+  background: rgba(251, 113, 133, 0.76);
+}
+
+.nyke-card-identity-pattern {
+  opacity: 0.012;
+  color: #3f3f46;
+}
+
+.nyke-card-identity-pattern-grid {
+  position: absolute;
+  inset: -220px;
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  grid-auto-rows: max-content;
+  align-content: space-around;
+  justify-content: space-around;
+  gap: 44px 72px;
+  transform: rotate(-15deg);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.nyke-card-sheen {
+  opacity: 0;
+  background: radial-gradient(
+    ellipse 320px 280px at var(--card-mx) var(--card-my),
+    rgba(207, 250, 254, 0.11) 0%,
+    rgba(233, 213, 255, 0.095) 24%,
+    rgba(251, 207, 232, 0.085) 42%,
+    rgba(217, 249, 157, 0.055) 57%,
+    rgba(254, 249, 195, 0.045) 66%,
+    rgba(255, 255, 255, 0) 82%
+  );
+  transition: opacity 180ms ease;
+}
+
+.nyke-card-specular {
+  opacity: 0;
+  background: radial-gradient(
+    ellipse 210px 170px at var(--card-mx) var(--card-my),
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.15) 22%,
+    rgba(255, 255, 255, 0.055) 44%,
+    rgba(255, 255, 255, 0) 68%
+  );
+  transition: opacity 220ms ease;
+}
+
+@media (max-width: 639px) {
+  .nyke-hero-interactive::after {
+    inset: 0;
+  }
+}
+
+.nyke-card-edge-highlight {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    inset 1px 0 0 rgba(255, 255, 255, 0.46),
+    inset 0 -1px 0 rgba(24, 24, 27, 0.055);
+}
+
+.nyke-card[data-exporting="true"] {
+  transform: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+}
+
+.nyke-card[data-exporting="true"] *,
+.nyke-card[data-exporting="true"] *::before,
+.nyke-card[data-exporting="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.nyke-card[data-exporting="true"] .nyke-card-sheen,
+.nyke-card[data-exporting="true"] .nyke-card-specular {
+  display: none;
+}
+
+.nyke-card[data-exporting="true"] .nyke-card-default-wordmark {
+  color: rgba(39, 39, 42, 0.5);
+  background: none;
+  -webkit-text-fill-color: rgba(39, 39, 42, 0.5);
+}
+
+.nyke-card[data-exporting="true"] .nyke-card-identity-pattern {
+  opacity: 0.018;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nyke-card:hover {
+    box-shadow:
+      0 18px 46px rgba(24, 24, 27, 0.09),
+      0 5px 14px rgba(24, 24, 27, 0.04);
+  }
+
+  .nyke-card:hover .nyke-card-sheen {
+    opacity: 0.26;
+  }
+
+  .nyke-card:hover .nyke-card-specular {
+    opacity: 0.58;
+  }
+
+  .nyke-card:hover .nyke-card-identity-pattern {
+    opacity: 0.12;
+    -webkit-mask-image: radial-gradient(ellipse 280px 250px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.88) 28%, rgba(0, 0, 0, 0.6) 54%, rgba(0, 0, 0, 0.3) 76%, rgba(0, 0, 0, 0.16) 100%);
+    mask-image: radial-gradient(ellipse 280px 250px at var(--card-mx) var(--card-my), #000 0%, rgba(0, 0, 0, 0.88) 28%, rgba(0, 0, 0, 0.6) 54%, rgba(0, 0, 0, 0.3) 76%, rgba(0, 0, 0, 0.16) 100%);
+  }
+}
+
+@keyframes nyke-card-default-wordmark-sweep {
+  0%,
+  18% {
+    background-position: 125% 0;
+  }
+
+  55%,
+  100% {
+    background-position: -25% 0;
+  }
+}
+
+@keyframes activity-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes profile-stream {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes profile-stream-reverse {
+  from {
+    transform: translateX(-33.333%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes nyke-hero-sweep {
+  0% {
+    opacity: 0;
+    transform: translateY(-160%);
+  }
+
+  22% {
+    opacity: 0.92;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(460%);
+  }
+}
+
+@keyframes nyke-hero-electric-a {
+  0% {
+    opacity: 0;
+    transform: rotate(-5deg) scaleX(0.24) translateX(-6%);
+  }
+
+  24% {
+    opacity: 0.88;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(-5deg) scaleX(1) translateX(8%);
+  }
+}
+
+@keyframes nyke-hero-electric-b {
+  0% {
+    opacity: 0;
+    transform: rotate(4deg) scaleX(0.2) translateX(-8%);
+  }
+
+  28% {
+    opacity: 0.78;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(4deg) scaleX(0.94) translateX(9%);
+  }
+}
+
+@keyframes profile-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-scroll {
+    animation: none;
+  }
+
+  .ticker {
+    animation: none;
+  }
+
+  .profile-stream-track {
+    animation: none;
+  }
+
+  .nyke-hero-interactive,
+  .nyke-hero-interactive:hover {
+    transform: none;
+    transition: none;
+  }
+
+  .nyke-hero-interactive::after,
+  .nyke-hero-sweep,
+  .nyke-hero-electric {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  .profile-page *,
+  .profile-page *::before,
+  .profile-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .profile-reveal,
+  .profile-section,
+  .profile-gear-card,
+  .profile-highlight,
+  .nyke-surface-card--interactive,
+  .nyke-surface-card--interactive:hover {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .profile-banner-wordmark {
+    animation: none !important;
+    color: rgba(39, 39, 42, 0.5);
+    background: none;
+    -webkit-text-fill-color: rgba(39, 39, 42, 0.5);
+  }
+
+  .nyke-card,
+  .nyke-card:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .nyke-card-sheen,
+  .nyke-card-specular {
+    display: none !important;
+  }
+
+  .nyke-card-default-wordmark {
+    color: rgba(39, 39, 42, 0.5);
+    background: none;
+    -webkit-text-fill-color: rgba(39, 39, 42, 0.5);
+  }
+
+  .nyke-card-identity-pattern,
+  .nyke-card:hover .nyke-card-identity-pattern {
+    opacity: 0.025;
+    transition: none !important;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
