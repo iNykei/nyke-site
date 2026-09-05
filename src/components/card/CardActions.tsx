@@ -12,21 +12,113 @@ type CardActionsProps = {
 
 type Feedback = "idle" | "preparing" | "downloaded" | "copied" | "error" | "image-fallback";
 
-async function waitForImages(node: HTMLElement) {
-  const images = Array.from(node.querySelectorAll("img"));
-  await Promise.all(images.map(async (image) => {
-    if (!image.complete) {
-      await new Promise<void>((resolve) => {
-        image.addEventListener("load", () => resolve(), { once: true });
-        image.addEventListener("error", () => resolve(), { once: true });
-      });
+type ImageAttributes = {
+  image: HTMLImageElement;
+  src: string | null;
+  srcset: string | null;
+};
+
+function waitForImageLoad(image: HTMLImageElement) {
+  if (image.complete) return Promise.resolve(image.naturalWidth > 0);
+
+  return new Promise<boolean>((resolve) => {
+    image.addEventListener("load", () => resolve(true), { once: true });
+    image.addEventListener("error", () => resolve(false), { once: true });
+  });
+}
+
+async function collectReadyImages(node: HTMLElement) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const images = Array.from(node.querySelectorAll("img"));
+    const loaded = await Promise.all(images.map(waitForImageLoad));
+
+    if (loaded.some((result) => !result)) {
+      // Let MediaImage commit its DOM fallback after an actual image error.
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      continue;
     }
-    try {
-      await image.decode();
-    } catch {
-      // html-to-image will use its deterministic placeholder when a remote image cannot be embedded.
+
+    await Promise.all(images.map(async (image) => {
+      if (typeof image.decode === "function") await image.decode().catch(() => undefined);
+      if (image.naturalWidth === 0 || image.naturalHeight === 0) {
+        throw new Error("A card image could not be decoded.");
+      }
+    }));
+
+    return images;
+  }
+
+  throw new Error("A card image could not be loaded.");
+}
+
+function blobToDataUrl(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result)), { once: true });
+    reader.addEventListener("error", () => reject(reader.error ?? new Error("Image encoding failed.")), { once: true });
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function prepareImagesForExport(node: HTMLElement) {
+  const images = await collectReadyImages(node);
+  const dataUrls = new Map<string, Promise<string>>();
+
+  const embedded = await Promise.all(images.map(async (image) => {
+    const source = image.currentSrc || image.src;
+    if (!source) throw new Error("A card image has no source.");
+
+    let dataUrl: string;
+    if (source.startsWith("data:")) {
+      dataUrl = source;
+    } else {
+      let pending = dataUrls.get(source);
+      if (!pending) {
+        pending = fetch(source, {
+          cache: "force-cache",
+          credentials: "omit",
+          mode: "cors",
+        }).then(async (response) => {
+          if (!response.ok) throw new Error(`Image request failed with ${response.status}.`);
+          const blob = await response.blob();
+          if (!blob.type.startsWith("image/")) throw new Error("Image response has an invalid content type.");
+          return blobToDataUrl(blob);
+        });
+        dataUrls.set(source, pending);
+      }
+      dataUrl = await pending;
     }
+
+    return { image, dataUrl };
   }));
+
+  const originalAttributes: ImageAttributes[] = embedded.map(({ image }) => ({
+    image,
+    src: image.getAttribute("src"),
+    srcset: image.getAttribute("srcset"),
+  }));
+
+  const restore = () => {
+    for (const { image, src, srcset } of originalAttributes) {
+      if (src === null) image.removeAttribute("src");
+      else image.setAttribute("src", src);
+      if (srcset === null) image.removeAttribute("srcset");
+      else image.setAttribute("srcset", srcset);
+    }
+  };
+
+  try {
+    for (const { image, dataUrl } of embedded) {
+      image.removeAttribute("srcset");
+      image.src = dataUrl;
+    }
+    await collectReadyImages(node);
+  } catch (error) {
+    restore();
+    throw error;
+  }
+
+  return restore;
 }
 
 const imagePlaceholder = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
@@ -55,7 +147,7 @@ export function CardActions({ data }: CardActionsProps) {
 
     setFeedback("preparing");
     await document.fonts.ready;
-    await waitForImages(node);
+    const restoreImages = await prepareImagesForExport(node);
     node.style.setProperty("--card-rx", "0deg");
     node.style.setProperty("--card-ry", "0deg");
     node.style.setProperty("--card-mx", "50%");
@@ -72,7 +164,7 @@ export function CardActions({ data }: CardActionsProps) {
         canvasHeight: CARD_HEIGHT * 2,
         pixelRatio: 1,
         backgroundColor: "#ffffff",
-        cacheBust: true,
+        cacheBust: false,
         imagePlaceholder,
         onImageErrorHandler: () => { usedImageFallback = true; },
         style: { transform: "none", transformOrigin: "top left" },
@@ -81,6 +173,7 @@ export function CardActions({ data }: CardActionsProps) {
       return { file: new File([blob], `nyke-${data.player.username}-card.png`, { type: "image/png" }), usedImageFallback };
     } finally {
       delete node.dataset.exporting;
+      restoreImages();
     }
   }
 

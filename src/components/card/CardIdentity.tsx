@@ -15,14 +15,19 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
 
   return (
     <section className="relative z-10 shrink-0 px-8 pb-3 text-center">
-      <div className="nyke-card-avatar absolute -top-[50px] left-1/2 size-[100px] -translate-x-1/2 overflow-hidden rounded-full border-[4px] border-white bg-zinc-950 ring-1 ring-zinc-200">
-        <MediaImage
-          src={player.avatarUrl}
-          alt={`${player.displayName} avatar`}
-          crossOrigin="anonymous"
-          className="size-full object-cover"
-          fallback={<span className="grid size-full place-items-center font-serif text-[30px] font-black text-white">{player.avatarSeed}</span>}
-        />
+      <div className="nyke-card-avatar absolute -top-[50px] left-1/2 ml-[-50px] size-[100px]">
+        <svg aria-hidden="true" viewBox="0 0 102 102" className="absolute -inset-px size-[102px]" focusable="false">
+          <circle cx="51" cy="51" r="50.5" fill="#ffffff" stroke="#e4e4e7" />
+        </svg>
+        <div className="absolute inset-1 overflow-hidden rounded-full bg-zinc-950">
+          <MediaImage
+            src={player.avatarUrl}
+            alt={`${player.displayName} avatar`}
+            crossOrigin="anonymous"
+            className="size-full object-cover"
+            fallback={<span className="grid size-full place-items-center font-serif text-[30px] font-black text-white">{player.avatarSeed}</span>}
+          />
+        </div>
       </div>
 
       <div className="mx-auto max-w-[430px] pt-[64px]">
