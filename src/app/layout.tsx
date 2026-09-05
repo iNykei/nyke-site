@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "NYKE",
-    title: "NYKE — FPS Profiles, Aim Settings & Gear",
+    title: "NYKE",
     description: "Build and share your FPS profile with aim settings, active gear and your NYKE Card.",
     url: "/",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "NYKE FPS profiles, aim settings and gear" }],
