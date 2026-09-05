@@ -19,14 +19,14 @@ export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
   applicationName: "NYKE",
   title: {
-    default: "NYKE — FPS Profiles, Aim Settings & Gear",
+    default: "NYKE",
     template: "%s",
   },
   description: "Build and share your FPS profile with aim settings, active gear and your NYKE Card.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "NYKE",
+    siteName: "NYKE — FPS Profiles & Gear",
     title: "NYKE",
     description: "Build and share your FPS profile with aim settings, active gear and your NYKE Card.",
     url: "/",
