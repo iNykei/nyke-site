@@ -1,4 +1,5 @@
 import type { ProfileBadge } from "@/types";
+import { BadgeIcon } from "./BadgeIcon";
 
 type BadgeListProps = {
   badges: ProfileBadge[];
@@ -22,8 +23,9 @@ export function BadgeList({ badges }: BadgeListProps) {
         <li
           key={badge.slug}
           title={badge.description}
-          className={`inline-flex min-h-6 items-center rounded-sm border px-2 py-1 text-[10px] font-semibold uppercase leading-none ${badgeTones[badge.slug] ?? badgeTones["early-100"]}`}
+          className={`inline-flex min-h-6 items-center gap-1 rounded-sm border px-2 py-1 text-[10px] font-semibold uppercase leading-none ${badgeTones[badge.slug] ?? badgeTones["early-100"]}`}
         >
+          <BadgeIcon slug={badge.slug} size={12} />
           {badge.name}
         </li>
       ))}

@@ -1,5 +1,6 @@
 import type { PlayerProfile } from "@/types";
 import { MediaImage } from "@/components/MediaImage";
+import { BadgeIcon } from "@/components/profile/BadgeIcon";
 
 const badgeTones: Record<string, string> = {
   founder: "text-[#8a6038]",
@@ -30,9 +31,9 @@ export function CardIdentity({ player }: { player: PlayerProfile }) {
         {visibleBadges.length > 0 ? (
           <ul aria-label="NYKE identity badges" className="mt-2.5 flex max-h-8 flex-wrap justify-center gap-y-1 overflow-hidden text-[9px] font-bold uppercase tracking-[0.08em]">
             {visibleBadges.map((badge, index) => (
-              <li key={badge.slug} className={badgeTones[badge.slug] ?? badgeTones["early-100"]}>
+              <li key={badge.slug} className={`inline-flex items-center whitespace-nowrap ${badgeTones[badge.slug] ?? badgeTones["early-100"]}`}>
                 {index > 0 ? <span className="mx-1.5 text-zinc-300">·</span> : null}
-                {badge.name}
+                <span className="inline-flex items-center gap-1"><BadgeIcon slug={badge.slug} size={12} />{badge.name}</span>
               </li>
             ))}
             {hiddenCount > 0 ? <li className="ml-1.5 text-zinc-500">+{hiddenCount}</li> : null}
