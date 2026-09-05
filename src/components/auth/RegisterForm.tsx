@@ -4,12 +4,14 @@ import { UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toFriendlyAuthError } from "@/lib/auth-errors";
+import { getSafeRedirectPath, resolvePostAuthDestination } from "@/lib/redirects";
 import { createClient } from "@/lib/supabase/client";
 import { isReservedUsername, isValidEmail, isValidUsername, normalizeUsername } from "@/lib/validation";
 
 const minPasswordLength = 8;
 
-export function RegisterForm() {
+export function RegisterForm({ nextPath }: { nextPath?: string }) {
+  const next = getSafeRedirectPath(nextPath);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -68,11 +70,13 @@ export function RegisterForm() {
       }
 
       const origin = window.location.origin;
+      const callback = new URL("/auth/callback", origin);
+      if (next) callback.searchParams.set("next", next);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${origin}/auth/callback`,
+          emailRedirectTo: callback.toString(),
           data: {
             username: normalizedUsername,
             display_name: normalizedUsername,
@@ -93,9 +97,9 @@ export function RegisterForm() {
         return;
       }
 
-      window.location.replace("/settings/profile");
+      window.location.replace(await resolvePostAuthDestination(supabase, data.session.user.id, nextPath));
     } catch {
-      setServerError("Supabase is not configured for this environment.");
+      setServerError("Unable to finish creating your account. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -165,7 +169,7 @@ export function RegisterForm() {
       </form>
       <p className="mt-5 text-sm text-zinc-500">
         Already have a page?{" "}
-        <Link href="/login" className="text-rose-500 transition hover:text-rose-400">
+        <Link href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"} className="text-rose-500 transition hover:text-rose-400">
           Login
         </Link>
       </p>

@@ -1,15 +1,17 @@
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { getCurrentUserAndProfile } from "@/lib/profiles";
-import { getSafeRedirectPath } from "@/lib/redirects";
+import { getSafeRedirectPath, resolvePostAuthDestination } from "@/lib/redirects";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string | string[]; next?: string | string[] }> }) {
-  const { user, profile } = await getCurrentUserAndProfile();
-  if (user) redirect(profile ? `/${profile.username}` : "/settings/profile");
-
   const params = await searchParams;
   const requestedNext = Array.isArray(params.next) ? params.next[0] : params.next;
-  const nextPath = requestedNext ? getSafeRedirectPath(requestedNext, "/") : undefined;
+  const nextPath = getSafeRedirectPath(requestedNext);
+  const supabase = await createClient();
+  if (supabase) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) redirect(await resolvePostAuthDestination(supabase, user.id, nextPath));
+  }
   const errorCode = Array.isArray(params.error) ? params.error[0] : params.error;
   const initialError = errorCode === "auth_callback" ? "This sign-in link is invalid or has expired. Please try again." : undefined;
 

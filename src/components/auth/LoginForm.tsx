@@ -4,10 +4,12 @@ import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toFriendlyAuthError } from "@/lib/auth-errors";
+import { getSafeRedirectPath, resolvePostAuthDestination } from "@/lib/redirects";
 import { createClient } from "@/lib/supabase/client";
 import { isValidEmail } from "@/lib/validation";
 
 export function LoginForm({ nextPath, initialError = "" }: { nextPath?: string; initialError?: string }) {
+  const next = getSafeRedirectPath(nextPath);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldError, setFieldError] = useState("");
@@ -48,18 +50,13 @@ export function LoginForm({ nextPath, initialError = "" }: { nextPath?: string; 
         return;
       }
 
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", data.user.id)
-        .maybeSingle();
+      const destination = await resolvePostAuthDestination(supabase, data.user.id, nextPath);
 
       // A document navigation starts only after @supabase/ssr has persisted the
       // session cookies, so the next Server Component request sees the user.
-      const defaultDestination = !profileError && profile?.username ? `/${profile.username}` : "/settings/profile";
-      window.location.replace(nextPath || defaultDestination);
+      window.location.replace(destination);
     } catch {
-      setServerError("Supabase is not configured for this environment.");
+      setServerError("Unable to finish signing in. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +104,7 @@ export function LoginForm({ nextPath, initialError = "" }: { nextPath?: string; 
         <Link href="/forgot-password" className="text-zinc-500 transition hover:text-zinc-950">
           Forgot password?
         </Link>
-        <Link href="/register" className="text-rose-500 transition hover:text-rose-400">
+        <Link href={next ? `/register?next=${encodeURIComponent(next)}` : "/register"} className="text-rose-500 transition hover:text-rose-400">
           Create a profile
         </Link>
       </div>
