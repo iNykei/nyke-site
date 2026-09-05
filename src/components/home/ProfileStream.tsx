@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { AvatarMark } from "@/components/AvatarMark";
+import { BadgeIcon } from "@/components/profile/BadgeIcon";
 import { formatMemberNumber } from "@/lib/identity";
 import type { PlayerProfile } from "@/types";
 
@@ -50,7 +51,7 @@ function ProfileStreamRow({ players, reverse = false, decorative = false }: { pl
             <StreamAvatar player={player} decorative={isDuplicate} />
             <span>@{player.username}</span>
             {memberNumber ? <span className="font-mono text-[9px] tabular-nums text-zinc-400">{memberNumber}</span> : null}
-            {isFounder ? <span className="text-[9px] font-bold uppercase text-[#8a6038]">Founder</span> : null}
+            {isFounder ? <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase text-[#8a6038]"><BadgeIcon slug="founder" size={12} />Founder</span> : null}
           </Link>
         );
       })}

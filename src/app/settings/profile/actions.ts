@@ -10,8 +10,6 @@ export type SaveProfileState = {
   username?: string;
 };
 
-const gearCategories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"];
-
 function optionalText(value: FormDataEntryValue | null, maxLength: number) {
   const text = String(value ?? "").trim();
   return text ? text.slice(0, maxLength) : null;
@@ -147,62 +145,6 @@ export async function saveProfile(_previousState: SaveProfileState, formData: Fo
 
   if (settingsError) {
     return { status: "error", message: "Game settings could not be saved." };
-  }
-
-  const selectedGearIds = gearCategories
-    .map((category) => String(formData.get(`gear_${category}`) ?? "").trim())
-    .filter(Boolean);
-
-  const { data: validGearRows, error: gearLookupError } = selectedGearIds.length
-    ? await supabase
-        .from("gear_items")
-        .select("id, category")
-        .in("id", selectedGearIds)
-    : { data: [], error: null };
-
-  if (gearLookupError) {
-    return { status: "error", message: "Selected gear could not be verified." };
-  }
-
-  const validGearById = new Map((validGearRows ?? []).map((row) => [row.id, row.category]));
-
-  if (selectedGearIds.some((id) => !validGearById.has(id))) {
-    return { status: "error", message: "Selected gear is not available." };
-  }
-
-  for (const category of gearCategories) {
-    const gearItemId = String(formData.get(`gear_${category}`) ?? "").trim();
-
-    if (gearItemId && validGearById.get(gearItemId) !== category) {
-      return { status: "error", message: "Selected gear category does not match." };
-    }
-
-    const { error: clearError } = await supabase
-      .from("player_gear")
-      .delete()
-      .eq("user_id", user.id)
-      .eq("category", category);
-
-    if (clearError) {
-      return { status: "error", message: "Gear could not be saved." };
-    }
-
-    if (gearItemId) {
-      const { error: gearError } = await supabase
-        .from("player_gear")
-        .insert({
-          user_id: user.id,
-          gear_item_id: gearItemId,
-          category,
-          is_active: true,
-        })
-        .select("id")
-        .single();
-
-      if (gearError) {
-        return { status: "error", message: "Gear could not be saved." };
-      }
-    }
   }
 
   revalidatePath(`/${username}`);

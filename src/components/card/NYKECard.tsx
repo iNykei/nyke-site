@@ -107,9 +107,9 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           ref={setCardRef}
           data-nyke-card
           data-founder={isFounder ? "true" : "false"}
-          className="nyke-card relative h-[610px] w-[540px] overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950"
+          className="nyke-card relative flex h-[610px] w-[540px] flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950"
         >
-          <header className="relative h-[176px] overflow-hidden bg-zinc-950">
+          <header className="relative h-[190px] shrink-0 overflow-hidden bg-zinc-950">
             <MediaImage
               src={player.bannerUrl}
               alt={`${player.displayName} banner`}
@@ -133,11 +133,11 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
           </div>
 
           <CardIdentity player={player} />
-          <div className="relative z-10 flex h-[234px] flex-col items-center justify-center gap-5 px-8 py-4">
+          <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-8 py-2">
             <CardLoadout activeGear={data.activeGear} />
             <CardAim player={player} />
             {player.settings.resolution || player.settings.pollingRate || data.activeGear.length > 0 ? (
-              <p className="flex max-w-[390px] flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[8px] uppercase tracking-[0.08em] text-zinc-400">
+              <p className="flex max-w-[390px] flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[8px] uppercase leading-4 text-zinc-400">
                 {player.settings.resolution ? <span>{player.settings.resolution}</span> : null}
                 {player.settings.pollingRate ? <span>{player.settings.pollingRate}</span> : null}
                 {data.activeGear.length > 0 ? <span>{data.activeGear.length} active peripherals</span> : null}
@@ -145,25 +145,22 @@ export function NYKECard({ data, cardRef }: NYKECardProps) {
             ) : null}
           </div>
 
-<footer className="relative flex h-[48px] items-center justify-between border-t border-zinc-100 bg-[#f4f4f5] px-7">
-  <div className="relative z-10 flex items-center gap-2.5">
-    <p className="font-serif text-[16px] font-black italic leading-none text-zinc-950">
-      NYKE<span className="text-rose-400">.</span>
-    </p>
-
-    <span className="text-[10px] text-zinc-300">·</span>
-
-    <p className="max-w-[300px] truncate whitespace-nowrap font-mono text-[10px] font-medium tracking-[0.01em] text-zinc-500">
-      nyke.life/{player.username}
-    </p>
-  </div>
-
-  {memberNumber ? (
-    <p className="relative z-10 font-mono text-[13px] font-bold tabular-nums tracking-[0.04em] text-zinc-700">
-      {memberNumber}
-    </p>
-  ) : null}
-</footer>
+          <footer className="relative flex h-[52px] shrink-0 items-center justify-between gap-4 border-t border-zinc-100 bg-[#f4f4f5] px-7">
+            <div className="relative z-10 flex min-w-0 items-center gap-3">
+              <p className="shrink-0 font-serif text-[18px] font-black italic leading-none text-zinc-950">
+                NYKE<span className="text-rose-400">.</span>
+              </p>
+              <span className="h-4 w-px shrink-0 bg-zinc-300" aria-hidden="true" />
+              <p className="min-w-0 truncate font-mono text-[11px] font-medium text-zinc-500">
+                nyke.life/{player.username}
+              </p>
+            </div>
+            {memberNumber ? (
+              <p className="relative z-10 shrink-0 font-mono text-[13px] font-bold tabular-nums text-zinc-700">
+                {memberNumber}
+              </p>
+            ) : null}
+          </footer>
           <div className="nyke-card-sheen pointer-events-none absolute inset-0 z-20" aria-hidden="true" />
           <div className="nyke-card-specular pointer-events-none absolute inset-0 z-[21]" aria-hidden="true" />
           {isFounder ? <span className="nyke-card-founder-mark absolute right-3 top-3 z-[22] size-3 border-r border-t border-[#a58b5b]" aria-hidden="true" /> : null}
