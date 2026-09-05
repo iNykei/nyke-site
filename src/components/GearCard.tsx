@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { CircleDot, Footprints, Headphones, Keyboard, Monitor, Mouse, SquareDashed } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { GearItem } from "@/types";
 
 type GearCardProps = {
@@ -10,6 +10,8 @@ type GearCardProps = {
   compact?: boolean;
   tone?: "light" | "dark";
   profileCount?: number;
+  status?: ReactNode;
+  actions?: ReactNode;
 };
 
 const specPriority: Record<GearItem["category"], string[]> = {
@@ -43,7 +45,7 @@ function getVisibleSpecs(item: GearItem) {
     .slice(0, 2);
 }
 
-export function GearCard({ item, compact = false, tone = "light", profileCount }: GearCardProps) {
+export function GearCard({ item, compact = false, tone = "light", profileCount, status, actions }: GearCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
   const isLight = tone === "light";
   const specs = getVisibleSpecs(item);
@@ -74,6 +76,7 @@ export function GearCard({ item, compact = false, tone = "light", profileCount }
             <span className="font-serif text-sm font-semibold italic">NYKE<span className="text-rose-400">.</span></span>
           </div>
         )}
+        {status ? <div className="absolute right-2 top-2">{status}</div> : null}
       </div>
 
       <div className="flex flex-1 flex-col px-3 py-3 sm:px-4 sm:py-4">
@@ -100,6 +103,7 @@ export function GearCard({ item, compact = false, tone = "light", profileCount }
           </p>
         ) : null}
       </div>
+      {actions ? <div className="border-t border-zinc-100 px-3 py-3 sm:px-4">{actions}</div> : null}
     </article>
   );
 }

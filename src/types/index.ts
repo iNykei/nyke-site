@@ -24,6 +24,11 @@ export type GearCatalogItem = GearItem & {
   profileCount: number;
 };
 
+export type GearCollectionItem = GearItem & {
+  collectionId: string;
+  isActive: boolean;
+};
+
 export type GameSettings = {
   game: GameTitle;
   rank: string;

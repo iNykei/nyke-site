@@ -3,6 +3,7 @@ import { ProfileBadgeCollection } from "@/components/profile/ProfileBadgeCollect
 import { ProfileGearCard } from "@/components/profile/ProfileGearCard";
 import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations";
 import { getCachedPublicProfileData } from "@/lib/profiles";
+import { sortGear } from "@/lib/gear-collection";
 
 type PlayerProfilePageProps = { params: Promise<{ username: string }> };
 
@@ -29,8 +30,7 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
     ["eDPI", valueOrDash(edpi), true],
     ["cm / 360", cm360 === null ? "—" : `${valueOrDash(cm360, 2)} cm`, true],
   ] as const;
-  const gearPriority = ["mouse", "keyboard", "monitor", "mousepad", "headset", "skates"];
-  const homeGear = [...data.activeGear].sort((a, b) => gearPriority.indexOf(a.category) - gearPriority.indexOf(b.category)).slice(0, 4);
+  const homeGear = sortGear(data.activeGear).slice(0, 6);
 
   return (
     <div className="mx-auto mt-10 max-w-5xl sm:mt-12">
@@ -72,14 +72,14 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
             <div className="flex flex-wrap justify-center gap-4">
               {homeGear.map((item) => <ProfileGearCard key={item.id} item={item} compact />)}
             </div>
-            {data.activeGear.length > homeGear.length ? <div className="mt-5 text-center"><Link href={`/${player.username}/gear`} className="text-xs font-semibold text-zinc-500 transition hover:text-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2">View all gear →</Link></div> : null}
           </>
         ) : (
           <div className="text-center">
             <p className="text-sm text-[var(--profile-muted)]">No active gear yet.</p>
-            {data.isOwner ? <Link href="/settings/profile" className="mt-2 inline-block text-xs font-semibold text-rose-500 hover:text-rose-600">Add gear</Link> : null}
+            {data.isOwner ? <Link href="/settings/gear" className="mt-2 inline-block text-xs font-semibold text-rose-500 hover:text-rose-600">Add gear</Link> : null}
           </div>
         )}
+        {data.gearCollection.length > homeGear.length ? <div className="mt-5 text-center"><Link href={`/${player.username}/gear`} className="text-xs font-semibold text-zinc-500 transition hover:text-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2">View all gear →</Link></div> : null}
       </section>
 
       <section className="mt-14 sm:mt-16" aria-labelledby="badges-heading">

@@ -1,6 +1,7 @@
 "use client";
 
-import { Save } from "lucide-react";
+import { ArrowRight, Save } from "lucide-react";
+import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
 import type { saveProfile, SaveProfileState } from "@/app/settings/profile/actions";
 import type { EditableProfileData } from "@/lib/profiles";
@@ -8,7 +9,6 @@ import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations"
 import type { ProfileMediaKind } from "@/lib/profile-media";
 import { ProfileMediaField } from "./ProfileMediaField";
 
-const categories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"];
 const initialState: SaveProfileState = { status: "idle", message: "" };
 
 type EditProfileFormProps = {
@@ -69,7 +69,6 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
       <div>
         <p className="text-xs uppercase tracking-[0.24em] text-rose-400">Profile settings</p>
         <h1 className="mt-3 font-serif text-3xl font-black text-zinc-950">Edit profile</h1>
-        <p className="mt-3 text-sm leading-6 text-zinc-600">Update public identity, FPS settings, and active setup. Changes save together.</p>
       </div>
 
       <Section title="Profile media">
@@ -135,20 +134,10 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
       </Section>
 
       <Section title="Gear">
-        {categories.map((category) => (
-          <Field key={category} label={category}>
-            <select name={`gear_${category}`} defaultValue={data.activeGear[category] ?? ""} className="mt-2 h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-rose-300">
-              <option value="">Not configured</option>
-              {data.gearItems
-                .filter((item) => item.category === category)
-                .map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.brand} {item.model}
-                  </option>
-                ))}
-            </select>
-          </Field>
-        ))}
+        <div className="flex flex-wrap items-center justify-between gap-3 sm:col-span-2">
+          <p className="text-sm text-zinc-600">{data.gearSummary.active} active · {data.gearSummary.saved} saved</p>
+          <Link href="/settings/gear" className="inline-flex items-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-800 hover:border-rose-300 focus-visible:outline-2 focus-visible:outline-rose-400">Manage gear <ArrowRight size={14} /></Link>
+        </div>
       </Section>
 
       {state.message ? (

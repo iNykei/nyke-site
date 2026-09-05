@@ -1,4 +1,7 @@
 import { ProfileGearCard } from "@/components/profile/ProfileGearCard";
+import { GearCollection } from "@/components/gear/GearCollection";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { getCachedPublicProfileData } from "@/lib/profiles";
 
 export default async function PlayerGearPage({ params }: { params: Promise<{ username: string }> }) {
@@ -7,21 +10,25 @@ export default async function PlayerGearPage({ params }: { params: Promise<{ use
   if (!data) return null;
 
   return (
-    <section className="mx-auto mt-10 max-w-5xl sm:mt-12">
-      <header className="mb-6 text-center">
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">Current loadout</p>
-        <h2 className="mt-2 font-serif text-3xl font-black text-[var(--profile-text)]">Active gear</h2>
+    <div className="mx-auto mt-10 max-w-5xl space-y-10 sm:mt-12">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 pb-5">
+        <p className="text-xs font-semibold uppercase text-zinc-500">{data.gearCollection.length} gear items <span className="mx-2 text-zinc-300">/</span>{data.activeGear.length} active</p>
+        {data.isOwner ? <Link href="/settings/gear" className="inline-flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm font-semibold text-zinc-700 hover:border-rose-300">Manage gear <ArrowRight size={14} /></Link> : null}
       </header>
-      {data.activeGear.length > 0 ? (
-        <div className="flex flex-wrap justify-center gap-4">
-          {data.activeGear.map((item) => <ProfileGearCard key={item.id} item={item} />)}
-        </div>
-      ) : (
-        <div className="nyke-surface-card mx-auto max-w-xl px-6 py-12 text-center">
-          <p className="text-sm font-semibold text-zinc-800">No active gear</p>
-          <p className="mt-1 text-xs text-[var(--profile-muted)]">This player has not published a loadout.</p>
-        </div>
-      )}
-    </section>
+      <section aria-labelledby="public-loadout-heading">
+        <h2 id="public-loadout-heading" className="mb-5 font-serif text-2xl font-bold text-zinc-950">Active Loadout</h2>
+        {data.activeGear.length > 0 ? (
+          <div className="flex flex-wrap justify-center gap-4">
+            {data.activeGear.map((item) => <ProfileGearCard key={item.id} item={item} />)}
+          </div>
+        ) : (
+          <p className="py-3 text-sm text-zinc-500">No active gear yet.</p>
+        )}
+      </section>
+      <section aria-labelledby="public-collection-heading">
+        <h2 id="public-collection-heading" className="mb-5 font-serif text-2xl font-bold text-zinc-950">Gear Collection</h2>
+        <GearCollection items={data.gearCollection} />
+      </section>
+    </div>
   );
 }

@@ -1,8 +1,9 @@
 import { cache } from "react";
 import { gearItemColumns, mapGearItemRow } from "@/lib/gear";
+import { buildGearCollection, sortGear } from "@/lib/gear-collection";
 import { createClient } from "@/lib/supabase/server";
 import { getPlayerByUsername, players } from "@/lib/mock-data";
-import type { GearItem, PlayerGear, PlayerProfile, ProfileBadge } from "@/types";
+import type { GearCollectionItem, GearItem, PlayerGear, PlayerProfile, ProfileBadge } from "@/types";
 import type { BadgeRow, GearItemRow, PlayerGearRow, PlayerSettingsRow, ProfileBadgeRow, ProfileRow } from "@/types/database";
 
 const gearCategories = ["mouse", "mousepad", "keyboard", "monitor", "headset", "skates"] as const;
@@ -108,8 +109,13 @@ async function queryProfiles(supabase: ServerSupabaseClient) {
 export type EditableProfileData = {
   profile: ProfileRow;
   settings: PlayerSettingsRow | null;
-  gearItems: GearItemRow[];
-  activeGear: Record<string, string>;
+  gearSummary: { active: number; saved: number };
+};
+
+export type GearManagerData = {
+  username: string;
+  catalog: GearItem[];
+  collection: GearCollectionItem[];
 };
 
 export type PublicProfileData = {
@@ -118,6 +124,7 @@ export type PublicProfileData = {
   settings: PlayerSettingsRow | null;
   player: PlayerProfile;
   activeGear: GearItem[];
+  gearCollection: GearCollectionItem[];
   isOwner: boolean;
 };
 
@@ -156,6 +163,14 @@ function buildGear(rows: GearItemRow[]): PlayerGear {
 
 function getActiveGear(gear: PlayerGear) {
   return gearCategories.map((category) => gear[category]);
+}
+
+function buildDemoProfileData(player: PlayerProfile): PublicProfileData {
+  const activeGear = sortGear(getActiveGear(player.gear));
+  return {
+    source: "demo", profile: null, settings: null, player, activeGear, isOwner: false,
+    gearCollection: activeGear.map((item) => ({ ...item, collectionId: `demo-${item.id}`, isActive: true })),
+  };
 }
 
 function buildRealPlayer(
@@ -335,7 +350,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
   if (!supabase) {
     return demoPlayer
-      ? { source: "demo", profile: null, settings: null, player: demoPlayer, activeGear: getActiveGear(demoPlayer.gear), isOwner: false }
+      ? buildDemoProfileData(demoPlayer)
       : null;
   }
 
@@ -348,7 +363,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
 
   if (!realProfile) {
     return demoPlayer
-      ? { source: "demo", profile: null, settings: null, player: demoPlayer, activeGear: getActiveGear(demoPlayer.gear), isOwner: false }
+      ? buildDemoProfileData(demoPlayer)
       : null;
   }
 
@@ -372,8 +387,7 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
     supabase
       .from("player_gear")
       .select("id, user_id, gear_item_id, category, is_active, created_at")
-      .eq("user_id", realProfile.id)
-      .eq("is_active", true),
+      .eq("user_id", realProfile.id),
     profileBadgesPromise,
   ]);
 
@@ -405,18 +419,18 @@ export async function getPublicProfileData(username: string): Promise<PublicProf
   assertQuerySucceeded(gearRowsError, "Could not load the gear catalog.");
   assertQuerySucceeded(badgeRowsError, "Could not load badge definitions.");
 
-  const activeGear = gearCategories.flatMap((category) => {
-    const row = ((gearRows ?? []) as GearItemRow[]).find((item) => item.category === category);
-    return row ? [mapGearItemRow(row)] : [];
-  });
+  const gearCollection = buildGearCollection((playerGear ?? []) as PlayerGearRow[], ((gearRows ?? []) as GearItemRow[]).map(mapGearItemRow));
+  const activeGear = gearCollection.filter((item) => item.isActive);
+  const activeIds = new Set(activeGear.map((item) => item.id));
   const badges = ((badgeRows ?? []) as BadgeRow[]).map(rowToProfileBadge);
 
   return {
     source: "real",
     profile: realProfile,
     settings: settings ?? null,
-    player: buildRealPlayer(realProfile, settings ?? null, (gearRows ?? []) as GearItemRow[], badges),
+    player: buildRealPlayer(realProfile, settings ?? null, ((gearRows ?? []) as GearItemRow[]).filter((row) => activeIds.has(row.id)), badges),
     activeGear,
+    gearCollection,
     isOwner: current.user?.id === realProfile.id,
   };
 }
@@ -451,8 +465,7 @@ export async function getEditableProfileData(): Promise<EditableProfileData | nu
 
   const [
     { data: settings, error: settingsError },
-    { data: gearItems, error: gearItemsError },
-    { data: activeGearRows, error: activeGearError },
+    { data: gearRows, error: gearError },
   ] = await Promise.all([
     supabase
       .from("player_settings")
@@ -460,33 +473,36 @@ export async function getEditableProfileData(): Promise<EditableProfileData | nu
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
-      .from("gear_items")
-      .select(gearItemColumns)
-      .order("category")
-      .order("brand")
-      .order("model"),
-    supabase
       .from("player_gear")
-      .select("id, user_id, gear_item_id, category, is_active, created_at")
-      .eq("user_id", user.id)
-      .eq("is_active", true),
+      .select("is_active")
+      .eq("user_id", user.id),
   ]);
 
   assertQuerySucceeded(settingsError, "Could not load your settings.");
-  assertQuerySucceeded(gearItemsError, "Could not load the gear catalog.");
-  assertQuerySucceeded(activeGearError, "Could not load your selected gear.");
+  assertQuerySucceeded(gearError, "Could not load your gear summary.");
 
   return {
     profile,
     settings: settings ?? null,
-    gearItems: (gearItems ?? []) as GearItemRow[],
-    activeGear: Object.fromEntries(
-      gearCategories.map((category) => [
-        category,
-        ((activeGearRows ?? []) as PlayerGearRow[]).find((row) => row.category === category)?.gear_item_id ?? "",
-      ]),
-    ),
+    gearSummary: { saved: gearRows?.length ?? 0, active: gearRows?.filter((row) => row.is_active).length ?? 0 },
   };
+}
+
+export async function getGearManagerData(): Promise<GearManagerData | null> {
+  const supabase = await createClient();
+  if (!supabase) return null;
+  const { user, profile } = await getCurrentUserAndProfile(supabase);
+  if (!user) return null;
+  if (!profile) throw new Error("The signed-in account does not have a profile identity.");
+
+  const [catalogResponse, collectionResponse] = await Promise.all([
+    supabase.from("gear_items").select(gearItemColumns).order("brand").order("model"),
+    supabase.from("player_gear").select("id, user_id, gear_item_id, category, is_active, created_at").eq("user_id", user.id),
+  ]);
+  assertQuerySucceeded(catalogResponse.error, "Could not load the gear catalog.");
+  assertQuerySucceeded(collectionResponse.error, "Could not load your gear collection.");
+  const catalog = sortGear(((catalogResponse.data ?? []) as GearItemRow[]).map(mapGearItemRow));
+  return { username: profile.username, catalog, collection: buildGearCollection(collectionResponse.data ?? [], catalog) };
 }
 
 export function getDemoProfiles() {
