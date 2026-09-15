@@ -1,5 +1,25 @@
+import type { Metadata } from "next";
 import { GearClient } from "./GearClient";
 import { getGearCatalog } from "@/lib/gear";
+
+export const metadata: Metadata = {
+  title: "FPS Gaming Gear Database — Mice, Keyboards, Monitors & More | NYKE",
+  description: "Browse FPS gaming gear on NYKE, including mice, keyboards, monitors, mousepads and headsets used in competitive setups.",
+  alternates: { canonical: "/gear" },
+  openGraph: {
+    type: "website",
+    title: "FPS Gaming Gear Database — NYKE",
+    description: "Browse mice, keyboards, monitors, mousepads and headsets for competitive FPS setups.",
+    url: "/gear",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "FPS gaming gear database on NYKE" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FPS Gaming Gear Database — NYKE",
+    description: "Browse mice, keyboards, monitors, mousepads and headsets for competitive FPS setups.",
+    images: ["/opengraph-image"],
+  },
+};
 
 export default async function GearPage({ searchParams }: { searchParams: Promise<{ search?: string | string[] }> }) {
   const params = await searchParams;
