@@ -211,20 +211,42 @@ export function CardActions({ data }: CardActionsProps) {
     showFeedback("copied");
   }
 
+  function supportsFileShare() {
+    if (!navigator.share || !navigator.canShare) return false;
+
+    try {
+      const probe = new File([""], "nyke-card.png", { type: "image/png" });
+      return navigator.canShare({ files: [probe] });
+    } catch {
+      return false;
+    }
+  }
+
   async function handleShare() {
     if (busy) return;
+
+    // Avoid the expensive 1080x1220 card export when this browser can only
+    // share/copy a URL. This keeps the primary sharing action responsive on
+    // desktop and browsers without Web Share Level 2 file support.
+    if (!supportsFileShare()) {
+      try {
+        await shareUrl();
+      } catch {
+        showFeedback("error");
+      }
+      return;
+    }
+
     try {
       const { file } = await createCardFile();
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        try {
-          await navigator.share({ title: `${data.player.displayName} NYKE Card`, files: [file] });
+      try {
+        await navigator.share({ title: `${data.player.displayName} NYKE Card`, files: [file] });
+        setFeedback("idle");
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
           setFeedback("idle");
           return;
-        } catch (error) {
-          if (error instanceof DOMException && error.name === "AbortError") {
-            setFeedback("idle");
-            return;
-          }
         }
       }
       await shareUrl();
