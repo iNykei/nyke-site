@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { getSafeRedirectPath, resolvePostAuthDestination } from "@/lib/redirects";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Create your NYKE profile",
+  description: "Create your NYKE account and reserve your public FPS player profile username.",
+  alternates: { canonical: "/register" },
+  robots: { index: false, follow: true },
+};
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ next?: string | string[] }> }) {
   const params = await searchParams;
