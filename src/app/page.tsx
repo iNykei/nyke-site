@@ -65,18 +65,24 @@ export default async function Home() {
 
         <ProfileStream players={data.streamProfiles} />
 
-        <section className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-8 py-14 text-center sm:grid-cols-4 sm:px-6 sm:py-16" aria-label="NYKE index statistics">
-          {[
-            [data.stats.players.toLocaleString(), "players"],
-            [data.stats.gear.toLocaleString(), "gear indexed"],
-            [data.stats.regions.toLocaleString(), "regions"],
-            [data.stats.games.toLocaleString(), "games"],
-          ].map(([value, label]) => (
-            <div key={label}>
-              <p className="font-serif text-4xl font-black leading-none text-zinc-950">{value}</p>
-              <p className="mt-2 text-xs text-zinc-500">{label}</p>
-            </div>
-          ))}
+        <section className="mx-auto w-full max-w-5xl py-14 text-center sm:px-6 sm:py-16" aria-labelledby="nyke-index-heading">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+            {[
+              [data.stats.players.toLocaleString(), "public profiles"],
+              [data.stats.gear.toLocaleString(), "gear indexed"],
+              [data.stats.regions.toLocaleString(), "regions represented"],
+              [data.stats.games.toLocaleString(), "games represented"],
+            ].map(([value, label]) => (
+              <div key={label}>
+                <p className="font-serif text-4xl font-black leading-none text-zinc-950">{value}</p>
+                <p className="mt-2 text-xs text-zinc-500">{label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mx-auto mt-7 max-w-2xl border-t border-zinc-200 pt-5">
+            <h2 id="nyke-index-heading" className="text-sm font-semibold text-zinc-800">Live from the NYKE index</h2>
+            <p className="mt-1 text-xs leading-5 text-zinc-500">Counts reflect public NYKE profiles and the gear catalog currently available on the site, not a claimed total for the wider FPS community.</p>
+          </div>
         </section>
 
         <HowNYKEWorks />

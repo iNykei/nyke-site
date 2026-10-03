@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { getSafeRedirectPath, resolvePostAuthDestination } from "@/lib/redirects";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Log in to NYKE",
+  description: "Log in to manage your NYKE FPS player profile, aim settings, gear and shareable Card.",
+  alternates: { canonical: "/login" },
+  robots: { index: false, follow: true },
+};
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string | string[]; next?: string | string[] }> }) {
   const params = await searchParams;

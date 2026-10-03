@@ -4,6 +4,7 @@ import { ProfileGearCard } from "@/components/profile/ProfileGearCard";
 import { calculateCm360, calculateEdpi, formatNumber } from "@/lib/calculations";
 import { getCachedPublicProfileData } from "@/lib/profiles";
 import { sortGear } from "@/lib/gear-collection";
+import { toAbsoluteUrl } from "@/lib/site";
 
 type PlayerProfilePageProps = { params: Promise<{ username: string }> };
 
@@ -31,9 +32,24 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
     ["cm / 360", cm360 === null ? "—" : `${valueOrDash(cm360, 2)} cm`, true],
   ] as const;
   const homeGear = sortGear(data.activeGear).slice(0, 6);
+  const profileUrl = toAbsoluteUrl(`/${player.username}`);
+  const profileImage = toAbsoluteUrl(player.avatarUrl);
+  const profileJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+      "@type": "Person",
+      name: player.displayName,
+      alternateName: `@${player.username}`,
+      ...(profileUrl ? { url: profileUrl } : {}),
+      ...(profileImage ? { image: profileImage } : {}),
+      ...(player.bio ? { description: player.bio } : {}),
+    },
+  };
 
   return (
     <div className="mx-auto mt-10 max-w-5xl sm:mt-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profileJsonLd).replace(/</g, "\\u003c") }} />
       <section className="grid gap-4 md:grid-cols-[0.72fr_1.28fr]">
         <article className="nyke-surface-card p-5 sm:p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--profile-muted)]">Player</p>
