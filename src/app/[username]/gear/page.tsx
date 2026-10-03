@@ -1,10 +1,45 @@
+import type { Metadata } from "next";
 import { ProfileGearCard } from "@/components/profile/ProfileGearCard";
 import { GearCollection } from "@/components/gear/GearCollection";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { getCachedPublicProfileData } from "@/lib/profiles";
+import { toAbsoluteUrl } from "@/lib/site";
 
-export default async function PlayerGearPage({ params }: { params: Promise<{ username: string }> }) {
+type PlayerGearPageProps = { params: Promise<{ username: string }> };
+
+export async function generateMetadata({ params }: PlayerGearPageProps): Promise<Metadata> {
+  const { username } = await params;
+  const data = await getCachedPublicProfileData(username);
+
+  if (!data) return { title: "Gear not found — NYKE", robots: { index: false, follow: false } };
+
+  const { player } = data;
+  const title = `${player.displayName}'s FPS Gear & Setup (@${player.username}) — NYKE`;
+  const description = `Explore ${player.displayName}'s active FPS gear and collection on NYKE.`;
+  const image = toAbsoluteUrl(player.bannerUrl || player.avatarUrl);
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/${player.username}/gear` },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: `/${player.username}/gear`,
+      images: image ? [{ url: image }] : [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: image ? [image] : ["/opengraph-image"],
+    },
+  };
+}
+
+export default async function PlayerGearPage({ params }: PlayerGearPageProps) {
   const { username } = await params;
   const data = await getCachedPublicProfileData(username);
   if (!data) return null;
