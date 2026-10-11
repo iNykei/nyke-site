@@ -8,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api", "/api/", "/auth", "/auth/", "/forgot-password", "/login", "/register", "/reset-password", "/settings", "/settings/"],
+      // Login and register use page-level noindex; crawlers must be able to read it.
+      disallow: ["/api", "/api/", "/auth", "/auth/", "/forgot-password", "/reset-password", "/settings", "/settings/"],
     },
     sitemap: new URL("/sitemap.xml", siteUrl).toString(),
   };
