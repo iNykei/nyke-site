@@ -1,6 +1,9 @@
 import { ExploreClient } from "./ExploreClient";
 import { getExploreProfiles } from "@/lib/profiles";
 
+// Player profiles come from Supabase and must be requested at runtime.
+export const dynamic = "force-dynamic";
+
 export default async function ExplorePage() {
   const players = await getExploreProfiles();
 
