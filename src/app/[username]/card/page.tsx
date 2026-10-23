@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PlayerCardPageProps): Promise
   return {
     title,
     description,
-    alternates: { canonical: `/${data.player.username}/card` },
+    alternates: { canonical: `/${data.player.username}` },
     openGraph: { title, description, url: `/${data.player.username}/card` },
     twitter: { card: "summary_large_image", title, description },
   };

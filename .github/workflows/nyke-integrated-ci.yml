@@ -1,0 +1,43 @@
+name: NYKE integrated quality checks
+
+on:
+  push:
+    branches:
+      - growth/verify-integrated-2026-10-16
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nyke-integration-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Gear catalog, lint, and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_SITE_URL: https://nyke.life
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install exact dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Verify gear image catalog
+        run: npm run gear:check
+      - name: Lint
+        run: npm run lint
+      - name: Production build
+        run: npm run build
