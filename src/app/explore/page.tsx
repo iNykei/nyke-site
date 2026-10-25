@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { ExploreClient } from "./ExploreClient";
 import { getExploreProfiles } from "@/lib/profiles";
 
+// Public player data must be loaded at request time, not during the CI build.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Discover FPS Player Profiles, Aim Settings & Gear — NYKE",
   description: "Explore public FPS player profiles, compare aim settings and gear, and discover shareable NYKE Cards.",
