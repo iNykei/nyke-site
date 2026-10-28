@@ -37,6 +37,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Verify gear image catalog
         run: npm run gear:check
+      - name: Test auth redirects and gear collections
+        run: node --test scripts/test-auth-redirects.mjs scripts/test-gear-collections.mjs
       - name: Lint
         run: npm run lint
       - name: Production build
