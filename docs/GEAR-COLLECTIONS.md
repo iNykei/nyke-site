@@ -9,8 +9,12 @@
 
 ## Migration and Release Order
 
-`009_player_gear_collection.sql` is checked in but has **not been applied to the
-production Supabase project**. No production writes are part of this delivery.
+`009_player_gear_collection.sql` is **already applied** in the linked NYKE Supabase
+project, verified on 2026-10-10 against the live migration history and schema.
+The `player_gear_user_item_key` uniqueness constraint and
+`public.set_active_player_gear(uuid)` RPC exist; no duplicate `(user_id, gear_item_id)`
+pairs were found. This verification made no database changes. It does **not**
+confirm that the current production web deployment uses the collection-safe UI.
 
 The migration preserves existing rows, UUIDs, active states, and
 `player_gear_one_active_category`. It adds `(user_id, gear_item_id)` uniqueness
@@ -18,13 +22,16 @@ and the `set_active_player_gear` transaction. The RPC uses the caller's identity
 table grants, and RLS. If existing duplicate rows are found, the migration stops
 without deleting them. Activation failure rolls back the whole switch.
 
-After a separately approved release:
+Before a separately approved application release:
 
-1. Recheck production duplicates and existing active references before applying 009.
-2. Apply 009 before enabling collection additions and active switches in the new UI.
-3. Deploy this application's Profile-save change together with the collection UI.
-4. Verify authenticated owner flows, cross-account isolation, and persisted state
+1. **Do not reapply migration 009**; verify the target Supabase project and its
+   migration history before any database operation.
+2. Confirm that the production deployment includes the collection-safe
+   Profile-save action together with the collection UI. Avoid rolling back to
+   an older Profile-save action after inactive gear collections are in use.
+3. Verify authenticated owner flows, cross-account isolation, and persisted state
    against the deployed Supabase project.
+4. Complete the Preview/browser release checks in `docs/BETA-PREFLIGHT.md`.
 
 **Do not use an older app deployment to save Profile after users start collecting
 inactive gear.** The older Profile action deletes rows by category and can remove
