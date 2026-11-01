@@ -42,7 +42,7 @@ export function EditProfileForm({ data, action }: EditProfileFormProps) {
   const dpi = data.settings?.dpi ?? null;
   const sensitivity = data.settings?.sensitivity === null || data.settings?.sensitivity === undefined ? null : Number(data.settings.sensitivity);
   const edpi = calculateEdpi(dpi, sensitivity);
-  const cm360 = calculateCm360(dpi, sensitivity);
+  const cm360 = calculateCm360(dpi, sensitivity, data.settings?.game);
 
   useEffect(() => {
     if (state.status === "success" && state.username) {

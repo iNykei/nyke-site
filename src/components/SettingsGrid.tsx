@@ -8,7 +8,7 @@ type SettingsGridProps = {
 
 export function SettingsGrid({ settings }: SettingsGridProps) {
   const edpi = calculateEdpi(settings.dpi, settings.sensitivity);
-  const cm360 = calculateCm360(settings.dpi, settings.sensitivity);
+  const cm360 = calculateCm360(settings.dpi, settings.sensitivity, settings.game);
 
   const values = [
     { label: "Game", value: settings.game },
