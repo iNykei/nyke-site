@@ -23,7 +23,7 @@ export default async function PlayerProfilePage({ params }: PlayerProfilePagePro
 
   const { player, source, settings } = data;
   const edpi = calculateEdpi(player.settings.dpi, player.settings.sensitivity);
-  const cm360 = calculateCm360(player.settings.dpi, player.settings.sensitivity);
+  const cm360 = calculateCm360(player.settings.dpi, player.settings.sensitivity, player.settings.game);
   const hasAim = source === "demo" || Boolean(settings && [settings.dpi, settings.sensitivity, settings.resolution, settings.polling_rate].some((value) => value !== null && value !== ""));
   const metrics = [
     ["DPI", player.settings.dpi === null ? "—" : String(player.settings.dpi), false],

@@ -4,7 +4,7 @@ import type { PlayerProfile } from "@/types";
 export function CardAim({ player }: { player: PlayerProfile }) {
   const { settings } = player;
   const edpi = calculateEdpi(settings.dpi, settings.sensitivity);
-  const cm360 = calculateCm360(settings.dpi, settings.sensitivity);
+  const cm360 = calculateCm360(settings.dpi, settings.sensitivity, settings.game);
   const values = [
     { label: "Sens", value: settings.sensitivity !== null ? formatNumber(settings.sensitivity, 2) : null },
     { label: "DPI", value: settings.dpi !== null ? String(settings.dpi) : null },
