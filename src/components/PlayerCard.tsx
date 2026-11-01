@@ -13,7 +13,7 @@ type PlayerCardProps = {
 
 export function PlayerCard({ player, tone = "light", showMemberNumber = false }: PlayerCardProps) {
   const edpi = calculateEdpi(player.settings.dpi, player.settings.sensitivity);
-  const cm360 = calculateCm360(player.settings.dpi, player.settings.sensitivity);
+  const cm360 = calculateCm360(player.settings.dpi, player.settings.sensitivity, player.settings.game);
   const isLight = tone === "light";
   const metadata = [player.settings.game, player.settings.rank, player.region].map((value) => value.trim()).filter(Boolean);
   const aimValues = [
